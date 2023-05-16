@@ -1,8 +1,11 @@
 package rs.raf.rafnews.service.specification;
 
 
+import io.jsonwebtoken.Claims;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.model.ServiceUser;
+import rs.raf.rafnews.model.ServiceUserLogin;
+import rs.raf.rafnews.model.ServiceUserRegister;
 import rs.raf.rafnews.model.Token;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
 
@@ -10,14 +13,14 @@ import java.util.List;
 
 public interface IServiceUserService {
 
-    public List<ServiceUser> getAllServiceUsers();
-    public ServiceUser getServiceUserById(Integer serviceUserId);
-    public ServiceUser getServiceUserByUsername(String username);
-    public ServiceUser addServiceUser(ServiceUser serviceUser);
-    public ServiceUser registerServiceUser(ServiceUser serviceUser);
-    public Token loginServiceUser(ServiceUser serviceUser);
-    public boolean deleteServiceUserById(Integer id);
-    public String generateToken(ServiceUser serviceUser);
-
-    public ServiceUser parseToken(String jwt);
+    List<ServiceUser> getAllServiceUsers();
+    ServiceUser getServiceUserById(Integer serviceUserId);
+    ServiceUser getServiceUserByUsername(String username);
+    ServiceUser addServiceUser(ServiceUser serviceUser);
+    ServiceUser registerServiceUser(ServiceUserRegister serviceUserRegister);
+    Token loginServiceUser(ServiceUserLogin serviceUserLogin);
+    Token logoutServiceUser();
+    boolean deleteServiceUserById(Integer id);
+    String generateToken(ServiceUser serviceUser, String userRole);
+    Claims parseToken(String jwt);
 }

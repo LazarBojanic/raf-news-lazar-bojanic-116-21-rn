@@ -1,5 +1,6 @@
 package rs.raf.rafnews.repository.specification;
 
+import io.jsonwebtoken.Claims;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.model.ServiceUserLogin;
 import rs.raf.rafnews.model.ServiceUserRegister;
@@ -14,7 +15,8 @@ public interface IServiceUserRepository {
     ServiceUser addServiceUser(ServiceUser serviceUser);
     ServiceUser registerServiceUser(ServiceUserRegister serviceUserRegister);
     Token loginServiceUser(ServiceUserLogin serviceUserLogin);
+    Token logoutServiceUser();
     boolean deleteServiceUserById(Integer id);
-    String generateToken(ServiceUser serviceUser);
-    ServiceUser parseToken(String jwt);
+    String generateToken(ServiceUser serviceUser, String userRole);
+    Claims parseToken(String jwt);
 }

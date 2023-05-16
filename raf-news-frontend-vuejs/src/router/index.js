@@ -11,7 +11,7 @@ const router = createRouter({
     {
       path: '/',
       redirect: '/home',
-      name: 'init',
+      name: 'init'
     },
     {
       path: '/home',

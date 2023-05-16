@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class BlogDatabase {
-    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/blog";
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/rafNews";
     private static final String JDBC_USER = "postgres";
     private static final String JDBC_PASSWORD = "1234";
     private final DataSource dataSource;

@@ -3,6 +3,8 @@ package rs.raf.rafnews.repository.implementation;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Singleton;
 import rs.raf.rafnews.database.BlogDatabase;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.model.ServiceUserLogin;
@@ -17,7 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-
+@RequestScoped
 public class ServiceUserRepository implements IServiceUserRepository {
     private static String jwtSecret = "NQu2mzEtCwrNaJCjsoHT";
     public static String MASTER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3MiOiJhZG1pbiJ9.EcbsD0Wn1wkI8iVVTEOX0IWHuwyqOndzPUFtDAM4TMI";
@@ -144,8 +146,8 @@ public class ServiceUserRepository implements IServiceUserRepository {
     public ServiceUser registerServiceUser(ServiceUserRegister serviceUserRegister) {
         try{
             if(getServiceUserByEmail(serviceUserRegister.getEmail()) == null){
-                ServiceUser serviceUser = new ServiceUser(0, serviceUserRegister.getEmail(), serviceUserRegister.getPass(), Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name());
-                serviceUser.setPass(Hasher.hashPassword(serviceUserRegister.getPass()));
+                String hashedPass = Hasher.hashPassword(serviceUserRegister.getPass());
+                ServiceUser serviceUser = new ServiceUser(0, serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name());
                 return addServiceUser(serviceUser);
             }
             else{
@@ -164,7 +166,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             if(serviceUser != null){
                 if(serviceUser.getEnabled().equals("true")){
                     if(Hasher.checkPassword(serviceUserLogin.getPass(), serviceUser.getPass())){
-                        return new Token(generateToken(serviceUser));
+                        return new Token(generateToken(serviceUser, Util.ROLE_CONTENT_CREATOR));
                     }
                     else{
                         return null;
@@ -184,6 +186,12 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
+    public Token logoutServiceUser() {
+        ServiceUser serviceUser = new ServiceUser(0, "", "", Util.ROLE_GUEST, "false", "", "");
+        return new Token(generateToken(serviceUser, Util.ROLE_GUEST));
+    }
+
+    @Override
     public boolean deleteServiceUserById(Integer id) {
         String query = "DELETE FROM service_user WHERE id = ?";
         try (PreparedStatement preparedStatement = BlogDatabase.getInstance().getConnection().prepareStatement(query)){
@@ -197,28 +205,28 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public String generateToken(ServiceUser serviceUser) {
+    public String generateToken(ServiceUser serviceUser, String userRole) {
         Claims claims = Jwts.claims();
         claims.put("id", serviceUser.getId());
         claims.put("email", serviceUser.getEmail());
         claims.put("pass", serviceUser.getPass());
-        claims.put("user_role", serviceUser.getUser_role());
+        claims.put("user_role", userRole);
         claims.put("enabled", serviceUser.getEnabled());
         return Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .setExpiration(Date.from(LocalDateTime.now().plusHours(2).atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(java.sql.Date.from(LocalDateTime.now().plusHours(2).atZone(ZoneId.systemDefault()).toInstant()))
                 .compact();
     }
     @Override
-    public ServiceUser parseToken(String jwt) {
+    public Claims parseToken(String jwt) {
         try {
             Claims claims;
             claims = Jwts.parser()
                     .setSigningKey(jwtSecret)
                     .parseClaimsJws(jwt)
                     .getBody();
-            return getServiceUserByEmail(claims.get("email").toString());
+            return claims;
         }
         catch (Exception e) {
             return null;

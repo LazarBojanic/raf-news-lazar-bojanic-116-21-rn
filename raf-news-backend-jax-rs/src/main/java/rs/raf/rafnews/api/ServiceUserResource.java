@@ -1,6 +1,7 @@
 package rs.raf.rafnews.api;
 
 import jakarta.inject.Inject;
+import jakarta.inject.Scope;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import rs.raf.rafnews.model.ServiceUser;
@@ -77,6 +78,18 @@ public class ServiceUserResource {
     public Response loginServiceUser(ServiceUserLogin serviceUserLogin){
         try{
             Token token = serviceUserService.loginServiceUser(serviceUserLogin);
+            return Response.ok().entity(token).build();
+        }
+        catch(Exception e){
+            return Response.status(500).build();
+        }
+    }
+    @GET
+    @Path("/logout")
+    @Produces(APPLICATION_JSON)
+    public Response logoutServiceUser(){
+        try{
+            Token token = serviceUserService.logoutServiceUser();
             return Response.ok().entity(token).build();
         }
         catch(Exception e){

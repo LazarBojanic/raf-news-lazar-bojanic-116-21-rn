@@ -25,7 +25,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
+import Cookies from 'js-cookie';
 export default {
   name: 'LoginComponent',
   data() {
@@ -38,20 +39,15 @@ export default {
     ...mapActions(['login']),
     async loginForm() {
       const loginData = {
-        id: 0,
         email: this.email,
         pass: this.pass,
-        userRole: 'contentCreator',
-        enabled: 'true',
-        firstName: '',
-        lastName: ''
       }
-      const token = await this.login(loginData)
-      this.$emit('loginSuccess', token)
+      await this.login(loginData);
+      this.$emit('loggedIn');
+      this.$router.push({ name: 'home' });
     }
   }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

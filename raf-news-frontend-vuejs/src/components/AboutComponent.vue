@@ -15,22 +15,19 @@ export default {
   props: {},
   computed: {},
   methods: {
-    async testButton(){
+    async testButton() {
       try {
-        const res = await fetch('http://95.180.97.206:8081/api/hello-world');
-        const data = await res.json();
+        const res = await fetch('http://95.180.97.206:8081/api/hello-world')
+        const data = await res.json()
         if (data) {
-          console.log(data);
+          console.log(data)
         }
-      } 
-      catch (error) {
-        console.log(error);
-
+      } catch (error) {
+        console.log(error)
       }
     }
   }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

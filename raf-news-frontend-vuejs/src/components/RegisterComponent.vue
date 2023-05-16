@@ -6,14 +6,14 @@
           <div class="card-header">Register</div>
           <div class="card-body">
             <div>
-              <form @submit.prevent="registerForm" novalidate>
+              <form @submit.prevent="registerForm">
                 <div class="form-group">
                   <label>First Name</label>
-                  <input type="text" v-model="firstName" class="form-control" required />
+                  <input type="text" v-model="first_name" class="form-control" required />
                 </div>
                 <div class="form-group">
                   <label>Last Name</label>
-                  <input type="text" v-model="lastName" class="form-control" required />
+                  <input type="text" v-model="last_name" class="form-control" required />
                 </div>
                 <div class="form-group">
                   <label>Email</label>
@@ -23,7 +23,6 @@
                   <label>Password</label>
                   <input type="password" v-model="pass" class="form-control" required />
                 </div>
-
                 <br />
                 <button type="submit" class="btn btn-primary">Register</button>
               </form>
@@ -44,34 +43,36 @@ export default {
   name: 'RegisterComponent',
   data() {
     return {
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       email: '',
       pass: ''
     }
   },
+  mounted(){
+  },
   methods: {
     ...mapActions(['register']),
+    
     async registerForm() {
       const registerData = {
-        id: 0,
         email: this.email,
         pass: this.pass,
-        userRole: 'contentCreator',
-        enabled: 'true',
-        firstName: this.firstName,
-        lastName: this.lastName
+        first_name: this.first_name,
+        last_name: this.last_name
       }
-      const registrationSuccess = await this.register(registerData)
+      const body = JSON.stringify(registerData);
+      console.log('before entering method'.concat(body));
+      const registrationSuccess = await this.register(registerData);
       if (registrationSuccess == true) {
-        console.log('registration successful')
-      } else {
-        console.log('registration successful')
+        console.log('registration successful');
+      } 
+      else {
+        console.log('registration successful');
       }
     }
   }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -9,63 +9,71 @@
           <li class="nav-item">
             <RouterLink class="nav-link" to="/about">About</RouterLink>
           </li>
-          <li class="nav-item">
+          <li  v-if="!checkEmail(this.decodedToken.email)" class="nav-item">
             <RouterLink class="nav-link" to="/register">Register</RouterLink>
           </li>
-          <li class="nav-item">
+          <li v-if="!checkEmail(this.decodedToken.email)" class="nav-item">
             <RouterLink class="nav-link" to="/login">Login</RouterLink>
+          </li>
+          <li v-if="checkEmail(this.decodedToken.email)" class="nav-item">
+            <a class="nav-link" href="#" @click.prevent="logoutButton">Logout</a>
           </li>
         </ul>
       </div>
     </nav>
     <br />
     <body>
-      <RouterView @loginSuccess="updateToken" />
+      <RouterView @loggedIn="updateToken"/>
     </body>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
-import Cookies from 'js-cookie'
-import jwtDecode from 'jwt-decode'
-import router from './router'
+import Cookies from 'js-cookie';
+import jwtDecode from 'jwt-decode';
 export default {
   data() {
     return {
-      token: '',
-      userRole: ''
+      decodedToken: {}
     }
   },
   mounted() {
-    this.token = Cookies.get('token');
-    this.userRole = jwtDecode(this.token).userRole;
+    this.decodedToken = jwtDecode(Cookies.get('token'));
   },
   methods: {
+    ...mapActions(['login']),
     ...mapActions(['logout']),
-    logoutButton() {
-      this.logout().then(() => {
-        this.updateToken(Cookies.get('token'))
-        router.push({ name: 'login' })
-      })
+    async logoutButton() {
+      await this.logout();
+      this.decodedToken = jwtDecode(Cookies.get('token'));
+      console.log(this.decodedToken.email);
+      this.$router.push({ name: 'login' });
     },
-    updateToken(token) {
-      this.token = token
-      this.userRole = jwtDecode(this.token).userRole
+    async loginWithToken(){
+      this.decodedToken = jwtDecode(Cookies.get('token'));
+      const loginData = {
+        email: this.token.email,
+        pass: this.token.pass,
+      }
+      await this.login(loginData);
+      this.$router.push({ name: 'home' });
+    },
+    updateToken(){
+      this.decodedToken = jwtDecode(Cookies.get('token'));
+    },
+    checkEmail(email){
+      if(email == null || email == ''){
+        return false;
+      }
+      else{
+        return true;
+      }
     }
   },
-  watch: {
-    token(newToken) {
-      this.token = newToken
-      this.userRole = jwtDecode(this.token).userRole
-    },
-    userRole(newUserRole) {
-      this.userRole = newUserRole
-    }
+  computed: {
   }
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
