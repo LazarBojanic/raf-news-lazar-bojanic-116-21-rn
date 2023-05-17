@@ -25,27 +25,36 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+//import { mapActions } from 'vuex';
+import { mapStores } from 'pinia'
+import { useNewsStore } from '../stores';
 import Cookies from 'js-cookie';
 export default {
   name: 'LoginComponent',
   data() {
     return {
+      store: {},
       email: '',
       pass: ''
     }
   },
   methods: {
-    ...mapActions(['login']),
+    //...mapActions(['login']),
+    
     async loginForm() {
+      const store = useNewsStore();
       const loginData = {
         email: this.email,
         pass: this.pass,
       }
-      await this.login(loginData);
+      await store.login(loginData);
+      //await this.login(loginData);
       this.$emit('loggedIn');
       this.$router.push({ name: 'home' });
     }
+  },
+  computed: {
+    ...mapStores(useNewsStore)
   }
 }
 </script>

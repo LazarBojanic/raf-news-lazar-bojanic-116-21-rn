@@ -29,7 +29,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+//import { mapActions } from 'vuex'
+import { mapStores } from 'pinia'
+import { useNewsStore } from './stores';
 import Cookies from 'js-cookie';
 import jwtDecode from 'jwt-decode';
 export default {
@@ -42,21 +44,24 @@ export default {
     this.decodedToken = jwtDecode(Cookies.get('token'));
   },
   methods: {
-    ...mapActions(['login']),
-    ...mapActions(['logout']),
+    //...mapActions(['login']),
+    //...mapActions(['logout']),
     async logoutButton() {
-      await this.logout();
+      const store = useNewsStore();
+      //await this.logout();
+      await store.logout();
       this.decodedToken = jwtDecode(Cookies.get('token'));
-      console.log(this.decodedToken.email);
       this.$router.push({ name: 'login' });
     },
     async loginWithToken(){
+      const store = useNewsStore();
       this.decodedToken = jwtDecode(Cookies.get('token'));
       const loginData = {
         email: this.token.email,
         pass: this.token.pass,
       }
-      await this.login(loginData);
+      //await this.login(loginData);
+      await store.login(loginData);
       this.$router.push({ name: 'home' });
     },
     updateToken(){
@@ -72,6 +77,7 @@ export default {
     }
   },
   computed: {
+    ...mapStores(useNewsStore)
   }
 }
 </script>

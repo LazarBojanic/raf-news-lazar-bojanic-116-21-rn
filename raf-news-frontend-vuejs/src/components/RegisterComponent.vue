@@ -38,7 +38,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+//import { mapActions } from 'vuex'
+import { mapStores } from 'pinia'
+import { useNewsStore } from '../stores';
 export default {
   name: 'RegisterComponent',
   data() {
@@ -52,9 +54,10 @@ export default {
   mounted(){
   },
   methods: {
-    ...mapActions(['register']),
+    //...mapActions(['register']),
     
     async registerForm() {
+      const store = useNewsStore();
       const registerData = {
         email: this.email,
         pass: this.pass,
@@ -63,14 +66,27 @@ export default {
       }
       const body = JSON.stringify(registerData);
       console.log('before entering method'.concat(body));
-      const registrationSuccess = await this.register(registerData);
+      /*const registrationSuccess = await this.register(registerData);
       if (registrationSuccess == true) {
         console.log('registration successful');
       } 
       else {
-        console.log('registration successful');
-      }
+        console.log('registration failed');
+      }*/
+
+      const registrationSuccess = await store.register(registerData);
+        if (registrationSuccess == true) {
+          console.log('registration successful');
+        } 
+        else {
+          console.log('registration failed');
+        }
+
+
     }
+  },
+  computed: {
+    ...mapStores(useNewsStore)
   }
 }
 </script>

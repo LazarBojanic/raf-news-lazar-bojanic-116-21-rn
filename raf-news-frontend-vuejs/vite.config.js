@@ -5,19 +5,23 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ['vuex-persist']
+  },
   plugins: [vue({
-    template: {
-      compilerOptions: {
-        compatConfig: {
-          MODE: 2
+      template: {
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2
+          }
         }
       }
     }
-  })],
+  )],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      vue: '@vue/compat'
+      'vue': '@vue/compat',
     }
   }
 })

@@ -1,6 +1,11 @@
-import { createStore } from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
+/*import { createStore } from 'vuex'
+import VuexPersistence from 'vuex-persist'
 import Cookies from 'js-cookie'
+
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage
+})
+
 export default createStore({
   state: {
     
@@ -65,5 +70,5 @@ export default createStore({
     }
   },
   modules: {},
-  plugins: [createPersistedState()]
-})
+  plugins: [vuexLocal.plugin]
+})*/
