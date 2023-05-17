@@ -18,11 +18,11 @@ public class AuthFilter implements ContainerRequestFilter {
     @Inject
     private ServiceUserService serviceUserService;
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext)  {
         try{
-            if (!requestContext.getUriInfo().getPath().contains("login") && !requestContext.getUriInfo().getPath().contains("register") && !requestContext.getUriInfo().getPath().contains("logout")) {
+            if (!requestContext.getUriInfo().getPath().contains("login") && !requestContext.getUriInfo().getPath().contains("loginWithToken") && !requestContext.getUriInfo().getPath().contains("register") && !requestContext.getUriInfo().getPath().contains("logout")) {
                 String bearerToken = requestContext.getHeaderString("Authorization");
-                if(bearerToken.startsWith("Bearer")){
+                if(bearerToken.startsWith("Bearer ")){
                     String token = bearerToken.split(" ")[1];
                     Claims claims = this.serviceUserService.parseToken(token);
                     if(!checkAuthorization(requestContext, claims)){
@@ -42,8 +42,8 @@ public class AuthFilter implements ContainerRequestFilter {
 
     private boolean checkAuthorization(ContainerRequestContext req, Claims claims) {
         try{
-            if(claims.get("enabled").toString().equals("true")){
-                String userRole = claims.get("userRole").toString();
+            if(claims.get("is_enabled").toString().equals("true")){
+                String userRole = claims.get("user_role").toString();
                 List<Object> matchedResources = req.getUriInfo().getMatchedResources();
                 if(userRole.equals(Util.ROLE_ADMIN)){
                     return true;

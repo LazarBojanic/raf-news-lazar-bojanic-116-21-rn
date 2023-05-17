@@ -1,13 +1,14 @@
 package rs.raf.rafnews.service.specification;
 
+import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.model.Article;
 
 import java.util.List;
 
 public interface IArticleService {
-    List<Article> getAllArticles();
-    Article getArticleById(Integer id);
-    Article addArticle(Article article);
-    Article updateArticle(Article article);
+    List<ArticleDto> getAllArticles();
+    ArticleDto getArticleById(Integer id);
+    ArticleDto addArticle(Article article);
+    ArticleDto updateArticle(Article article);
     boolean deleteArticleById(Integer id);
 }

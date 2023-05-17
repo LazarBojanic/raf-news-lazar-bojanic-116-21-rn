@@ -16,15 +16,7 @@ export default {
   computed: {},
   methods: {
     async testButton() {
-      try {
-        const res = await fetch('http://95.180.97.206:8081/api/hello-world')
-        const data = await res.json()
-        if (data) {
-          console.log(data)
-        }
-      } catch (error) {
-        console.log(error)
-      }
+      
     }
   }
 }

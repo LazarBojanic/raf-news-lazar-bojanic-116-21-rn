@@ -1,11 +1,12 @@
 package rs.raf.rafnews.service.implementation;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.Claims;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Scope;
-import jakarta.inject.Singleton;
+import rs.raf.rafnews.dto.ServiceUserDto;
+import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.model.ServiceUserLogin;
 import rs.raf.rafnews.model.ServiceUserRegister;
@@ -13,8 +14,6 @@ import rs.raf.rafnews.model.Token;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 @RequestScoped
 public class ServiceUserService implements IServiceUserService {
@@ -25,52 +24,72 @@ public class ServiceUserService implements IServiceUserService {
 
     }
     @Override
-    public List<ServiceUser> getAllServiceUsers() {
+    public List<ServiceUser> getAllRawServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException {
+        return this.serviceUserRepository.getAllRawServiceUsers();
+    }
+    @Override
+    public List<ServiceUserDto> getAllServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException {
         return this.serviceUserRepository.getAllServiceUsers();
     }
-
     @Override
-    public ServiceUser getServiceUserById(Integer serviceUserId) {
-        return this.serviceUserRepository.getServiceUserById(serviceUserId);
+    public ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException {
+        return this.serviceUserRepository.getRawServiceUserById(id);
+    }
+    @Override
+    public ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException {
+        return this.serviceUserRepository.getServiceUserById(id);
+    }
+    @Override
+    public ServiceUser getRawServiceUserByEmail(String email) throws JsonProcessingException, GetException {
+        return this.serviceUserRepository.getRawServiceUserByEmail(email);
+    }
+    @Override
+    public ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException {
+        return this.serviceUserRepository.getServiceUserByEmail(email);
     }
 
     @Override
-    public ServiceUser getServiceUserByUsername(String username) {
-        return this.serviceUserRepository.getServiceUserByEmail(username);
-    }
-
-    @Override
-    public ServiceUser addServiceUser(ServiceUser serviceUser) {
+    public ServiceUserDto addServiceUser(ServiceUser serviceUser) throws AddException, JsonProcessingException {
         return this.serviceUserRepository.addServiceUser(serviceUser);
     }
 
     @Override
-    public ServiceUser registerServiceUser(ServiceUserRegister serviceUserRegister) {
+    public Integer updateServiceUser(Integer id, ServiceUser serviceUser) throws UpdateException, JsonProcessingException, GetException {
+        return this.serviceUserRepository.updateServiceUser(id, serviceUser);
+    }
+
+    @Override
+    public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws RegisterException, JsonProcessingException, EmailAlreadyExists, GetException {
         return this.serviceUserRepository.registerServiceUser(serviceUserRegister);
     }
 
     @Override
-    public Token loginServiceUser(ServiceUserLogin serviceUserLogin) {
+    public Token loginServiceUser(ServiceUserLogin serviceUserLogin) throws LoginException, JsonProcessingException, GetException {
         return this.serviceUserRepository.loginServiceUser(serviceUserLogin);
     }
 
     @Override
-    public Token logoutServiceUser() {
+    public Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException {
+        return this.serviceUserRepository.loginServiceUserWithToken(token);
+    }
+
+    @Override
+    public Token logoutServiceUser() throws JsonProcessingException, LogoutException {
         return this.serviceUserRepository.logoutServiceUser();
     }
 
     @Override
-    public boolean deleteServiceUserById(Integer id) {
+    public Integer deleteServiceUserById(Integer id) throws DeleteException, JsonProcessingException {
         return this.serviceUserRepository.deleteServiceUserById(id);
     }
 
     @Override
-    public String generateToken(ServiceUser serviceUser, String userRole) {
+    public String generateToken(ServiceUser serviceUser, String userRole) throws TokenGenerateException, JsonProcessingException {
         return this.serviceUserRepository.generateToken(serviceUser, userRole);
     }
 
     @Override
-    public Claims parseToken(String jwt) {
-        return this.serviceUserRepository.parseToken(jwt);
+    public Claims parseToken(String token) throws LoginException, TokenParseException, JsonProcessingException {
+        return this.serviceUserRepository.parseToken(token);
     }
 }

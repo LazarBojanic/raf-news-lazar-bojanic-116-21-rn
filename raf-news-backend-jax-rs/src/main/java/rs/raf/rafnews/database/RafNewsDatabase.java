@@ -2,9 +2,11 @@ package rs.raf.rafnews.database;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
-
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 public class RafNewsDatabase {
     private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/rafNews";
@@ -36,11 +38,30 @@ public class RafNewsDatabase {
     }
 
     public void closeConnection() {
-        if (dataSource != null) {
-            dataSource.close();
+        try {
+            if (dataSource != null) {
+                dataSource.close();
+            }
+        } finally {
+            deregisterJdbcDriver();
+            stopJdbcPoolCleanerThread();
         }
-        stopJdbcPoolCleanerThread();
     }
+
+    private void deregisterJdbcDriver() {
+        try {
+            Enumeration<Driver> drivers =  DriverManager.getDrivers();
+            while (drivers.hasMoreElements()) {
+                Driver driver = drivers.nextElement();
+                if (driver.getClass().getClassLoader() == getClass().getClassLoader()) {
+                    DriverManager.deregisterDriver(driver);
+                }
+            }
+        } catch (SQLException e) {
+            // Handle SQL exception
+        }
+    }
+
 
     private void stopJdbcPoolCleanerThread() {
         try {

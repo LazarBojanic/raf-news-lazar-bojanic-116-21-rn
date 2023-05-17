@@ -36,8 +36,36 @@ export const useNewsStore = defineStore('news', {
           body: JSON.stringify(loginData)
         })
         const data = await res.json()
-        Cookies.set('token', data.token)
-      } catch (error) {
+        if(data.token){
+          Cookies.set('token', data.token)
+        }
+        else{
+          console.log(data);
+        }
+      } 
+      catch (error) {
+        console.log(error)
+      }
+    },
+    async loginWithToken() {
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch('http://95.180.97.206:8081/api/service_user/loginWithToken', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        const data = await res.json()
+        if(data.token){
+          Cookies.set('token', data.token)
+        }
+        else{
+          console.log(data);
+        }
+      } 
+      catch (error) {
         console.log(error)
       }
     },
@@ -50,8 +78,14 @@ export const useNewsStore = defineStore('news', {
           }
         })
         const data = await res.json()
-        Cookies.set('token', data.token)
-      } catch (error) {
+        if(data.token){
+          Cookies.set('token', data.token)
+        }
+        else{
+          console.log(data);
+        }
+      } 
+      catch (error) {
         console.log(error)
       }
     }

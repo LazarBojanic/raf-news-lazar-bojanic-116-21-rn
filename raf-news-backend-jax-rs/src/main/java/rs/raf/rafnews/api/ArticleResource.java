@@ -3,6 +3,7 @@ package rs.raf.rafnews.api;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.model.Article;
 import rs.raf.rafnews.service.specification.IArticleService;
 
@@ -20,7 +21,7 @@ public class ArticleResource {
     @Produces(APPLICATION_JSON)
     public Response getArticleById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
-            Article article = articleService.getArticleById(id);
+            ArticleDto article = articleService.getArticleById(id);
             return Response.ok().entity(article).build();
         }
         catch(Exception e){
@@ -32,7 +33,7 @@ public class ArticleResource {
     @Produces(APPLICATION_JSON)
     public Response getAllArticles(@HeaderParam("Authorization") String bearerToken){
         try{
-            List<Article> articleList = articleService.getAllArticles();
+            List<ArticleDto> articleList = articleService.getAllArticles();
             return Response.ok().entity(articleList).build();
         }
         catch(Exception e){
@@ -45,7 +46,7 @@ public class ArticleResource {
     @Produces(APPLICATION_JSON)
     public Response addArticle(Article article, @HeaderParam("Authorization") String bearerToken){
         try{
-            Article articleWithId = articleService.addArticle(article);
+            ArticleDto articleWithId = articleService.addArticle(article);
             return Response.ok().entity(articleWithId).build();
         }
         catch(Exception e){
@@ -58,7 +59,7 @@ public class ArticleResource {
     @Produces(APPLICATION_JSON)
     public Response updateArticle(Article article, @HeaderParam("Authorization") String bearerToken){
         try{
-            Article articleWithId = articleService.updateArticle(article);
+            ArticleDto articleWithId = articleService.updateArticle(article);
             return Response.ok().entity(articleWithId).build();
         }
         catch(Exception e){

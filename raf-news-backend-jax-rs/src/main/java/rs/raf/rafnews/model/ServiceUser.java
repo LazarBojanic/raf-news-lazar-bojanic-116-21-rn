@@ -1,6 +1,5 @@
 package rs.raf.rafnews.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Getter
@@ -15,7 +14,7 @@ public class ServiceUser {
     private String email;
     private String pass;
     private String user_role;
-    private String enabled;
+    private String is_enabled;
     private String first_name;
     private String last_name;
 }

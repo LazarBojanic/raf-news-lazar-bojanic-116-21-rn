@@ -3,6 +3,7 @@ package rs.raf.rafnews.api;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.service.implementation.CategoryService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
@@ -21,7 +22,7 @@ public class CategoryResource {
     @Produces(APPLICATION_JSON)
     public Response getCategoryById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
-            Category category = categoryService.getCategoryById(id);
+            CategoryDto category = categoryService.getCategoryById(id);
             return Response.ok().entity(category).build();
         }
         catch(Exception e){
@@ -33,7 +34,7 @@ public class CategoryResource {
     @Produces(APPLICATION_JSON)
     public Response getAllCategories(@HeaderParam("Authorization") String bearerToken){
         try{
-            List<Category> categoryList = categoryService.getAllCategories();
+            List<CategoryDto> categoryList = categoryService.getAllCategories();
             return Response.ok().entity(categoryList).build();
         }
         catch(Exception e){
@@ -46,7 +47,7 @@ public class CategoryResource {
     @Produces(APPLICATION_JSON)
     public Response addCategory(Category category, @HeaderParam("Authorization") String bearerToken){
         try{
-            Category categoryWithId = categoryService.addCategory(category);
+            CategoryDto categoryWithId = categoryService.addCategory(category);
             return Response.ok().entity(categoryWithId).build();
         }
         catch(Exception e){
@@ -59,7 +60,7 @@ public class CategoryResource {
     @Produces(APPLICATION_JSON)
     public Response updateCategory(Category category, @HeaderParam("Authorization") String bearerToken){
         try{
-            Category categoryWithId = categoryService.updateCategory(category);
+            CategoryDto categoryWithId = categoryService.updateCategory(category);
             return Response.ok().entity(categoryWithId).build();
         }
         catch(Exception e){

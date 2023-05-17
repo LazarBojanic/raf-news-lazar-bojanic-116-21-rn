@@ -1,9 +1,13 @@
 package rs.raf.rafnews.repository.implementation;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.model.Article;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
+import rs.raf.rafnews.service.specification.ICategoryService;
+import rs.raf.rafnews.service.specification.IServiceUserService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,9 +18,13 @@ import java.util.List;
 
 @RequestScoped
 public class ArticleRepository implements IArticleRepository {
+    @Inject
+    private IServiceUserService serviceUserService;
+    @Inject
+    private ICategoryService categoryService;
     @Override
-    public List<Article> getAllArticles() {
-        List<Article> articleList = new ArrayList<>();
+    public List<ArticleDto> getAllArticles() {
+        List<ArticleDto> articleDtoList = new ArrayList<>();
         String query = "SELECT * FROM article";
         try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
             try(ResultSet resultSet = preparedStatement.executeQuery()){
@@ -28,8 +36,8 @@ public class ArticleRepository implements IArticleRepository {
                     String content = resultSet.getString("content");
                     Timestamp time_published = resultSet.getTimestamp("time_published");
                     Integer views = resultSet.getInt("views");
-                    Article article = new Article(id, service_user_id, category_id, title, content, time_published, views);
-                    articleList.add(article);
+                    /*ArticleDto articleDto = new ArticleDto(id, service_user_id, category_id, title, content, time_published, views);
+                    articleDtoList.add(article);*/
                 }
             }
             catch (SQLException e) {
@@ -39,21 +47,21 @@ public class ArticleRepository implements IArticleRepository {
         catch (SQLException e) {
             return null;
         }
-        return articleList;
+        return articleDtoList;
     }
 
     @Override
-    public Article getArticleById(Integer id) {
+    public ArticleDto getArticleById(Integer id) {
         return null;
     }
 
     @Override
-    public Article addArticle(Article article) {
+    public ArticleDto addArticle(Article article) {
         return null;
     }
 
     @Override
-    public Article updateArticle(Article article) {
+    public ArticleDto updateArticle(Article article) {
         return null;
     }
 

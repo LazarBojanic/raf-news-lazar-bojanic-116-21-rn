@@ -2,8 +2,8 @@ package rs.raf.rafnews.service.implementation;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.model.Article;
-import rs.raf.rafnews.repository.implementation.ArticleRepository;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
 import rs.raf.rafnews.service.specification.IArticleService;
 
@@ -15,27 +15,27 @@ public class ArticleService implements IArticleService {
     IArticleRepository articleRepository;
 
     @Override
-    public List<Article> getAllArticles() {
-        return null;
+    public List<ArticleDto> getAllArticles() {
+        return this.articleRepository.getAllArticles();
     }
 
     @Override
-    public Article getArticleById(Integer id) {
-        return null;
+    public ArticleDto getArticleById(Integer id) {
+        return this.articleRepository.getArticleById(id);
     }
 
     @Override
-    public Article addArticle(Article article) {
-        return null;
+    public ArticleDto addArticle(Article article) {
+        return this.articleRepository.addArticle(article);
     }
 
     @Override
-    public Article updateArticle(Article article) {
-        return null;
+    public ArticleDto updateArticle(Article article) {
+        return this.articleRepository.updateArticle(article);
     }
 
     @Override
     public boolean deleteArticleById(Integer id) {
-        return false;
+        return this.articleRepository.deleteArticleById(id);
     }
 }
