@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
@@ -27,8 +27,8 @@
 <script>
 //import { mapActions } from 'vuex';
 import { mapStores } from 'pinia'
-import { useNewsStore } from '../stores';
-import Cookies from 'js-cookie';
+import { useNewsStore } from '../stores'
+import Cookies from 'js-cookie'
 export default {
   name: 'LoginComponent',
   data() {
@@ -40,17 +40,17 @@ export default {
   },
   methods: {
     //...mapActions(['login']),
-    
+
     async loginForm() {
-      const store = useNewsStore();
+      const store = useNewsStore()
       const loginData = {
         email: this.email,
-        pass: this.pass,
+        pass: this.pass
       }
-      await store.login(loginData);
+      await store.login(loginData)
       //await this.login(loginData);
-      this.$emit('loggedIn');
-      this.$router.push({ name: 'home' });
+      this.$emit('loggedIn')
+      this.$router.push({ name: 'home' })
     }
   },
   computed: {
@@ -59,4 +59,6 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style >
+
+</style>

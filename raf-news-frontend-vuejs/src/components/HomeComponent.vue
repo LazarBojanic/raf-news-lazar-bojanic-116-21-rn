@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div div class="row justify-content-center">
     <h1>Home</h1>
   </div>
 </template>
@@ -17,4 +17,6 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style>
+
+</style>

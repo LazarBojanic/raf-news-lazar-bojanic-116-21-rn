@@ -4,8 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Singleton;
-import rs.raf.rafnews.database.BlogDatabase;
+import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.model.ServiceUserLogin;
 import rs.raf.rafnews.model.ServiceUserRegister;
@@ -27,17 +26,18 @@ public class ServiceUserRepository implements IServiceUserRepository {
     public List<ServiceUser> getAllServiceUsers() {
         List<ServiceUser> serviceUserList = new ArrayList<>();
         String query = "SELECT * FROM service_user";
-        try (PreparedStatement preparedStatement = BlogDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while (resultSet.next()) {
                     Integer id = resultSet.getInt("id");
+                    String username = resultSet.getString("username");
                     String email = resultSet.getString("email");
                     String pass = resultSet.getString("pass");
                     String user_role = resultSet.getString("user_role");
                     String enabled = resultSet.getString("enabled");
                     String first_name = resultSet.getString("first_name");
                     String last_name = resultSet.getString("last_name");
-                    ServiceUser serviceUser = new ServiceUser(id, email, pass, user_role, enabled, first_name, last_name);
+                    ServiceUser serviceUser = new ServiceUser(id, username, email, pass, user_role, enabled, first_name, last_name);
                     serviceUserList.add(serviceUser);
                 }
             }
@@ -54,19 +54,19 @@ public class ServiceUserRepository implements IServiceUserRepository {
     @Override
     public ServiceUser getServiceUserById(Integer serviceUserId) {
         String query = "SELECT * FROM service_user WHERE id = ?";
-        try (PreparedStatement preparedStatement = BlogDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
             preparedStatement.setInt(1, serviceUserId);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 if (resultSet.next()) {
                     Integer id = resultSet.getInt("id");
+                    String username = resultSet.getString("username");
                     String email = resultSet.getString("email");
                     String pass = resultSet.getString("pass");
                     String user_role = resultSet.getString("user_role");
                     String enabled = resultSet.getString("enabled");
                     String first_name = resultSet.getString("first_name");
                     String last_name = resultSet.getString("last_name");
-                    ServiceUser serviceUser = new ServiceUser(id, email, pass, user_role, enabled, first_name, last_name);
-                    return serviceUser;
+                    return new ServiceUser(id, username, email, pass, user_role, enabled, first_name, last_name);
                 }
                 else{
                     return null;
@@ -84,19 +84,19 @@ public class ServiceUserRepository implements IServiceUserRepository {
     @Override
     public ServiceUser getServiceUserByEmail(String serviceUserEmail) {
         String query = "SELECT * FROM service_user WHERE email = ?";
-        try (PreparedStatement preparedStatement = BlogDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
             preparedStatement.setString(1, serviceUserEmail);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 if (resultSet.next()) {
                     Integer id = resultSet.getInt("id");
+                    String username = resultSet.getString("username");
                     String email = resultSet.getString("email");
                     String pass = resultSet.getString("pass");
                     String user_role = resultSet.getString("user_role");
                     String enabled = resultSet.getString("enabled");
                     String first_name = resultSet.getString("first_name");
                     String last_name = resultSet.getString("last_name");
-                    ServiceUser serviceUser = new ServiceUser(id, email, pass, user_role, enabled, first_name, last_name);
-                    return serviceUser;
+                    return new ServiceUser(id, username, email, pass, user_role, enabled, first_name, last_name);
                 }
                 else{
                     return null;
@@ -113,14 +113,15 @@ public class ServiceUserRepository implements IServiceUserRepository {
 
     @Override
     public ServiceUser addServiceUser(ServiceUser serviceUser) {
-        String query = "INSERT INTO service_user(email, pass, user_role, enabled, first_name, last_name) VALUES(?, ?, ?, ?, ?, ?)";
-        try(PreparedStatement preparedStatement = BlogDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
-            preparedStatement.setString(1, serviceUser.getEmail());
-            preparedStatement.setString(2, serviceUser.getPass());
-            preparedStatement.setString(3, serviceUser.getUser_role());
-            preparedStatement.setString(4, serviceUser.getEnabled());
-            preparedStatement.setString(5, serviceUser.getFirst_name());
-            preparedStatement.setString(6, serviceUser.getLast_name());
+        String query = "INSERT INTO service_user(username, email, pass, user_role, enabled, first_name, last_name) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        try(PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+            preparedStatement.setString(1, serviceUser.getUsername());
+            preparedStatement.setString(2, serviceUser.getEmail());
+            preparedStatement.setString(3, serviceUser.getPass());
+            preparedStatement.setString(4, serviceUser.getUser_role());
+            preparedStatement.setString(5, serviceUser.getEnabled());
+            preparedStatement.setString(6, serviceUser.getFirst_name());
+            preparedStatement.setString(7, serviceUser.getLast_name());
             Integer affectedRows = preparedStatement.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -138,6 +139,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             }
         }
         catch (SQLException e){
+            e.printStackTrace();
             return null;
         }
     }
@@ -147,14 +149,14 @@ public class ServiceUserRepository implements IServiceUserRepository {
         try{
             if(getServiceUserByEmail(serviceUserRegister.getEmail()) == null){
                 String hashedPass = Hasher.hashPassword(serviceUserRegister.getPass());
-                ServiceUser serviceUser = new ServiceUser(0, serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name());
-                return addServiceUser(serviceUser);
+                return addServiceUser(new ServiceUser(0, serviceUserRegister.getUsername(), serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name()));
             }
             else{
                 return null;
             }
         }
         catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }
@@ -181,25 +183,27 @@ public class ServiceUserRepository implements IServiceUserRepository {
             }
         }
         catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
     public Token logoutServiceUser() {
-        ServiceUser serviceUser = new ServiceUser(0, "", "", Util.ROLE_GUEST, "false", "", "");
+        ServiceUser serviceUser = new ServiceUser(0, "", "", "", Util.ROLE_GUEST, "false", "", "");
         return new Token(generateToken(serviceUser, Util.ROLE_GUEST));
     }
 
     @Override
     public boolean deleteServiceUserById(Integer id) {
         String query = "DELETE FROM service_user WHERE id = ?";
-        try (PreparedStatement preparedStatement = BlogDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
             preparedStatement.setInt(1, id);
             Integer rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         }
         catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -208,6 +212,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
     public String generateToken(ServiceUser serviceUser, String userRole) {
         Claims claims = Jwts.claims();
         claims.put("id", serviceUser.getId());
+        claims.put("username", serviceUser.getUsername());
         claims.put("email", serviceUser.getEmail());
         claims.put("pass", serviceUser.getPass());
         claims.put("user_role", userRole);
@@ -229,6 +234,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             return claims;
         }
         catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

@@ -1,6 +1,5 @@
 package rs.raf.rafnews.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Getter
@@ -9,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class Token {
-    private String token;
+public class ArticleWithTag {
+    private Integer id;
+    private Integer article_id;
+    private Integer tag_id;
 }

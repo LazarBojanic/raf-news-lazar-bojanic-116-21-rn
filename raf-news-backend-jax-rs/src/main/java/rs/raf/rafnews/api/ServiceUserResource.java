@@ -9,6 +9,7 @@ import rs.raf.rafnews.model.ServiceUserLogin;
 import rs.raf.rafnews.model.ServiceUserRegister;
 import rs.raf.rafnews.model.Token;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
+import rs.raf.rafnews.service.specification.IServiceUserService;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/service_user")
 public class ServiceUserResource {
     @Inject
-    ServiceUserService serviceUserService;
+    IServiceUserService serviceUserService;
 
     @GET
     @Path("/get/{id}")
@@ -28,6 +29,7 @@ public class ServiceUserResource {
             return Response.ok().entity(serviceUser).build();
         }
         catch(Exception e){
+            e.printStackTrace();
             return Response.status(500).build();
         }
     }
@@ -40,6 +42,7 @@ public class ServiceUserResource {
             return Response.ok().entity(serviceUserList).build();
         }
         catch(Exception e){
+            e.printStackTrace();
             return Response.status(500).build();
         }
     }
@@ -53,6 +56,7 @@ public class ServiceUserResource {
             return Response.ok().entity(serviceUserWithId).build();
         }
         catch(Exception e){
+            e.printStackTrace();
             return Response.status(500).build();
         }
     }
@@ -67,6 +71,7 @@ public class ServiceUserResource {
             return Response.ok().entity(serviceUserWithId).build();
         }
         catch(Exception e){
+            e.printStackTrace();
             return Response.status(500).build();
         }
     }
@@ -81,6 +86,7 @@ public class ServiceUserResource {
             return Response.ok().entity(token).build();
         }
         catch(Exception e){
+            e.printStackTrace();
             return Response.status(500).build();
         }
     }
@@ -93,6 +99,7 @@ public class ServiceUserResource {
             return Response.ok().entity(token).build();
         }
         catch(Exception e){
+            e.printStackTrace();
             return Response.status(500).build();
         }
     }
@@ -111,6 +118,7 @@ public class ServiceUserResource {
             }
         }
         catch(Exception e){
+            e.printStackTrace();
             return Response.status(500).build();
         }
     }

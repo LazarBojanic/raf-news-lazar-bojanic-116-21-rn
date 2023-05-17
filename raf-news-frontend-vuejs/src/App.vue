@@ -9,7 +9,7 @@
           <li class="nav-item">
             <RouterLink class="nav-link" to="/about">About</RouterLink>
           </li>
-          <li  v-if="!checkEmail(this.decodedToken.email)" class="nav-item">
+          <li v-if="!checkEmail(this.decodedToken.email)" class="nav-item">
             <RouterLink class="nav-link" to="/register">Register</RouterLink>
           </li>
           <li v-if="!checkEmail(this.decodedToken.email)" class="nav-item">
@@ -22,18 +22,18 @@
       </div>
     </nav>
     <br />
-    <body>
-      <RouterView @loggedIn="updateToken"/>
-    </body>
+    <div>
+      <RouterView @loggedIn="updateToken" />
+    </div>
   </div>
 </template>
 
 <script>
-//import { mapActions } from 'vuex'
 import { mapStores } from 'pinia'
-import { useNewsStore } from './stores';
-import Cookies from 'js-cookie';
-import jwtDecode from 'jwt-decode';
+import { useNewsStore } from './stores'
+import Cookies from 'js-cookie'
+import jwtDecode from 'jwt-decode'
+
 export default {
   data() {
     return {
@@ -41,39 +41,30 @@ export default {
     }
   },
   mounted() {
-    this.decodedToken = jwtDecode(Cookies.get('token'));
+    this.decodedToken = jwtDecode(Cookies.get('token'))
   },
   methods: {
-    //...mapActions(['login']),
-    //...mapActions(['logout']),
     async logoutButton() {
-      const store = useNewsStore();
-      //await this.logout();
-      await store.logout();
-      this.decodedToken = jwtDecode(Cookies.get('token'));
-      this.$router.push({ name: 'login' });
+      const store = useNewsStore()
+      await store.logout()
+      this.decodedToken = jwtDecode(Cookies.get('token'))
+      this.$router.push({ name: 'login' })
     },
-    async loginWithToken(){
-      const store = useNewsStore();
-      this.decodedToken = jwtDecode(Cookies.get('token'));
+    async loginWithToken() {
+      const store = useNewsStore()
+      this.decodedToken = jwtDecode(Cookies.get('token'))
       const loginData = {
         email: this.token.email,
-        pass: this.token.pass,
+        pass: this.token.pass
       }
-      //await this.login(loginData);
-      await store.login(loginData);
-      this.$router.push({ name: 'home' });
+      await store.login(loginData)
+      this.$router.push({ name: 'home' })
     },
-    updateToken(){
-      this.decodedToken = jwtDecode(Cookies.get('token'));
+    updateToken() {
+      this.decodedToken = jwtDecode(Cookies.get('token'))
     },
-    checkEmail(email){
-      if(email == null || email == ''){
-        return false;
-      }
-      else{
-        return true;
-      }
+    checkEmail(email) {
+      return email !== null && email !== ''
     }
   },
   computed: {
@@ -82,4 +73,6 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+
+</style>

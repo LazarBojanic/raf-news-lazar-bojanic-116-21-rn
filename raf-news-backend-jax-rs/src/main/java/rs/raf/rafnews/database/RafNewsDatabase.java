@@ -6,15 +6,15 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class BlogDatabase {
+public class RafNewsDatabase {
     private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/rafNews";
     private static final String JDBC_USER = "postgres";
     private static final String JDBC_PASSWORD = "1234";
     private final DataSource dataSource;
 
-    private static volatile BlogDatabase instance;
+    private static volatile RafNewsDatabase instance;
 
-    private BlogDatabase() {
+    private RafNewsDatabase() {
         PoolProperties p = new PoolProperties();
         p.setDriverClassName("org.postgresql.Driver");
         p.setUrl(JDBC_URL);
@@ -24,11 +24,11 @@ public class BlogDatabase {
         dataSource.setPoolProperties(p);
     }
 
-    public static BlogDatabase getInstance() {
+    public static RafNewsDatabase getInstance() {
         if (instance == null) {
-            synchronized (BlogDatabase.class) {
+            synchronized (RafNewsDatabase.class) {
                 if (instance == null) {
-                    instance = new BlogDatabase();
+                    instance = new RafNewsDatabase();
                 }
             }
         }
@@ -36,7 +36,29 @@ public class BlogDatabase {
     }
 
     public void closeConnection() {
-        dataSource.close();
+        if (dataSource != null) {
+            dataSource.close();
+        }
+        stopJdbcPoolCleanerThread();
+    }
+
+    private void stopJdbcPoolCleanerThread() {
+        try {
+            Thread jdbcPoolCleanerThread = Thread.getAllStackTraces()
+                    .keySet()
+                    .stream()
+                    .filter(thread -> thread.getName().startsWith("Tomcat JDBC Pool Cleaner"))
+                    .findFirst()
+                    .orElse(null);
+
+            if (jdbcPoolCleanerThread != null) {
+                jdbcPoolCleanerThread.interrupt();
+                jdbcPoolCleanerThread.join();
+            }
+        }
+        catch (InterruptedException e) {
+            // Handle interruption exception
+        }
     }
 
     public Connection getConnection() throws SQLException {

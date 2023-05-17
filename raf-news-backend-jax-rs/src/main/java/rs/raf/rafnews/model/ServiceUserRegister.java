@@ -10,12 +10,9 @@ import lombok.*;
 @ToString
 @Builder
 public class ServiceUserRegister {
-    @JsonProperty("email")
+    private String username;
     private String email;
-    @JsonProperty("pass")
     private String pass;
-    @JsonProperty("first_name")
     private String first_name;
-    @JsonProperty("last_name")
     private String last_name;
 }

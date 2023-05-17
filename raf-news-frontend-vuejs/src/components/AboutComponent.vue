@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="row justify-content-center">
     <h1>About</h1>
     <button class="btn btn-primary" @click.prevent="testButton">Test</button>
   </div>
@@ -30,4 +30,6 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style>
+
+</style>

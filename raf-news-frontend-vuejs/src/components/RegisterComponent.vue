@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
@@ -14,6 +14,10 @@
                 <div class="form-group">
                   <label>Last Name</label>
                   <input type="text" v-model="last_name" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" v-model="username" class="form-control" required />
                 </div>
                 <div class="form-group">
                   <label>Email</label>
@@ -40,32 +44,33 @@
 <script>
 //import { mapActions } from 'vuex'
 import { mapStores } from 'pinia'
-import { useNewsStore } from '../stores';
+import { useNewsStore } from '../stores'
 export default {
   name: 'RegisterComponent',
   data() {
     return {
       first_name: '',
       last_name: '',
+      username: '',
       email: '',
       pass: ''
     }
   },
-  mounted(){
-  },
+  mounted() {},
   methods: {
     //...mapActions(['register']),
-    
+
     async registerForm() {
-      const store = useNewsStore();
+      const store = useNewsStore()
       const registerData = {
+        username: this.username,
         email: this.email,
         pass: this.pass,
         first_name: this.first_name,
         last_name: this.last_name
       }
-      const body = JSON.stringify(registerData);
-      console.log('before entering method'.concat(body));
+      const body = JSON.stringify(registerData)
+      console.log('before entering method'.concat(body))
       /*const registrationSuccess = await this.register(registerData);
       if (registrationSuccess == true) {
         console.log('registration successful');
@@ -74,15 +79,13 @@ export default {
         console.log('registration failed');
       }*/
 
-      const registrationSuccess = await store.register(registerData);
-        if (registrationSuccess == true) {
-          console.log('registration successful');
-        } 
-        else {
-          console.log('registration failed');
-        }
-
-
+      const registrationSuccess = await store.register(registerData)
+      if (registrationSuccess == true) {
+        this.$router.push('login');
+        console.log('registration successful')
+      } else {
+        console.log('registration failed')
+      }
     }
   },
   computed: {
@@ -91,4 +94,5 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style>
+</style>

@@ -10,8 +10,6 @@ import lombok.*;
 @ToString
 @Builder
 public class ServiceUserLogin {
-    @JsonProperty("email")
     private String email;
-    @JsonProperty("pass")
     private String pass;
 }
