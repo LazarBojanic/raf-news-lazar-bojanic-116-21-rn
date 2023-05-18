@@ -1,12 +1,14 @@
 <template>
-  <div div class="row justify-content-center">
-    <h1>Home</h1>
+  <div class="container">
+    <div class="row justify-content-center">
+      <h1>Article</h1>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HomeComponent',
+  name: 'ArticlesComponent',
   mounted() {},
   data() {
     return {}
@@ -17,6 +19,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

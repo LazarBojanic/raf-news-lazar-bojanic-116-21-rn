@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
@@ -42,11 +42,17 @@
 </template>
 
 <script>
-//import { mapActions } from 'vuex'
-import { mapStores } from 'pinia'
-import { useNewsStore } from '../stores'
+import jwtDecode from 'jwt-decode'
+import Cookies from 'js-cookie'
+import { useUsersStore } from '../stores/users'
 export default {
   name: 'RegisterComponent',
+  setup() {
+    const usersStore = useUsersStore()
+    return {
+      usersStore
+    }
+  },
   data() {
     return {
       first_name: '',
@@ -58,10 +64,7 @@ export default {
   },
   mounted() {},
   methods: {
-    //...mapActions(['register']),
-
     async registerForm() {
-      const store = useNewsStore()
       const registerData = {
         username: this.username,
         email: this.email,
@@ -69,30 +72,27 @@ export default {
         first_name: this.first_name,
         last_name: this.last_name
       }
-      const body = JSON.stringify(registerData)
-      console.log('before entering method'.concat(body))
-      /*const registrationSuccess = await this.register(registerData);
-      if (registrationSuccess == true) {
-        console.log('registration successful');
-      } 
-      else {
-        console.log('registration failed');
-      }*/
-
-      const registrationSuccess = await store.register(registerData)
-      if (registrationSuccess == true) {
-        this.$router.push('login');
+      await this.usersStore.register(registerData)
+      if (this.handleExceptions()) {
+        this.$router.push('login')
         console.log('registration successful')
       } else {
         console.log('registration failed')
       }
+    },
+    handleExceptions() {
+      if (Object.keys(this.usersStore.getException).length !== 0) {
+        console.log(JSON.stringify(this.usersStore.getException.message))
+        return false
+      } else {
+        //TODO handle exceptions
+        return true
+      }
     }
   },
-  computed: {
-    ...mapStores(useNewsStore)
-  }
+
+  computed: {}
 }
 </script>
 
-<style>
-</style>
+<style></style>

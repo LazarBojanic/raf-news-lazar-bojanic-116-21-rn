@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
@@ -25,40 +25,52 @@
 </template>
 
 <script>
-//import { mapActions } from 'vuex';
-import { mapStores } from 'pinia'
-import { useNewsStore } from '../stores'
+import { useUsersStore } from '../stores/users'
+import jwtDecode from 'jwt-decode'
 import Cookies from 'js-cookie'
 export default {
   name: 'LoginComponent',
+  setup() {
+    const usersStore = useUsersStore()
+    return {
+      usersStore
+    }
+  },
   data() {
     return {
-      store: {},
       email: '',
       pass: ''
     }
   },
+  mounted() {},
   methods: {
-    //...mapActions(['login']),
-
     async loginForm() {
-      const store = useNewsStore()
       const loginData = {
         email: this.email,
         pass: this.pass
       }
-      await store.login(loginData)
-      //await this.login(loginData);
-      this.$emit('loggedIn')
-      this.$router.push({ name: 'home' })
+      await this.usersStore.login(loginData)
+      if (this.handleExceptions()) {
+        this.$emit('loggedIn')
+        this.$router.push({ name: 'home' })
+        console.log('login successful');
+      }
+      else{
+        console.log('login successful');
+      }
+    },
+    handleExceptions() {
+      if (Object.keys(this.usersStore.getException).length !== 0) {
+        console.log(JSON.stringify(this.usersStore.getException.message))
+        return false
+      } else {
+        //TODO: handle exceptions
+        return true
+      }
     }
   },
-  computed: {
-    ...mapStores(useNewsStore)
-  }
+  computed: {}
 }
 </script>
 
-<style >
-
-</style>
+<style></style>

@@ -165,12 +165,17 @@ public class ServiceUserResource {
     @Produces(APPLICATION_JSON)
     public Response loginServiceUserByToken(@HeaderParam("Authorization") String bearerToken){
         try{
-            String token = "";
-            if(bearerToken.startsWith("Bearer ")){
-                token = bearerToken.split(" ")[1];
+            if(bearerToken != null){
+                String token = "";
+                if(bearerToken.startsWith("Bearer ")){
+                    token = bearerToken.split(" ")[1];
+                }
+                Token newToken = serviceUserService.loginServiceUserWithToken(token);
+                return Response.ok().entity(newToken).build();
             }
-            Token newToken = serviceUserService.loginServiceUserWithToken(token);
-            return Response.ok().entity(newToken).build();
+            else{
+                return Response.status(500).entity(new ExceptionMessage("LoginException", "Failed to login. Undefined token.")).build();
+            }
         }
         catch(Exception e){
             e.printStackTrace();
