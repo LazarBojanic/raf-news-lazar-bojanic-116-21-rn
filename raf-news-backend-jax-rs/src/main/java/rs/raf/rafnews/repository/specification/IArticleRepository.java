@@ -16,8 +16,8 @@ public interface IArticleRepository {
     ArticleDto joinArticle(Article article) throws JsonProcessingException, JoinException;
     Article getRawArticleById(Integer id) throws JsonProcessingException, GetException;
     ArticleDto getArticleById(Integer id) throws GetException, JsonProcessingException, JoinException;
-    Article addRawArticle(Article article) throws JsonProcessingException, AddException;
-    ArticleDto addArticle(ArticleDto articleDto) throws AddException, JsonProcessingException, GetException, JoinException;
+    Article addRawArticle(Article article) throws JsonProcessingException, AddException, GetException;
+    ArticleDto addArticle(Article article) throws AddException, JsonProcessingException, GetException, JoinException;
     Integer updateArticleById(Integer id, Article article);
     Integer deleteArticleById(Integer id);
 }

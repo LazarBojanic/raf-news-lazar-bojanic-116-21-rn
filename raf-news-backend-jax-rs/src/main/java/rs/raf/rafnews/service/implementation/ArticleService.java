@@ -47,13 +47,13 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Article addRawArticle(Article article) throws AddException, JsonProcessingException {
+    public Article addRawArticle(Article article) throws AddException, JsonProcessingException, GetException {
         return this.articleRepository.addRawArticle(article);
     }
 
     @Override
-    public ArticleDto addArticle(ArticleDto articleDto) throws GetException, JoinException, AddException, JsonProcessingException {
-        return this.articleRepository.addArticle(articleDto);
+    public ArticleDto addArticle(Article article) throws GetException, JoinException, AddException, JsonProcessingException {
+        return this.articleRepository.addArticle(article);
     }
 
     @Override

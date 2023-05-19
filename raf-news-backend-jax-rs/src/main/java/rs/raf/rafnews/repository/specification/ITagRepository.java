@@ -2,6 +2,7 @@ package rs.raf.rafnews.repository.specification;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import rs.raf.rafnews.dto.TagDto;
+import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.Tag;
 
@@ -16,7 +17,10 @@ public interface ITagRepository {
     Tag getRawTagById(Integer id) throws JsonProcessingException, GetException;
     TagDto getTagById(Integer id) throws GetException, JsonProcessingException;
     Tag getRawTagByTagName(String tagName) throws JsonProcessingException, GetException;
-    TagDto addTag(Tag tag);
+    TagDto getTagByTagName(String tagName) throws GetException, JsonProcessingException;
+    Tag addRawTag(Tag tag) throws JsonProcessingException, AddException;
+    TagDto addTag(Tag tag) throws AddException, JsonProcessingException;
+    List<TagDto> addTagList(List<Tag> tagList) throws AddException, JsonProcessingException;
     Integer updateTagById(Integer id, Tag tag);
     Integer deleteTagsById(Integer id);
 }

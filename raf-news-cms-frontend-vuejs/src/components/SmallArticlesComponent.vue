@@ -3,8 +3,8 @@
     <div class="row justify-content-center">
       <h1>Articles</h1>
       <div class="row justify-content-center">
-        <div v-for="article in articlesStore.getArticles" :key="article.id" class="col-sm-4">
-          <Article :article="article"></Article>
+        <div v-for="smallArticle in articlesStore.getArticles" :key="smallArticle.id" class="col-sm-4">
+          <SmallArticleComponent :smallArticle="smallArticle"></SmallArticleComponent>
         </div>
       </div>
     </div>
@@ -13,16 +13,20 @@
 
 <script>
 import { useArticlesStore } from '../stores/articles'
+import SmallArticleComponent from './SmallArticleComponent.vue'
 export default {
-  name: 'ArticlesComponent',
+  name: 'SmallArticlesComponent',
+  components:{
+    SmallArticleComponent
+  },
   setup() {
     const articlesStore = useArticlesStore()
     return {
       articlesStore
     }
   },
-  async mounted() {
-    await this.articlesStore.fetchArticles()
+  mounted() {
+    this.articlesStore.fetchArticles()
   },
   data() {
     return {}

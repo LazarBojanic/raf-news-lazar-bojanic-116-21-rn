@@ -2,22 +2,29 @@ package rs.raf.rafnews.repository.implementation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.TagDto;
+import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.ExceptionMessage;
 import rs.raf.rafnews.exception.GetException;
+import rs.raf.rafnews.model.ArticleWithTag;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.model.Tag;
 import rs.raf.rafnews.repository.specification.ITagRepository;
+import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
 public class TagRepository implements ITagRepository {
+    @Inject
+    private IArticleWithTagService articleWithTagService;
     @Override
     public List<Tag> getAllRawTags() throws JsonProcessingException, GetException {
         List<Tag> tagList = new ArrayList<>();
@@ -128,8 +135,46 @@ public class TagRepository implements ITagRepository {
     }
 
     @Override
-    public TagDto addTag(Tag tag) {
-        return null;
+    public TagDto getTagByTagName(String tagName) throws GetException, JsonProcessingException {
+        Tag tag = getRawTagByTagName(tagName);
+        return joinTag(tag);
+    }
+
+    @Override
+    public Tag addRawTag(Tag tag) throws JsonProcessingException, AddException {
+        String query = "INSERT INTO tag(tag_name) VALUES(?)";
+        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, tag.getTag_name());
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                try(ResultSet generatedKeys = preparedStatement.getGeneratedKeys()){
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt("id");
+                        return new Tag(id, tag.getTag_name());
+                    }
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
+            throw new AddException(exceptionMessage);
+        }
+        return new Tag();
+    }
+
+    @Override
+    public TagDto addTag(Tag tag) throws AddException, JsonProcessingException {
+        Tag addedRawTag = addRawTag(tag);
+        return joinTag(addedRawTag);
+    }
+
+    @Override
+    public List<TagDto> addTagList(List<Tag> tagList) throws AddException, JsonProcessingException {
+        List<TagDto> tagDtoList = new ArrayList<>();
+        for(Tag tag : tagList){
+            tagDtoList.add(addTag(tag));
+        }
+        return tagDtoList;
     }
 
     @Override

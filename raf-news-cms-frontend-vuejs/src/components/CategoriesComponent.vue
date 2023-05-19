@@ -6,11 +6,7 @@
         Fetch categories
       </button>
       <div class="row justify-content-center">
-        <div
-          v-for="category in categoriesStore.getCategories"
-          :key="category.id"
-          class="col-md justify-content-center"
-        >
+        <div v-for="category in categoriesStore.getCategories" :key="category.id" class="col-md justify-content-center" >
           <CategoryComponent :category="category"></CategoryComponent>
         </div>
       </div>
@@ -32,7 +28,9 @@ export default {
       categoriesStore
     }
   },
-  mounted() {},
+  mounted() {
+    this.categoriesStore.fetchCategories()
+  },
   data() {
     return {}
   },
@@ -40,7 +38,7 @@ export default {
   computed: {},
   methods: {
     async fetchCategoriesFromComponent() {
-      await this.categoriesStore.fetchCategories()
+      //await this.categoriesStore.fetchCategories()
     }
   }
 }

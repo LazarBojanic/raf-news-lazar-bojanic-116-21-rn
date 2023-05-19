@@ -17,6 +17,7 @@ public class ServiceUserDto {
     private String is_enabled;
     private String first_name;
     private String last_name;
+
     public ServiceUserDto(){
         this.id = 0;
         this.username = "";

@@ -14,6 +14,7 @@ import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
+import rs.raf.rafnews.service.specification.IArticleWithTagService;
 import rs.raf.rafnews.service.specification.ICategoryService;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.service.specification.ITagService;
@@ -30,6 +31,7 @@ public class ArticleRepository implements IArticleRepository {
     private ICategoryService categoryService;
     @Inject
     private ITagService tagService;
+
 
     @Override
     public List<Article> getAllRawArticles() throws JsonProcessingException, GetException {
@@ -117,53 +119,53 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
-    public Article addRawArticle(Article article) throws JsonProcessingException, AddException {
-        String query = "INSERT INTO article(service_user_id, category_id, title, body, time_published, number_of_views) VALUES(?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setInt(1, article.getService_user_id());
-            preparedStatement.setInt(2, article.getCategory_id());
-            preparedStatement.setString(3, article.getTitle());
-            preparedStatement.setString(4, article.getBody());
-            preparedStatement.setTimestamp(5, article.getTime_published());
-            preparedStatement.setInt(6, article.getNumber_of_views());
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows > 0) {
-                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt("id");
-                    article.setId(id);
-                    return article;
-                }
-            }
-        }
-        catch (SQLException e) {
-            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
-            throw new AddException(exceptionMessage);
-        }
-        ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add article: " + article);
-        throw new AddException(exceptionMessage);
-    }
-
-    @Override
-    public ArticleDto addArticle(ArticleDto articleDto) throws AddException, JsonProcessingException, GetException, JoinException {
-        Article rawArticle = new Article(articleDto);
-        Article addedRawArticle = addRawArticle(rawArticle);
-        if(addedRawArticle.getId() > 0){
-            for(TagDto tagDto : articleDto.getTag_list()){
-                if(tagService.getRawTagByTagName(tagDto.getTag_name()).getId() <= 0){
-                    TagDto addedTag = tagService.addTag(new Tag(tagDto));
-                    if(addedTag.getId() > 0){
-                        if(getArticleWithTagByArticleIdAndTagId(articleDto.getId(), addedTag.getId()).getId() <= 0){
-                            if(addArticleWithTag(articleDto.getId(), addedTag.getId()).getId() <= 0){
-                                ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add article: " + articleDto);
-                                throw new AddException(exceptionMessage);
-                            }
-                        }
+    public Article addRawArticle(Article article) throws JsonProcessingException, AddException, GetException {
+        ServiceUserDto serviceUserDto = serviceUserService.getServiceUserById(article.getService_user_id());
+        CategoryDto categoryDto = categoryService.getCategoryById(article.getCategory_id());
+        if(serviceUserDto.getId() > 0 && categoryDto.getId() > 0){
+            String query = "INSERT INTO article(service_user_id, category_id, title, body, time_published, number_of_views) VALUES(?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setInt(1, article.getService_user_id());
+                preparedStatement.setInt(2, article.getCategory_id());
+                preparedStatement.setString(3, article.getTitle());
+                preparedStatement.setString(4, article.getBody());
+                preparedStatement.setTimestamp(5, article.getTime_published());
+                preparedStatement.setInt(6, article.getNumber_of_views());
+                int affectedRows = preparedStatement.executeUpdate();
+                if (affectedRows > 0) {
+                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt("id");
+                        article.setId(id);
+                        return article;
                     }
                 }
             }
+            catch (SQLException e) {
+                ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
+                throw new AddException(exceptionMessage);
+            }
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add article: " + article);
+            throw new AddException(exceptionMessage);
         }
-        return joinArticle(addedRawArticle);
+        else if(serviceUserDto.getId() <= 0 && categoryDto.getId() > 0){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get user with id: " + serviceUserDto.getId());
+            throw new GetException(exceptionMessage);
+        }
+        else if(serviceUserDto.getId() > 0 && categoryDto.getId() <= 0) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get category with id: " + categoryDto.getId());
+            throw new GetException(exceptionMessage);
+        }
+        else{
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get user with id: " + serviceUserDto.getId() + ", and category with id: " + categoryDto.getId());
+            throw new GetException(exceptionMessage);
+        }
+    }
+
+    @Override
+    public ArticleDto addArticle(Article article) throws AddException, JsonProcessingException, GetException, JoinException {
+        Article addedArticle = addRawArticle(article);
+        return joinArticle(addedArticle);
     }
 
     @Override
@@ -184,46 +186,5 @@ public class ArticleRepository implements IArticleRepository {
         Timestamp columnTimePublished = resultSet.getTimestamp("time_published");
         Integer columnNumberOfViews = resultSet.getInt("number_of_views");
         return new Article(columnId, columnServiceUserId, columnCategoryId, columnTitle, columnBody, columnTimePublished, columnNumberOfViews);
-    }
-    private ArticleWithTag getArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws JsonProcessingException, GetException {
-        String query = "SELECT * FROM article_with_tag WHERE article_id = ? AND tag_id = ?";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
-            preparedStatement.setInt(1, articleId);
-            preparedStatement.setInt(2, tagId);
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
-                if (resultSet.next()) {
-                    Integer columnId = resultSet.getInt("id");
-                    Integer columnArticleId = resultSet.getInt("article_id");
-                    Integer columnTagId = resultSet.getInt("tag_id");
-                    return new ArticleWithTag(columnId, columnArticleId, columnTagId);
-                }
-            }
-        }
-        catch (SQLException e) {
-            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
-            throw new GetException(exceptionMessage);
-        }
-        return new ArticleWithTag();
-    }
-    private ArticleWithTag addArticleWithTag(Integer articleId, Integer tagId) throws JsonProcessingException, AddException {
-        String query = "INSERT INTO article_with_tag(article_id, tag_id) VALUES(?, ?)";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setInt(1, articleId);
-            preparedStatement.setInt(2, tagId);
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows > 0) {
-                try(ResultSet generatedKeys = preparedStatement.getGeneratedKeys()){
-                    if (generatedKeys.next()) {
-                        int id = generatedKeys.getInt("id");
-                        return new ArticleWithTag(id, articleId, tagId);
-                    }
-                }
-            }
-        }
-        catch (SQLException e) {
-            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
-            throw new AddException(exceptionMessage);
-        }
-        return new ArticleWithTag();
     }
 }

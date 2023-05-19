@@ -6,8 +6,11 @@ import jakarta.ws.rs.core.Response;
 import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.dto.TagDto;
 import rs.raf.rafnews.model.Article;
+import rs.raf.rafnews.model.ArticleWithTag;
+import rs.raf.rafnews.model.ArticleWithTagRequest;
 import rs.raf.rafnews.model.Tag;
 import rs.raf.rafnews.service.specification.IArticleService;
+import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
 import java.util.List;
 
@@ -17,6 +20,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ArticleResource {
     @Inject
     IArticleService articleService;
+    @Inject
+    IArticleWithTagService articleWithTagService;
     @GET
     @Path("/getAll")
     @Produces(APPLICATION_JSON)
@@ -49,10 +54,38 @@ public class ArticleResource {
     @Path("/add")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response addArticle(ArticleDto articleDto, @HeaderParam("Authorization") String bearerToken){
+    public Response addArticle(Article article, @HeaderParam("Authorization") String bearerToken){
         try{
-            ArticleDto addedArticleDto = articleService.addArticle(articleDto);
+            ArticleDto addedArticleDto = articleService.addArticle(article);
             return Response.ok().entity(addedArticleDto).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @POST
+    @Path("/addTagListToArticle")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response addTagListToArticle(List<ArticleWithTagRequest> articleWithTagRequestList, @HeaderParam("Authorization") String bearerToken){
+        try{
+            List<ArticleWithTag> articleWithTagList = articleWithTagService.addTagListToArticle(articleWithTagRequestList);
+            return Response.ok().entity(articleWithTagList).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @POST
+    @Path("/addTagToArticle")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response addTagToArticle(ArticleWithTagRequest articleWithTagRequest, @HeaderParam("Authorization") String bearerToken){
+        try{
+            ArticleWithTag articleWithTag = articleWithTagService.addTagToArticle(articleWithTagRequest);
+            return Response.ok().entity(articleWithTag).build();
         }
         catch(Exception e){
             e.printStackTrace();

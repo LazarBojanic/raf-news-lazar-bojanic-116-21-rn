@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.TagDto;
+import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.ExceptionMessage;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.Category;
@@ -64,8 +65,23 @@ public class TagService implements ITagService {
     }
 
     @Override
-    public TagDto addTag(Tag tag) {
+    public TagDto getTagByTagName(String tagName) throws GetException, JsonProcessingException {
+        return this.tagRepository.getTagByTagName(tagName);
+    }
+
+    @Override
+    public Tag addRawTag(Tag tag) throws AddException, JsonProcessingException {
+        return this.tagRepository.addRawTag(tag);
+    }
+
+    @Override
+    public TagDto addTag(Tag tag) throws AddException, JsonProcessingException {
         return this.tagRepository.addTag(tag);
+    }
+
+    @Override
+    public List<TagDto> addTagList(List<Tag> tagList) throws AddException, JsonProcessingException {
+        return this.tagRepository.addTagList(tagList);
     }
 
     @Override

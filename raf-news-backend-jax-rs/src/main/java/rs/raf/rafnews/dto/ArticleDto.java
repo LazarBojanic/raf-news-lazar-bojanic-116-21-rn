@@ -22,7 +22,6 @@ public class ArticleDto {
     private Timestamp time_published;
     private Integer number_of_views;
     private List<TagDto> tag_list;
-
     public ArticleDto(){
         this.id = -1;
         this.service_user = new ServiceUserDto();

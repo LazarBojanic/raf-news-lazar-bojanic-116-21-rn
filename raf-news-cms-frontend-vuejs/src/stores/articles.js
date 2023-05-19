@@ -4,11 +4,13 @@ import { Exceptions } from '../globals'
 export const useArticlesStore = defineStore('articles', {
   state: () => {
     return {
-      articles: {}
+      articles: {},
+      article: {}
     }
   },
   getters: {
-    getArticles: (state) => state.articles
+    getArticles: (state) => state.articles,
+    getArticle: (state) => state.article
   },
   actions: {
     async fetchArticles() {
@@ -18,7 +20,7 @@ export const useArticlesStore = defineStore('articles', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            'Authorization': `Bearer ${token}`
           }
         })
         const data = await res.json()

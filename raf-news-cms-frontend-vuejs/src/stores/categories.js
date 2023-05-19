@@ -22,11 +22,7 @@ export const useCategoriesStore = defineStore('categories', {
             'Authorization': `Bearer ${token}`
           }
         })
-        console.log('aaaaaaaaaaaa')
         const data = await res.json()
-        console.log('Response status:', res.status)
-        console.log('Response data:', data)
-
         if (res.status !== 500) {
           this.categories = data
           this.exception = {}
