@@ -7,6 +7,7 @@ import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.service.implementation.CategoryService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
+import rs.raf.rafnews.service.specification.ICategoryService;
 
 import java.util.List;
 
@@ -15,74 +16,75 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/category")
 public class CategoryResource {
     @Inject
-    CategoryService categoryService;
+    ICategoryService categoryService;
 
-    @GET
-    @Path("/get/{id}")
-    @Produces(APPLICATION_JSON)
-    public Response getCategoryById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
-        try{
-            CategoryDto category = categoryService.getCategoryById(id);
-            return Response.ok().entity(category).build();
-        }
-        catch(Exception e){
-            return Response.status(500).build();
-        }
-    }
     @GET
     @Path("/getAll")
     @Produces(APPLICATION_JSON)
     public Response getAllCategories(@HeaderParam("Authorization") String bearerToken){
         try{
-            List<CategoryDto> categoryList = categoryService.getAllCategories();
-            return Response.ok().entity(categoryList).build();
+            List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
+            return Response.ok().entity(categoryDtoList).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @GET
+    @Path("/getById/{id}")
+    @Produces(APPLICATION_JSON)
+    public Response getCategoryById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
+        try{
+            CategoryDto categoryDto = categoryService.getCategoryById(id);
+            return Response.ok().entity(categoryDto).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+
     @POST
     @Path("/add")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response addCategory(Category category, @HeaderParam("Authorization") String bearerToken){
         try{
-            CategoryDto categoryWithId = categoryService.addCategory(category);
-            return Response.ok().entity(categoryWithId).build();
+            CategoryDto categoryDtoWithId = categoryService.addCategory(category);
+            return Response.ok().entity(categoryDtoWithId).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
-    @POST
-    @Path("/update")
+    @PUT
+    @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateCategory(Category category, @HeaderParam("Authorization") String bearerToken){
+    public Response updateCategoryById(@PathParam("id") Integer id, Category category, @HeaderParam("Authorization") String bearerToken){
         try{
-            CategoryDto categoryWithId = categoryService.updateCategory(category);
-            return Response.ok().entity(categoryWithId).build();
+            Integer affectedRows = categoryService.updateCategoryById(id, category);
+            return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
 
     @DELETE
-    @Path("/delete/{id}")
+    @Path("/deleteById/{id}")
     @Produces(APPLICATION_JSON)
-    public Response deleteCategory(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
+    public Response deleteCategoryById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
-            boolean isDeleted = categoryService.deleteCategoryById(id);
-            if(isDeleted){
-                return Response.ok().entity(id).build();
-            }
-            else{
-                return Response.status(500).build();
-            }
+            Integer affectedRows = categoryService.deleteCategoryById(id);
+            return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
 }

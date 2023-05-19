@@ -12,7 +12,7 @@
           <li v-if="!validToken" class="nav-item">
             <router-link class="nav-link" to="/register">Register</router-link>
           </li>
-          <li v-else-if="validToken" class="nav-item">
+          <li v-if="validToken" class="nav-item">
             <a class="nav-link" href="#" @click.prevent="logoutButton">Logout</a>
           </li>
         </ul>
@@ -21,7 +21,7 @@
     <br />
     <div class="container">
       <div class="row justify-content-center">
-        <RouterView @loggedIn="updateToken"/>
+        <RouterView @loggedIn="updateToken" />
       </div>
     </div>
   </div>
@@ -31,23 +31,21 @@
 import { useUsersStore } from './stores/users'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
-import { isNil, isEmpty } from 'ramda';
-
+import { ref } from 'vue'
 export default {
   setup() {
     const usersStore = useUsersStore()
+    const validToken = ref(false)
     return {
-      usersStore
+      usersStore,
+      validToken
     }
   },
-  data(){
-    return{
-      token: Cookies.get('token'),
-      user_role: jwtDecode(Cookies.get('token')).user_role
-    }
+  data() {
+    return {}
   },
-  async mounted(){
-    await this.loginWithToken();
+  mounted() {
+    this.loginWithTokenFromComponent()
   },
   methods: {
     async logoutButton() {
@@ -59,9 +57,8 @@ export default {
       } else {
         console.log('logout failed')
       }
-      console.log('user_role 1 ' + this.user_role);
     },
-    async loginWithToken() {
+    async loginWithTokenFromComponent() {
       await this.usersStore.loginWithToken()
       this.updateToken()
       if (this.handleExceptions()) {
@@ -70,12 +67,6 @@ export default {
       } else {
         console.log('login failed')
       }
-      console.log('user_role 2 ' + this.user_role);
-    },
-    updateToken() {
-      this.token = Cookies.get('token');
-      this.user_role = jwtDecode(this.token).user_role
-      console.log('user_role 3 ' + this.user_role);
     },
     handleExceptions() {
       if (Object.keys(this.usersStore.getException).length !== 0) {
@@ -85,19 +76,15 @@ export default {
         //TODO handle exceptions
         return true
       }
+    },
+    updateToken() {
+      this.validToken = jwtDecode(Cookies.get('token')).email !== ''
     }
   },
-  computed:{
-    validToken(){
-      return this.user_role == 'admin' || this.user_role == 'content_creator';
-    }
-  },
-  watch: {
-    token(newToken){
-      this.token = newToken;
-      this.user_role = jwtDecode(this.token).user_role;
-      console.log('user_role 4 ' + this.user_role);
-    }
+  computed: {
+    /*validToken(){
+      return jwtDecode(Cookies.get('token')).email !== ''
+    }*/
   }
 }
 </script>

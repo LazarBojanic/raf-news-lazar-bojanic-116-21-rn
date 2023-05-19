@@ -4,7 +4,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import rs.raf.rafnews.dto.ServiceUserDto;
-import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.model.ServiceUserLogin;
 import rs.raf.rafnews.model.ServiceUserRegister;
@@ -116,13 +115,13 @@ public class ServiceUserResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
-    @POST
-    @Path("/update/{id}")
+    @PUT
+    @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateServiceUser(@PathParam("id") Integer id, ServiceUser serviceUser,  @HeaderParam("Authorization") String bearerToken){
+    public Response updateServiceUserById(@PathParam("id") Integer id, ServiceUser serviceUser,  @HeaderParam("Authorization") String bearerToken){
         try{
-            Integer affectedRows = serviceUserService.updateServiceUser(id, serviceUser);
+            Integer affectedRows = serviceUserService.updateServiceUserById(id, serviceUser);
             return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){
@@ -163,7 +162,7 @@ public class ServiceUserResource {
     @GET
     @Path("/loginWithToken")
     @Produces(APPLICATION_JSON)
-    public Response loginServiceUserByToken(@HeaderParam("Authorization") String bearerToken){
+    public Response loginServiceUserWithToken(@HeaderParam("Authorization") String bearerToken){
         try{
             if(bearerToken != null){
                 String token = "";
@@ -197,9 +196,9 @@ public class ServiceUserResource {
     }
 
     @DELETE
-    @Path("/delete/{id}")
+    @Path("/deleteById/{id}")
     @Produces(APPLICATION_JSON)
-    public Response deleteServiceUser(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
+    public Response deleteServiceUserById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
             Integer rowsAffected = serviceUserService.deleteServiceUserById(id);
             return Response.ok().entity(rowsAffected).build();

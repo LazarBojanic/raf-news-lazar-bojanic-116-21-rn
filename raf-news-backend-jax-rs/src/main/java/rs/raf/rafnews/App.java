@@ -15,8 +15,8 @@ public class App extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        classes.add(AuthFilter.class);
         classes.add(CorsFilter.class);
+        classes.add(AuthFilter.class);
         classes.add(ArticleResource.class);
         classes.add(CategoryResource.class);
         classes.add(CommentResource.class);

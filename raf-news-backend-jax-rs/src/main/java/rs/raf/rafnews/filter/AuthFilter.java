@@ -38,6 +38,7 @@ public class AuthFilter implements ContainerRequestFilter {
         catch (Exception exception) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
+        //requestContext.abortWith(Response.status(Response.Status.ACCEPTED).build());
     }
 
     private boolean checkAuthorization(ContainerRequestContext req, Claims claims) {

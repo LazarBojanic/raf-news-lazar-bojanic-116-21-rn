@@ -31,6 +31,12 @@ public class ServiceUserService implements IServiceUserService {
     public List<ServiceUserDto> getAllServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException {
         return this.serviceUserRepository.getAllServiceUsers();
     }
+
+    @Override
+    public ServiceUserDto joinServiceUser(ServiceUser serviceUser) {
+        return this.serviceUserRepository.joinServiceUser(serviceUser);
+    }
+
     @Override
     public ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException {
         return this.serviceUserRepository.getRawServiceUserById(id);
@@ -54,8 +60,8 @@ public class ServiceUserService implements IServiceUserService {
     }
 
     @Override
-    public Integer updateServiceUser(Integer id, ServiceUser serviceUser) throws UpdateException, JsonProcessingException, GetException {
-        return this.serviceUserRepository.updateServiceUser(id, serviceUser);
+    public Integer updateServiceUserById(Integer id, ServiceUser serviceUser) throws UpdateException, JsonProcessingException, GetException {
+        return this.serviceUserRepository.updateServiceUserById(id, serviceUser);
     }
 
     @Override

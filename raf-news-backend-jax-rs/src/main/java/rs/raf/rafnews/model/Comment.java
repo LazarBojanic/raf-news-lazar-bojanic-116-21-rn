@@ -13,6 +13,6 @@ public class Comment {
     private Integer id;
     private Integer service_user_id;
     private Integer article_id;
-    private String content;
+    private String body;
     private Timestamp time_published;
 }

@@ -2,6 +2,11 @@
   <div class="container">
     <div class="row justify-content-center">
       <h1>Articles</h1>
+      <div class="row justify-content-center">
+        <div v-for="article in articlesStore.getArticles" :key="article.id" class="col-sm-4">
+          <Article :article="article"></Article>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -16,7 +21,9 @@ export default {
       articlesStore
     }
   },
-  mounted() {},
+  async mounted() {
+    await this.articlesStore.fetchArticles()
+  },
   data() {
     return {}
   },

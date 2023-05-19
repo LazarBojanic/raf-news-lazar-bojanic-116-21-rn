@@ -49,9 +49,14 @@ public class ServiceUserRepository implements IServiceUserRepository {
         List<ServiceUser> serviceUserList = getAllRawServiceUsers();
         List<ServiceUserDto> serviceUserDtoList = new ArrayList<>();
         for(ServiceUser serviceUser : serviceUserList){
-            serviceUserDtoList.add(new ServiceUserDto(serviceUser));
+            serviceUserDtoList.add(joinServiceUser(serviceUser));
         }
         return serviceUserDtoList;
+    }
+
+    @Override
+    public ServiceUserDto joinServiceUser(ServiceUser serviceUser) {
+        return new ServiceUserDto(serviceUser);
     }
 
     @Override
@@ -69,17 +74,12 @@ public class ServiceUserRepository implements IServiceUserRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
         }
-        return null;
+        return new ServiceUser();
     }
     @Override
     public ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException {
-        ServiceUser rawServiceUser = getRawServiceUserById(id);
-        if(rawServiceUser != null){
-            return new ServiceUserDto(rawServiceUser);
-        }
-        else {
-            return null;
-        }
+        ServiceUser serviceUser = getRawServiceUserById(id);
+        return joinServiceUser(serviceUser);
     }
 
 
@@ -98,17 +98,12 @@ public class ServiceUserRepository implements IServiceUserRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
         }
-        return null;
+        return new ServiceUser();
     }
     @Override
     public ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException {
-        ServiceUser rawServiceUser = getRawServiceUserByEmail(email);
-        if(rawServiceUser != null){
-            return new ServiceUserDto(rawServiceUser);
-        }
-        else{
-            return null;
-        }
+        ServiceUser serviceUser = getRawServiceUserByEmail(email);
+        return joinServiceUser(serviceUser);
     }
 
     @Override
@@ -141,10 +136,10 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public Integer updateServiceUser(Integer id, ServiceUser serviceUser) throws JsonProcessingException, UpdateException, GetException {
+    public Integer updateServiceUserById(Integer id, ServiceUser serviceUser) throws JsonProcessingException, UpdateException, GetException {
         try {
             ServiceUser currentUser = getRawServiceUserById(id);
-            if(currentUser != null){
+            if(currentUser.getId() > 0){
                 Class<?> serviceUserClass = ServiceUser.class;
                 Field[] fields = serviceUserClass.getDeclaredFields();
                 for (Field field : fields) {
@@ -161,7 +156,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
                 throw new UpdateException(exceptionMessage);
             }
         }
-        catch (IllegalAccessException e) {
+        catch (Exception e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update user with id: " + id + " with new user: " + serviceUser);
             throw new UpdateException(exceptionMessage);
         }
@@ -170,7 +165,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
     @Override
     public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws JsonProcessingException, RegisterException, GetException {
         try{
-            if(getRawServiceUserByEmail(serviceUserRegister.getEmail()) == null){
+            if(getRawServiceUserByEmail(serviceUserRegister.getEmail()).getId() == -1){
                 String hashedPass = Hasher.hashPassword(serviceUserRegister.getPass());
                 return addServiceUser(new ServiceUser(0, serviceUserRegister.getUsername(), serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name()));
             }
@@ -179,7 +174,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
                 throw new RegisterException(exceptionMessage);
             }
         }
-        catch (AddException e){
+        catch (Exception e){
             ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", e.getMessage());
             throw new RegisterException(exceptionMessage);
         }
@@ -188,7 +183,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
     public Token loginServiceUser(ServiceUserLogin serviceUserLogin) throws LoginException, JsonProcessingException, GetException {
         try{
             ServiceUser serviceUser = getRawServiceUserByEmail(serviceUserLogin.getEmail());
-            if(serviceUser != null){
+            if(serviceUser.getId() > 0){
                 if(serviceUser.getIs_enabled().equals("true")){
                     if(Hasher.checkPassword(serviceUserLogin.getPass(), serviceUser.getPass())){
                         return new Token(generateToken(serviceUser, serviceUser.getUser_role()));
@@ -200,7 +195,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
                 throw new LoginException(exceptionMessage);
             }
         }
-        catch(TokenGenerateException e){
+        catch(Exception e){
             ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", e.getMessage());
             throw new LoginException(exceptionMessage);
         }
@@ -213,7 +208,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
         try{
             Claims claims = parseToken(token);
             ServiceUser serviceUser = getRawServiceUserByEmail(claims.get("email").toString());
-            if(serviceUser != null){
+            if(serviceUser.getId() > 0){
                 if(serviceUser.getIs_enabled().equals("true")){
                     return new Token(generateToken(serviceUser, claims.get("user_role").toString()));
                 }
@@ -223,7 +218,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
                 throw new LoginException(exceptionMessage);
             }
         }
-        catch(TokenParseException | TokenGenerateException e){
+        catch(Exception e){
             ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", e.getMessage());
             throw new LoginException(exceptionMessage);
         }

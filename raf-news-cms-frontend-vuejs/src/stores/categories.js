@@ -1,29 +1,34 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import { Exceptions } from '../globals'
-export const useArticlesStore = defineStore('articles', {
+export const useCategoriesStore = defineStore('categories', {
   state: () => {
     return {
-      articles: {}
+      categories: {}
     }
   },
   getters: {
-    getArticles: (state) => state.articles
+    getCategories: (state) => state.categories
   },
   actions: {
-    async fetchArticles() {
+    async fetchCategories() {
       try {
         const token = Cookies.get('token')
-        const res = await fetch('http://95.180.97.206:8081/api/article/getAll', {
+        console.log('fetching categories with token: ' + token)
+        const res = await fetch('http://95.180.97.206:8081/api/category/getAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            'Authorization': `Bearer ${token}`
           }
         })
+        console.log('aaaaaaaaaaaa')
         const data = await res.json()
+        console.log('Response status:', res.status)
+        console.log('Response data:', data)
+
         if (res.status !== 500) {
-          this.articles = data
+          this.categories = data
           this.exception = {}
           console.log(JSON.stringify(data))
         } else {

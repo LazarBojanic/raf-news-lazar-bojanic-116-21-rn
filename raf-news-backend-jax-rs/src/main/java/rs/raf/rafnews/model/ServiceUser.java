@@ -4,7 +4,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
@@ -17,4 +16,13 @@ public class ServiceUser {
     private String is_enabled;
     private String first_name;
     private String last_name;
+    public ServiceUser(){
+        this.id = -1;
+        this.username = "";
+        this.email = "";
+        this.user_role = "";
+        this.is_enabled = "";
+        this.first_name = "";
+        this.last_name = "";
+    }
 }

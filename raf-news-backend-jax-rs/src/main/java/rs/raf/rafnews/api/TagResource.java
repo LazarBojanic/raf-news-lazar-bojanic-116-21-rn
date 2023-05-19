@@ -3,9 +3,11 @@ package rs.raf.rafnews.api;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import rs.raf.rafnews.dto.TagDto;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.service.implementation.TagService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
+import rs.raf.rafnews.service.specification.ITagService;
 
 import java.util.List;
 
@@ -14,18 +16,19 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/tag")
 public class TagResource {
     @Inject
-    TagService tagService;
+    ITagService tagService;
 
     @GET
     @Path("/get/{id}")
     @Produces(APPLICATION_JSON)
     public Response getTagById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
-            Tag tag = tagService.getTagById(id);
-            return Response.ok().entity(tag).build();
+            TagDto tagDto = tagService.getTagById(id);
+            return Response.ok().entity(tagDto).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
     @GET
@@ -33,11 +36,12 @@ public class TagResource {
     @Produces(APPLICATION_JSON)
     public Response getAllTags(@HeaderParam("Authorization") String bearerToken){
         try{
-            List<Tag> tagList = tagService.getAllTags();
-            return Response.ok().entity(tagList).build();
+            List<TagDto> tagDtoList = tagService.getAllTags();
+            return Response.ok().entity(tagDtoList).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
     @POST
@@ -46,24 +50,26 @@ public class TagResource {
     @Produces(APPLICATION_JSON)
     public Response addTag(Tag tag, @HeaderParam("Authorization") String bearerToken){
         try{
-            Tag tagWithId = tagService.addTag(tag);
-            return Response.ok().entity(tagWithId).build();
+            TagDto tagDtoWithId = tagService.addTag(tag);
+            return Response.ok().entity(tagDtoWithId).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
-    @POST
-    @Path("/update")
+    @PUT
+    @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateTag(Tag tag, @HeaderParam("Authorization") String bearerToken){
+    public Response updateTagById(@PathParam("id") Integer id, Tag tag, @HeaderParam("Authorization") String bearerToken){
         try{
-            Tag tagWithId = tagService.addTag(tag);
-            return Response.ok().entity(tagWithId).build();
+            Integer affectedRows = tagService.updateTagById(id, tag);
+            return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
 
@@ -72,16 +78,12 @@ public class TagResource {
     @Produces(APPLICATION_JSON)
     public Response deleteTag(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
-            boolean isDeleted = tagService.deleteTagById(id);
-            if(isDeleted){
-                return Response.ok().entity(id).build();
-            }
-            else{
-                return Response.status(500).build();
-            }
+            Integer affectedRows = tagService.deleteTagById(id);
+            return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
 }

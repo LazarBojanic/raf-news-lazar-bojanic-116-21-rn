@@ -1,8 +1,10 @@
 package rs.raf.rafnews.service.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.CategoryDto;
+import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
 import rs.raf.rafnews.service.specification.ICategoryService;
@@ -15,12 +17,25 @@ public class CategoryService implements ICategoryService {
     private ICategoryRepository categoryRepository;
 
     @Override
-    public List<CategoryDto> getAllCategories() {
+    public List<Category> getAllRawCategories() throws GetException, JsonProcessingException {
+        return this.categoryRepository.getAllRawCategories();
+    }
+    @Override
+    public List<CategoryDto> getAllCategories() throws GetException, JsonProcessingException {
         return this.categoryRepository.getAllCategories();
     }
 
     @Override
-    public CategoryDto getCategoryById(Integer id) {
+    public CategoryDto joinCategory(Category category) {
+        return this.categoryRepository.joinCategory(category);
+    }
+
+    @Override
+    public Category getRawCategoryById(Integer id) throws GetException, JsonProcessingException {
+        return this.categoryRepository.getRawCategoryById(id);
+    }
+    @Override
+    public CategoryDto getCategoryById(Integer id) throws GetException, JsonProcessingException {
         return this.categoryRepository.getCategoryById(id);
     }
 
@@ -30,12 +45,12 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryDto updateCategory(Category category) {
-        return this.categoryRepository.updateCategory(category);
+    public Integer updateCategoryById(Integer id, Category category) {
+        return this.categoryRepository.updateCategoryById(id, category);
     }
 
     @Override
-    public boolean deleteCategoryById(Integer id) {
+    public Integer deleteCategoryById(Integer id) {
         return this.categoryRepository.deleteCategoryById(id);
     }
 }

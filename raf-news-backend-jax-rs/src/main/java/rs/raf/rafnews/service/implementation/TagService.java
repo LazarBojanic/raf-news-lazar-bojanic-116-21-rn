@@ -1,35 +1,80 @@
 package rs.raf.rafnews.service.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import rs.raf.rafnews.database.RafNewsDatabase;
+import rs.raf.rafnews.dto.TagDto;
+import rs.raf.rafnews.exception.ExceptionMessage;
+import rs.raf.rafnews.exception.GetException;
+import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.model.Tag;
+import rs.raf.rafnews.repository.specification.ITagRepository;
 import rs.raf.rafnews.service.specification.ITagService;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
 public class TagService implements ITagService {
+    @Inject
+    private ITagRepository tagRepository;
+
     @Override
-    public List<Tag> getAllTags() {
-        return null;
+    public List<Tag> getAllRawTags() throws GetException, JsonProcessingException {
+        return this.tagRepository.getAllRawTags();
     }
 
     @Override
-    public Tag getTagById(Integer id) {
-        return null;
+    public List<TagDto> getAllTags() throws GetException, JsonProcessingException {
+        return this.tagRepository.getAllTags();
     }
 
     @Override
-    public Tag addTag(Tag article) {
-        return null;
+    public List<Tag> getAllRawTagsByArticleId(Integer articleId) throws GetException, JsonProcessingException {
+        return this.tagRepository.getAllRawTagsByArticleId(articleId);
     }
 
     @Override
-    public Tag updateTag(Tag article) {
-        return null;
+    public List<TagDto> getAllTagsByArticleId(Integer articleId) throws GetException, JsonProcessingException {
+        return this.tagRepository.getAllTagsByArticleId(articleId);
     }
 
     @Override
-    public boolean deleteTagById(Integer id) {
-        return false;
+    public TagDto joinTag(Tag tag) {
+        return this.tagRepository.joinTag(tag);
+    }
+
+    @Override
+    public Tag getRawTagById(Integer id) throws GetException, JsonProcessingException {
+        return this.tagRepository.getRawTagById(id);
+    }
+
+    @Override
+    public TagDto getTagById(Integer id) throws GetException, JsonProcessingException {
+        return this.tagRepository.getTagById(id);
+    }
+
+    @Override
+    public Tag getRawTagByTagName(String tagName) throws GetException, JsonProcessingException {
+        return this.tagRepository.getRawTagByTagName(tagName);
+    }
+
+    @Override
+    public TagDto addTag(Tag tag) {
+        return this.tagRepository.addTag(tag);
+    }
+
+    @Override
+    public Integer updateTagById(Integer id, Tag tag) {
+        return this.tagRepository.updateTagById(id, tag);
+    }
+
+    @Override
+    public Integer deleteTagById(Integer id) {
+        return this.tagRepository.deleteTagsById(id);
     }
 }

@@ -1,47 +1,78 @@
 package rs.raf.rafnews.repository.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.dto.ServiceUserDto;
+import rs.raf.rafnews.exception.ExceptionMessage;
+import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
 public class CategoryRepository implements ICategoryRepository {
+
     @Override
-    public List<CategoryDto> getAllCategories() {
-        return null;
+    public List<Category> getAllRawCategories() throws JsonProcessingException, GetException {
+        List<Category> categoryList = new ArrayList<>();
+        String query = "SELECT * FROM category";
+        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while (resultSet.next()) {
+                    Category category = extractCategoryFromResultSet(resultSet);
+                    categoryList.add(category);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
+        }
+        return categoryList;
+    }
+    @Override
+    public List<CategoryDto> getAllCategories() throws GetException, JsonProcessingException {
+        List<Category> categoryList = getAllRawCategories();
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        for(Category category : categoryList){
+            categoryDtoList.add(joinCategory(category));
+        }
+        return categoryDtoList;
     }
 
     @Override
-    public CategoryDto getCategoryById(Integer id) {
+    public CategoryDto joinCategory(Category category) {
+        return new CategoryDto(category);
+    }
+
+    @Override
+    public Category getRawCategoryById(Integer id) throws JsonProcessingException, GetException {
         String query = "SELECT * FROM category WHERE id = ?";
         try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
             preparedStatement.setInt(1, id);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 if (resultSet.next()) {
-                    Integer columnId = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
-                    String description = resultSet.getString("description");
-                    return new CategoryDto(columnId, name, description);
+                    return extractCategoryFromResultSet(resultSet);
                 }
-                else{
-                    return null;
-                }
-            }
-            catch (SQLException e){
-                return null;
             }
         }
         catch (SQLException e) {
-            return null;
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
         }
+        return new Category();
+    }
+    @Override
+    public CategoryDto getCategoryById(Integer id) throws JsonProcessingException, GetException {
+        Category category = getRawCategoryById(id);
+        return joinCategory(category);
     }
 
     @Override
@@ -50,12 +81,18 @@ public class CategoryRepository implements ICategoryRepository {
     }
 
     @Override
-    public CategoryDto updateCategory(Category category) {
-        return null;
+    public Integer updateCategoryById(Integer id, Category category) {
+        return 0;
     }
 
     @Override
-    public boolean deleteCategoryById(Integer id) {
-        return false;
+    public Integer deleteCategoryById(Integer id) {
+        return 0;
+    }
+    private Category extractCategoryFromResultSet(ResultSet resultSet) throws SQLException {
+        Integer columnId = resultSet.getInt("id");
+        String columnCategoryName = resultSet.getString("category_name");
+        String columnDescription = resultSet.getString("description");
+        return new Category(columnId, columnCategoryName, columnDescription);
     }
 }

@@ -5,7 +5,6 @@ import rs.raf.rafnews.model.ServiceUser;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
@@ -18,6 +17,16 @@ public class ServiceUserDto {
     private String is_enabled;
     private String first_name;
     private String last_name;
+    public ServiceUserDto(){
+        this.id = 0;
+        this.username = "";
+        this.email = "";
+        this.pass = "";
+        this.user_role = "";
+        this.is_enabled = "";
+        this.first_name = "";
+        this.last_name = "";
+    }
     public ServiceUserDto(ServiceUser serviceUser){
         this.id = serviceUser.getId();
         this.username = serviceUser.getUsername();

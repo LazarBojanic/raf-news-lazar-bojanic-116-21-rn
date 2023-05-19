@@ -1,21 +1,20 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <h1>Article</h1>
-      <h2>{{ article.title }}</h2>
+      <h2>{{ category.category_name }}</h2>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ArticleComponent',
+  name: 'CategoryComponent',
   mounted() {},
   data() {
     return {}
   },
   props: {
-    article: Object
+    category: Object
   },
   computed: {},
   methods: {}

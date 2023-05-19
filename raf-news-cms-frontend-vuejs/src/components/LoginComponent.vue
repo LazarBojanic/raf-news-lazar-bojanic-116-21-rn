@@ -53,10 +53,9 @@ export default {
       if (this.handleExceptions()) {
         this.$emit('loggedIn')
         this.$router.push({ name: 'home' })
-        console.log('login successful');
-      }
-      else{
-        console.log('login successful');
+        console.log('login successful')
+      } else {
+        console.log('login successful')
       }
     },
     handleExceptions() {

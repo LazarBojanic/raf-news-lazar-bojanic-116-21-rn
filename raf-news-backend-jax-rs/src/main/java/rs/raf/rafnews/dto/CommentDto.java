@@ -13,6 +13,6 @@ public class CommentDto {
     private Integer id;
     private ServiceUserDto service_user;
     private ArticleDto article;
-    private String content;
+    private String body;
     private Timestamp time_published;
 }

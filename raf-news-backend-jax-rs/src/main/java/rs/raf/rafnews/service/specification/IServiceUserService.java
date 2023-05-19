@@ -15,12 +15,13 @@ import java.util.List;
 public interface IServiceUserService {
     List<ServiceUser> getAllRawServiceUsers() throws JsonProcessingException, ResourceNotFoundException, GetException;
     List<ServiceUserDto> getAllServiceUsers() throws ResourceNotFoundException, JsonProcessingException, GetException;
+    ServiceUserDto joinServiceUser(ServiceUser serviceUser);
     ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException;
     ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException;
     ServiceUser getRawServiceUserByEmail(String email) throws JsonProcessingException, GetException;
     ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException;
     ServiceUserDto addServiceUser(ServiceUser serviceUser) throws JsonProcessingException, AddException;
-    Integer updateServiceUser(Integer id, ServiceUser serviceUser) throws JsonProcessingException, UpdateException, GetException;
+    Integer updateServiceUserById(Integer id, ServiceUser serviceUser) throws JsonProcessingException, UpdateException, GetException;
     ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws JsonProcessingException, RegisterException, EmailAlreadyExists, GetException;
     Token loginServiceUser(ServiceUserLogin serviceUserLogin) throws LoginException, JsonProcessingException, GetException;
     Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException;

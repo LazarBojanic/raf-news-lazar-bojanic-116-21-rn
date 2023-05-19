@@ -3,9 +3,11 @@ package rs.raf.rafnews.api;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import rs.raf.rafnews.dto.CommentDto;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.service.implementation.CommentService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
+import rs.raf.rafnews.service.specification.ICommentService;
 
 import java.util.List;
 
@@ -14,18 +16,19 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/comment")
 public class CommentResource {
     @Inject
-    CommentService commentService;
+    ICommentService commentService;
 
     @GET
-    @Path("/get/{id}")
+    @Path("/getById/{id}")
     @Produces(APPLICATION_JSON)
     public Response getCommentById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
-            Comment comment = commentService.getCommentById(id);
-            return Response.ok().entity(comment).build();
+            CommentDto commentDto = commentService.getCommentById(id);
+            return Response.ok().entity(commentDto).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
     @GET
@@ -33,11 +36,12 @@ public class CommentResource {
     @Produces(APPLICATION_JSON)
     public Response getAllComments(@HeaderParam("Authorization") String bearerToken){
         try{
-            List<Comment> commentList = commentService.getAllComments();
-            return Response.ok().entity(commentList).build();
+            List<CommentDto> commentDtoList = commentService.getAllComments();
+            return Response.ok().entity(commentDtoList).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
     @POST
@@ -46,42 +50,40 @@ public class CommentResource {
     @Produces(APPLICATION_JSON)
     public Response addComment(Comment comment, @HeaderParam("Authorization") String bearerToken){
         try{
-            Comment commentWithId = commentService.addComment(comment);
-            return Response.ok().entity(commentWithId).build();
+            CommentDto commentDtoWithId = commentService.addComment(comment);
+            return Response.ok().entity(commentDtoWithId).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
-    @POST
-    @Path("/update")
+    @PUT
+    @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateComment(Comment comment, @HeaderParam("Authorization") String bearerToken){
+    public Response updateCommentById(@PathParam("id") Integer id, Comment comment, @HeaderParam("Authorization") String bearerToken){
         try{
-            Comment commentWithId = commentService.addComment(comment);
-            return Response.ok().entity(commentWithId).build();
+            Integer affectedRows = commentService.updateCommentById(id, comment);
+            return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
 
     @DELETE
-    @Path("/delete/{id}")
+    @Path("/deleteById/{id}")
     @Produces(APPLICATION_JSON)
-    public Response deleteComment(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
+    public Response deleteCommentById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
         try{
-            boolean isDeleted = commentService.deleteCommentById(id);
-            if(isDeleted){
-                return Response.ok().entity(id).build();
-            }
-            else{
-                return Response.status(500).build();
-            }
+            Integer affectedRows = commentService.deleteCommentById(id);
+            return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){
-            return Response.status(500).build();
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
 }
