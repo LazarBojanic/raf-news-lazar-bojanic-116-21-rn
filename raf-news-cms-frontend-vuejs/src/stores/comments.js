@@ -3,24 +3,27 @@ import Cookies from 'js-cookie'
 import { Exceptions } from '../globals'
 export const useCommentsStore = defineStore('comments', {
   state: () => {
-    return{
+    return {
       comments: {}
     }
   },
   getters: {
-    getComments : (state) => state.comments
+    getComments: (state) => state.comments
   },
   actions: {
-    async fetchCommentsByArticleId(articleId){
+    async fetchCommentsByArticleId(articleId) {
       try {
         const token = Cookies.get('token')
-        const res = await fetch(`http://95.180.97.206:8081/api/comment/getAllByArticleId/${articleId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+        const res = await fetch(
+          `http://95.180.97.206:8081/api/comment/getAllByArticleId/${articleId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
           }
-        })
+        )
         const data = await res.json()
         if (res.status !== 500) {
           this.comments = data

@@ -72,7 +72,7 @@ export default {
         first_name: this.first_name,
         last_name: this.last_name
       }
-      console.log(registerData);
+      console.log(registerData)
       await this.usersStore.register(registerData)
       if (this.handleExceptions()) {
         this.$router.push('login')

@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import RegisterComponent from '../components/RegisterComponent.vue'
 import LoginComponent from '../components/LoginComponent.vue'
 import FullArticleComponent from '../components/FullArticleComponent.vue'
+import EditCategoryComponent from '../components/EditCategoryComponent.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -31,6 +32,11 @@ const router = createRouter({
       path: '/fullArticle',
       name: 'fullArticle',
       component: FullArticleComponent
+    },
+    {
+      path: '/editCategory',
+      name: 'editCategory',
+      component: EditCategoryComponent
     }
   ]
 })

@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.exception.GetException;
+import rs.raf.rafnews.exception.UpdateException;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
 import rs.raf.rafnews.service.specification.ICategoryService;
@@ -46,7 +47,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Integer updateCategoryById(Integer id, Category category) {
+    public Integer updateCategoryById(Integer id, Category category) throws SQLException, UpdateException, JsonProcessingException {
         return this.categoryRepository.updateCategoryById(id, category);
     }
 

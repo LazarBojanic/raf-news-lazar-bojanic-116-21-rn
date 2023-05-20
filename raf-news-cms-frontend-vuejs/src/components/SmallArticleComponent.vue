@@ -1,7 +1,10 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <router-link class="small-article" :to="{ name: 'fullArticle', params: { article: smallArticle } }" >
+      <router-link
+        class="small-article"
+        :to="{ name: 'fullArticle', params: { article: smallArticle } }"
+      >
         <h1>Small Article</h1>
         <h2>{{ smallArticle.title }}</h2>
       </router-link>

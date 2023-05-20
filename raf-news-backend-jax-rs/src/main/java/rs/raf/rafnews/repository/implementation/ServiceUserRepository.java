@@ -288,7 +288,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             claims.put("pass", serviceUser.getPass());
             claims.put("user_role", userRole);
             claims.put("is_enabled", serviceUser.getIs_enabled());
-            return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).setExpiration(java.sql.Date.from(LocalDateTime.now().plusHours(2).atZone(ZoneId.systemDefault()).toInstant())).compact();
+            return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).setExpiration(java.sql.Date.from(LocalDateTime.now().plusHours(6).atZone(ZoneId.systemDefault()).toInstant())).compact();
         }
         catch(Exception e){
             ExceptionMessage exceptionMessage = new ExceptionMessage("TokenGenerateException", "Failed to generate token. Reason: " + e.getMessage());

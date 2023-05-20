@@ -1,10 +1,8 @@
 <template>
   <div class="container d-flex justify-content-center align-items-center">
-    <div class="col-md-8 text-center"> <!-- Added 'text-center' class -->
+    <div class="col-md-8 text-center">
+      <!-- Added 'text-center' class -->
       <h1 class="mt-4 mb-4">Comments</h1>
-      <button class="btn btn-primary mb-4" @click="fetchCategoriesFromComponent">
-        Fetch categories
-      </button>
       <div>
         <div v-for="comment in commentsStore.getComments" :key="comment.id" class="border p-3 mb-3">
           <CommentComponent :comment="comment" />
@@ -15,8 +13,8 @@
 </template>
 
 <script>
-import CommentComponent from './CommentComponent.vue';
-import { useCommentsStore } from '../stores/comments';
+import CommentComponent from './CommentComponent.vue'
+import { useCommentsStore } from '../stores/comments'
 
 export default {
   name: 'CommentsComponent',
@@ -24,22 +22,18 @@ export default {
     CommentComponent
   },
   setup() {
-    const commentsStore = useCommentsStore();
+    const commentsStore = useCommentsStore()
     return {
       commentsStore
-    };
+    }
   },
   mounted() {
-    this.commentsStore.fetchCommentsByArticleId(this.articleId);
+    this.commentsStore.fetchCommentsByArticleId(this.articleId)
   },
   props: {
     articleId: Number
   },
-  methods: {
-    async fetchCategoriesFromComponent() {
-      // await this.categoriesStore.fetchCategories()
-    }
-  }
+  methods: {}
 }
 </script>
 

@@ -7,6 +7,7 @@ import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.exception.ExceptionMessage;
 import rs.raf.rafnews.exception.GetException;
+import rs.raf.rafnews.exception.UpdateException;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
 
@@ -90,8 +91,26 @@ public class CategoryRepository implements ICategoryRepository {
     }
 
     @Override
-    public Integer updateCategoryById(Integer id, Category category) {
-        return 0;
+    public Integer updateCategoryById(Integer id, Category category) throws SQLException, JsonProcessingException, UpdateException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "UPDATE category SET category_name = ?, description = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setString(1, category.getCategory_name());
+            preparedStatement.setString(2, category.getDescription());
+            preparedStatement.setInt(3, id);
+            int affectedRows = preparedStatement.executeUpdate();
+            if(affectedRows >= 0){
+                return affectedRows;
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", e.getMessage());
+            throw new UpdateException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return -1;
     }
 
     @Override
