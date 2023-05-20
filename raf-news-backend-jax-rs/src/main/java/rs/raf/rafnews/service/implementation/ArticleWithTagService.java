@@ -11,6 +11,7 @@ import rs.raf.rafnews.model.ArticleWithTagRequest;
 import rs.raf.rafnews.repository.specification.IArticleWithTagRepository;
 import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
+import java.sql.SQLException;
 import java.util.List;
 @RequestScoped
 public class ArticleWithTagService implements IArticleWithTagService {
@@ -32,12 +33,12 @@ public class ArticleWithTagService implements IArticleWithTagService {
     }
 
     @Override
-    public ArticleWithTag getArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws GetException, JsonProcessingException {
+    public ArticleWithTag getArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws GetException, JsonProcessingException, SQLException {
         return this.articleWithTagRepository.getArticleWithTagByArticleIdAndTagId(articleId, tagId);
     }
 
     @Override
-    public ArticleWithTag addTagToArticle(ArticleWithTagRequest articleWithTagRequest) throws GetException, JoinException, AddException, JsonProcessingException {
+    public ArticleWithTag addTagToArticle(ArticleWithTagRequest articleWithTagRequest) throws GetException, JoinException, AddException, JsonProcessingException, SQLException {
         return this.articleWithTagRepository.addTagToArticle(articleWithTagRequest);
     }
     @Override
@@ -45,7 +46,7 @@ public class ArticleWithTagService implements IArticleWithTagService {
         return this.articleWithTagRepository.addTagListToArticle(articleWithTagRequestList);
     }
     @Override
-    public ArticleWithTag addArticleWithTag(ArticleWithTag articleWithTag) throws AddException, JsonProcessingException {
+    public ArticleWithTag addArticleWithTag(ArticleWithTag articleWithTag) throws AddException, JsonProcessingException, SQLException {
         return this.articleWithTagRepository.addArticleWithTag(articleWithTag);
     }
 

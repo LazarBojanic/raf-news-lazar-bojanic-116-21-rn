@@ -2,20 +2,18 @@
   <div class="container">
     <div class="row justify-content-center">
       <h1>Home</h1>
-      <CategoriesComponent />
+      <CommentsComponent :articleId = "3"/>
     </div>
   </div>
 </template>
 
 <script>
-//import ArticlesComponent from '../components/ArticlesComponent.vue'
-import CategoriesComponent from '../components/CategoriesComponent.vue'
+import CommentsComponent from '../components/CommentsComponent.vue';
 export default {
   name: 'HomeView',
   components: {
-    //ArticlesComponent,
-    CategoriesComponent
-  },
+    CommentsComponent
+},
   mounted() {},
   data() {
     return {}

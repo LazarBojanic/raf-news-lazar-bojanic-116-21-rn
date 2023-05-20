@@ -25,22 +25,22 @@ public class TagService implements ITagService {
     private ITagRepository tagRepository;
 
     @Override
-    public List<Tag> getAllRawTags() throws GetException, JsonProcessingException {
+    public List<Tag> getAllRawTags() throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getAllRawTags();
     }
 
     @Override
-    public List<TagDto> getAllTags() throws GetException, JsonProcessingException {
+    public List<TagDto> getAllTags() throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getAllTags();
     }
 
     @Override
-    public List<Tag> getAllRawTagsByArticleId(Integer articleId) throws GetException, JsonProcessingException {
+    public List<Tag> getAllRawTagsByArticleId(Integer articleId) throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getAllRawTagsByArticleId(articleId);
     }
 
     @Override
-    public List<TagDto> getAllTagsByArticleId(Integer articleId) throws GetException, JsonProcessingException {
+    public List<TagDto> getAllTagsByArticleId(Integer articleId) throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getAllTagsByArticleId(articleId);
     }
 
@@ -50,37 +50,37 @@ public class TagService implements ITagService {
     }
 
     @Override
-    public Tag getRawTagById(Integer id) throws GetException, JsonProcessingException {
+    public Tag getRawTagById(Integer id) throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getRawTagById(id);
     }
 
     @Override
-    public TagDto getTagById(Integer id) throws GetException, JsonProcessingException {
+    public TagDto getTagById(Integer id) throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getTagById(id);
     }
 
     @Override
-    public Tag getRawTagByTagName(String tagName) throws GetException, JsonProcessingException {
+    public Tag getRawTagByTagName(String tagName) throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getRawTagByTagName(tagName);
     }
 
     @Override
-    public TagDto getTagByTagName(String tagName) throws GetException, JsonProcessingException {
+    public TagDto getTagByTagName(String tagName) throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getTagByTagName(tagName);
     }
 
     @Override
-    public Tag addRawTag(Tag tag) throws AddException, JsonProcessingException {
+    public Tag addRawTag(Tag tag) throws AddException, JsonProcessingException, SQLException {
         return this.tagRepository.addRawTag(tag);
     }
 
     @Override
-    public TagDto addTag(Tag tag) throws AddException, JsonProcessingException {
+    public TagDto addTag(Tag tag) throws AddException, JsonProcessingException, SQLException {
         return this.tagRepository.addTag(tag);
     }
 
     @Override
-    public List<TagDto> addTagList(List<Tag> tagList) throws AddException, JsonProcessingException {
+    public List<TagDto> addTagList(List<Tag> tagList) throws AddException, JsonProcessingException, SQLException {
         return this.tagRepository.addTagList(tagList);
     }
 

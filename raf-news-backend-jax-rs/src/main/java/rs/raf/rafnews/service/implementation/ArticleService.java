@@ -14,6 +14,7 @@ import rs.raf.rafnews.model.Tag;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
 import rs.raf.rafnews.service.specification.IArticleService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RequestScoped
@@ -22,12 +23,12 @@ public class ArticleService implements IArticleService {
     IArticleRepository articleRepository;
 
     @Override
-    public List<Article> getAllRawArticles() throws GetException, JsonProcessingException {
+    public List<Article> getAllRawArticles() throws GetException, JsonProcessingException, SQLException {
         return this.articleRepository.getAllRawArticles();
     }
 
     @Override
-    public List<ArticleDto> getAllArticles() throws GetException, JoinException, JsonProcessingException {
+    public List<ArticleDto> getAllArticles() throws GetException, JoinException, JsonProcessingException, SQLException {
         return this.articleRepository.getAllArticles();
     }
 
@@ -37,22 +38,22 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Article getRawArticleById(Integer id) throws GetException, JsonProcessingException {
+    public Article getRawArticleById(Integer id) throws GetException, JsonProcessingException, SQLException {
         return this.articleRepository.getRawArticleById(id);
     }
 
     @Override
-    public ArticleDto getArticleById(Integer id) throws GetException, JoinException, JsonProcessingException {
+    public ArticleDto getArticleById(Integer id) throws GetException, JoinException, JsonProcessingException, SQLException {
         return this.articleRepository.getArticleById(id);
     }
 
     @Override
-    public Article addRawArticle(Article article) throws AddException, JsonProcessingException, GetException {
+    public Article addRawArticle(Article article) throws AddException, JsonProcessingException, GetException, SQLException {
         return this.articleRepository.addRawArticle(article);
     }
 
     @Override
-    public ArticleDto addArticle(Article article) throws GetException, JoinException, AddException, JsonProcessingException {
+    public ArticleDto addArticle(Article article) throws GetException, JoinException, AddException, JsonProcessingException, SQLException {
         return this.articleRepository.addArticle(article);
     }
 

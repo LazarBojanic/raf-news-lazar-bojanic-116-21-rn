@@ -9,6 +9,7 @@ import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
 import rs.raf.rafnews.service.specification.ICategoryService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RequestScoped
@@ -17,11 +18,11 @@ public class CategoryService implements ICategoryService {
     private ICategoryRepository categoryRepository;
 
     @Override
-    public List<Category> getAllRawCategories() throws GetException, JsonProcessingException {
+    public List<Category> getAllRawCategories() throws GetException, JsonProcessingException, SQLException {
         return this.categoryRepository.getAllRawCategories();
     }
     @Override
-    public List<CategoryDto> getAllCategories() throws GetException, JsonProcessingException {
+    public List<CategoryDto> getAllCategories() throws GetException, JsonProcessingException, SQLException {
         return this.categoryRepository.getAllCategories();
     }
 
@@ -31,11 +32,11 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Category getRawCategoryById(Integer id) throws GetException, JsonProcessingException {
+    public Category getRawCategoryById(Integer id) throws GetException, JsonProcessingException, SQLException {
         return this.categoryRepository.getRawCategoryById(id);
     }
     @Override
-    public CategoryDto getCategoryById(Integer id) throws GetException, JsonProcessingException {
+    public CategoryDto getCategoryById(Integer id) throws GetException, JsonProcessingException, SQLException {
         return this.categoryRepository.getCategoryById(id);
     }
 

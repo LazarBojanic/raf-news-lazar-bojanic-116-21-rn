@@ -34,10 +34,11 @@ public class ArticleRepository implements IArticleRepository {
 
 
     @Override
-    public List<Article> getAllRawArticles() throws JsonProcessingException, GetException {
+    public List<Article> getAllRawArticles() throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         List<Article> articleList = new ArrayList<>();
         String query = "SELECT * FROM article";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while (resultSet.next()) {
                     Article article = extractArticleFromResultSet(resultSet);
@@ -49,11 +50,14 @@ public class ArticleRepository implements IArticleRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
         }
+        finally {
+            connection.close();
+        }
         return articleList;
     }
 
     @Override
-    public List<ArticleDto> getAllArticles() throws GetException, JsonProcessingException, JoinException {
+    public List<ArticleDto> getAllArticles() throws GetException, JsonProcessingException, JoinException, SQLException {
         List<Article> articleList = getAllRawArticles();
         List<ArticleDto> articleDtoList = new ArrayList<>();
         for(Article article : articleList){
@@ -90,9 +94,10 @@ public class ArticleRepository implements IArticleRepository {
         }
     }
     @Override
-    public Article getRawArticleById(Integer id) throws JsonProcessingException, GetException {
+    public Article getRawArticleById(Integer id) throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "SELECT * FROM article WHERE id = ?";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 if (resultSet.next()) {
@@ -104,11 +109,14 @@ public class ArticleRepository implements IArticleRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
         }
+        finally {
+            connection.close();
+        }
         return new Article();
     }
 
     @Override
-    public ArticleDto getArticleById(Integer id) throws GetException, JsonProcessingException, JoinException {
+    public ArticleDto getArticleById(Integer id) throws GetException, JsonProcessingException, JoinException, SQLException {
         Article article = getRawArticleById(id);
         if(article.getId() > 0){
             return joinArticle(article);
@@ -119,51 +127,57 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
-    public Article addRawArticle(Article article) throws JsonProcessingException, AddException, GetException {
-        ServiceUserDto serviceUserDto = serviceUserService.getServiceUserById(article.getService_user_id());
-        CategoryDto categoryDto = categoryService.getCategoryById(article.getCategory_id());
-        if(serviceUserDto.getId() > 0 && categoryDto.getId() > 0){
-            String query = "INSERT INTO article(service_user_id, category_id, title, body, time_published, number_of_views) VALUES(?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                preparedStatement.setInt(1, article.getService_user_id());
-                preparedStatement.setInt(2, article.getCategory_id());
-                preparedStatement.setString(3, article.getTitle());
-                preparedStatement.setString(4, article.getBody());
-                preparedStatement.setTimestamp(5, article.getTime_published());
-                preparedStatement.setInt(6, article.getNumber_of_views());
-                int affectedRows = preparedStatement.executeUpdate();
-                if (affectedRows > 0) {
-                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                    if (generatedKeys.next()) {
-                        int id = generatedKeys.getInt("id");
-                        article.setId(id);
-                        return article;
+    public Article addRawArticle(Article article) throws JsonProcessingException, AddException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            ServiceUserDto serviceUserDto = serviceUserService.getServiceUserById(article.getService_user_id());
+            CategoryDto categoryDto = categoryService.getCategoryById(article.getCategory_id());
+            if(serviceUserDto.getId() > 0 && categoryDto.getId() > 0){
+                String query = "INSERT INTO article(service_user_id, category_id, title, body, time_published, number_of_views) VALUES(?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                    preparedStatement.setInt(1, article.getService_user_id());
+                    preparedStatement.setInt(2, article.getCategory_id());
+                    preparedStatement.setString(3, article.getTitle());
+                    preparedStatement.setString(4, article.getBody());
+                    preparedStatement.setTimestamp(5, article.getTime_published());
+                    preparedStatement.setInt(6, article.getNumber_of_views());
+                    int affectedRows = preparedStatement.executeUpdate();
+                    if (affectedRows > 0) {
+                        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                        if (generatedKeys.next()) {
+                            int id = generatedKeys.getInt("id");
+                            article.setId(id);
+                            return article;
+                        }
                     }
                 }
-            }
-            catch (SQLException e) {
-                ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
+                ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add article: " + article);
                 throw new AddException(exceptionMessage);
             }
-            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add article: " + article);
+            else if(serviceUserDto.getId() <= 0 && categoryDto.getId() > 0){
+                ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get user with id: " + serviceUserDto.getId());
+                throw new GetException(exceptionMessage);
+            }
+            else if(serviceUserDto.getId() > 0 && categoryDto.getId() <= 0) {
+                ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get category with id: " + categoryDto.getId());
+                throw new GetException(exceptionMessage);
+            }
+            else{
+                ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get user with id: " + serviceUserDto.getId() + ", and category with id: " + categoryDto.getId());
+                throw new GetException(exceptionMessage);
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
             throw new AddException(exceptionMessage);
         }
-        else if(serviceUserDto.getId() <= 0 && categoryDto.getId() > 0){
-            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get user with id: " + serviceUserDto.getId());
-            throw new GetException(exceptionMessage);
-        }
-        else if(serviceUserDto.getId() > 0 && categoryDto.getId() <= 0) {
-            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get category with id: " + categoryDto.getId());
-            throw new GetException(exceptionMessage);
-        }
-        else{
-            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", "Failed to get user with id: " + serviceUserDto.getId() + ", and category with id: " + categoryDto.getId());
-            throw new GetException(exceptionMessage);
+        finally {
+            connection.close();
         }
     }
 
     @Override
-    public ArticleDto addArticle(Article article) throws AddException, JsonProcessingException, GetException, JoinException {
+    public ArticleDto addArticle(Article article) throws AddException, JsonProcessingException, GetException, JoinException, SQLException {
         Article addedArticle = addRawArticle(article);
         return joinArticle(addedArticle);
     }

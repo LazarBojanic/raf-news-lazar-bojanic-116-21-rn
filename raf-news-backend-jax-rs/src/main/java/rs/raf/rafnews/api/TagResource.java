@@ -9,6 +9,8 @@ import rs.raf.rafnews.service.implementation.TagService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
 import rs.raf.rafnews.service.specification.ITagService;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -36,6 +38,7 @@ public class TagResource {
     @Produces(APPLICATION_JSON)
     public Response getAllTags(@HeaderParam("Authorization") String bearerToken){
         try{
+            System.out.println("Getting All Tags - " + Timestamp.from(Instant.now()));
             List<TagDto> tagDtoList = tagService.getAllTags();
             return Response.ok().entity(tagDtoList).build();
         }

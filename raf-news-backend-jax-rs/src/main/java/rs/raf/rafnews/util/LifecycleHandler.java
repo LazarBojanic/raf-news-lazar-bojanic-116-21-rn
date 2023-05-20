@@ -5,6 +5,8 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import rs.raf.rafnews.database.RafNewsDatabase;
 
+import java.sql.SQLException;
+
 @WebListener
 public class LifecycleHandler implements ServletContextListener {
 
@@ -16,6 +18,5 @@ public class LifecycleHandler implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         System.out.println("App closed!!!");
-        RafNewsDatabase.getInstance().closeConnection();
     }
 }

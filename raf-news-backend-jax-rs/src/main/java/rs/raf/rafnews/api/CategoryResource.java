@@ -9,6 +9,8 @@ import rs.raf.rafnews.service.implementation.CategoryService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
 import rs.raf.rafnews.service.specification.ICategoryService;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -23,6 +25,7 @@ public class CategoryResource {
     @Produces(APPLICATION_JSON)
     public Response getAllCategories(@HeaderParam("Authorization") String bearerToken){
         try{
+            System.out.println("Getting All Categories - " + Timestamp.from(Instant.now()));
             List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
             return Response.ok().entity(categoryDtoList).build();
         }

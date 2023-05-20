@@ -12,6 +12,8 @@ import rs.raf.rafnews.model.Tag;
 import rs.raf.rafnews.service.specification.IArticleService;
 import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -27,6 +29,7 @@ public class ArticleResource {
     @Produces(APPLICATION_JSON)
     public Response getAllArticles(@HeaderParam("Authorization") String bearerToken){
         try{
+            System.out.println("Getting All Articles - " + Timestamp.from(Instant.now()));
             List<ArticleDto> articleDtoList = articleService.getAllArticles();
             return Response.ok().entity(articleDtoList).build();
         }

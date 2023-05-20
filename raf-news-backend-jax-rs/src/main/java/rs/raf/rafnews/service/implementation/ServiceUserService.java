@@ -14,6 +14,7 @@ import rs.raf.rafnews.model.Token;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 
+import java.sql.SQLException;
 import java.util.List;
 @RequestScoped
 public class ServiceUserService implements IServiceUserService {
@@ -24,11 +25,11 @@ public class ServiceUserService implements IServiceUserService {
 
     }
     @Override
-    public List<ServiceUser> getAllRawServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException {
+    public List<ServiceUser> getAllRawServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException, SQLException {
         return this.serviceUserRepository.getAllRawServiceUsers();
     }
     @Override
-    public List<ServiceUserDto> getAllServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException {
+    public List<ServiceUserDto> getAllServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException, SQLException {
         return this.serviceUserRepository.getAllServiceUsers();
     }
 
@@ -38,24 +39,24 @@ public class ServiceUserService implements IServiceUserService {
     }
 
     @Override
-    public ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException {
+    public ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException, SQLException {
         return this.serviceUserRepository.getRawServiceUserById(id);
     }
     @Override
-    public ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException {
+    public ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException, SQLException {
         return this.serviceUserRepository.getServiceUserById(id);
     }
     @Override
-    public ServiceUser getRawServiceUserByEmail(String email) throws JsonProcessingException, GetException {
+    public ServiceUser getRawServiceUserByEmail(String email) throws JsonProcessingException, GetException, SQLException {
         return this.serviceUserRepository.getRawServiceUserByEmail(email);
     }
     @Override
-    public ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException {
+    public ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException, SQLException {
         return this.serviceUserRepository.getServiceUserByEmail(email);
     }
 
     @Override
-    public ServiceUserDto addServiceUser(ServiceUser serviceUser) throws AddException, JsonProcessingException {
+    public ServiceUserDto addServiceUser(ServiceUser serviceUser) throws AddException, JsonProcessingException, SQLException {
         return this.serviceUserRepository.addServiceUser(serviceUser);
     }
 
@@ -85,7 +86,7 @@ public class ServiceUserService implements IServiceUserService {
     }
 
     @Override
-    public Integer deleteServiceUserById(Integer id) throws DeleteException, JsonProcessingException {
+    public Integer deleteServiceUserById(Integer id) throws DeleteException, JsonProcessingException, SQLException {
         return this.serviceUserRepository.deleteServiceUserById(id);
     }
 

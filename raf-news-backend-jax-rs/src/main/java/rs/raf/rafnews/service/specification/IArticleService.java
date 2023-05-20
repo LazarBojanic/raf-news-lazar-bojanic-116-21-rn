@@ -8,16 +8,17 @@ import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Article;
 import rs.raf.rafnews.model.Tag;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IArticleService {
-    List<Article> getAllRawArticles() throws GetException, JsonProcessingException;
-    List<ArticleDto> getAllArticles() throws GetException, JoinException, JsonProcessingException;
+    List<Article> getAllRawArticles() throws GetException, JsonProcessingException, SQLException;
+    List<ArticleDto> getAllArticles() throws GetException, JoinException, JsonProcessingException, SQLException;
     ArticleDto joinArticle(Article article) throws JoinException, JsonProcessingException;
-    Article getRawArticleById(Integer id) throws GetException, JsonProcessingException;
-    ArticleDto getArticleById(Integer id) throws GetException, JoinException, JsonProcessingException;
-    Article addRawArticle(Article article) throws AddException, JsonProcessingException, GetException;
-    ArticleDto addArticle(Article article) throws GetException, JoinException, AddException, JsonProcessingException;
+    Article getRawArticleById(Integer id) throws GetException, JsonProcessingException, SQLException;
+    ArticleDto getArticleById(Integer id) throws GetException, JoinException, JsonProcessingException, SQLException;
+    Article addRawArticle(Article article) throws AddException, JsonProcessingException, GetException, SQLException;
+    ArticleDto addArticle(Article article) throws GetException, JoinException, AddException, JsonProcessingException, SQLException;
     Integer updateArticleById(Integer id, Article article);
     Integer deleteArticleById(Integer id);
 }

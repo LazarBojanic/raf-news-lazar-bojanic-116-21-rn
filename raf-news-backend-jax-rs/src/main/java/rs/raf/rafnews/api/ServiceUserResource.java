@@ -3,6 +3,7 @@ package rs.raf.rafnews.api;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.model.ServiceUserLogin;
@@ -11,6 +12,8 @@ import rs.raf.rafnews.model.Token;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.exception.ExceptionMessage;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -38,6 +41,7 @@ public class ServiceUserResource {
     @Produces(APPLICATION_JSON)
     public Response getAllServiceUsers(@HeaderParam("Authorization") String bearerToken){
         try{
+            System.out.println("Getting All Users - " + Timestamp.from(Instant.now()));
             List<ServiceUserDto> serviceUserDtoList = serviceUserService.getAllServiceUsers();
             return Response.ok().entity(serviceUserDtoList).build();
         }

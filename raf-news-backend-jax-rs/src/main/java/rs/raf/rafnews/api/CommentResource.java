@@ -9,6 +9,8 @@ import rs.raf.rafnews.service.implementation.CommentService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
 import rs.raf.rafnews.service.specification.ICommentService;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -36,7 +38,21 @@ public class CommentResource {
     @Produces(APPLICATION_JSON)
     public Response getAllComments(@HeaderParam("Authorization") String bearerToken){
         try{
+            System.out.println("Getting All Comments - " + Timestamp.from(Instant.now()));
             List<CommentDto> commentDtoList = commentService.getAllComments();
+            return Response.ok().entity(commentDtoList).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @GET
+    @Path("/getAllByArticleId/{articleId}")
+    @Produces(APPLICATION_JSON)
+    public Response getAllCommentsByArticleId(@PathParam("articleId") Integer articleId, @HeaderParam("Authorization") String bearerToken){
+        try{
+            List<CommentDto> commentDtoList = commentService.getAllCommentsByArticleId(articleId);
             return Response.ok().entity(commentDtoList).build();
         }
         catch(Exception e){

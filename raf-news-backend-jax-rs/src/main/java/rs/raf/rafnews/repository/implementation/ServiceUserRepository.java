@@ -3,6 +3,7 @@ package rs.raf.rafnews.repository.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.*;
 import jakarta.enterprise.context.RequestScoped;
+import org.postgresql.jdbc.PgConnection;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.exception.*;
@@ -26,10 +27,11 @@ public class ServiceUserRepository implements IServiceUserRepository {
     public static final String MASTER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3MiOiJhZG1pbiJ9.EcbsD0Wn1wkI8iVVTEOX0IWHuwyqOndzPUFtDAM4TMI";
 
     @Override
-    public List<ServiceUser> getAllRawServiceUsers() throws  JsonProcessingException, GetException {
+    public List<ServiceUser> getAllRawServiceUsers() throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         List<ServiceUser> serviceUserList = new ArrayList<>();
         String query = "SELECT * FROM service_user";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while (resultSet.next()) {
                     ServiceUser serviceUser = extractServiceUserFromResultSet(resultSet);
@@ -41,11 +43,14 @@ public class ServiceUserRepository implements IServiceUserRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
         }
+        finally {
+            connection.close();
+        }
         return serviceUserList;
     }
 
     @Override
-    public List<ServiceUserDto> getAllServiceUsers() throws JsonProcessingException, GetException {
+    public List<ServiceUserDto> getAllServiceUsers() throws JsonProcessingException, GetException, SQLException {
         List<ServiceUser> serviceUserList = getAllRawServiceUsers();
         List<ServiceUserDto> serviceUserDtoList = new ArrayList<>();
         for(ServiceUser serviceUser : serviceUserList){
@@ -60,9 +65,10 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException {
+    public ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "SELECT * FROM service_user WHERE id = ?";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 if (resultSet.next()) {
@@ -74,19 +80,23 @@ public class ServiceUserRepository implements IServiceUserRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
         }
+        finally {
+            connection.close();
+        }
         return new ServiceUser();
     }
     @Override
-    public ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException {
+    public ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException, SQLException {
         ServiceUser serviceUser = getRawServiceUserById(id);
         return joinServiceUser(serviceUser);
     }
 
 
     @Override
-    public ServiceUser getRawServiceUserByEmail(String email) throws JsonProcessingException, GetException {
+    public ServiceUser getRawServiceUserByEmail(String email) throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "SELECT * FROM service_user WHERE email = ?";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setString(1, email);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 if (resultSet.next()) {
@@ -98,18 +108,22 @@ public class ServiceUserRepository implements IServiceUserRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
         }
+        finally {
+            connection.close();
+        }
         return new ServiceUser();
     }
     @Override
-    public ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException {
+    public ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException, SQLException {
         ServiceUser serviceUser = getRawServiceUserByEmail(email);
         return joinServiceUser(serviceUser);
     }
 
     @Override
-    public ServiceUserDto addServiceUser(ServiceUser serviceUser) throws JsonProcessingException, AddException {
+    public ServiceUserDto addServiceUser(ServiceUser serviceUser) throws JsonProcessingException, AddException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "INSERT INTO service_user(username, email, pass, user_role, is_enabled, first_name, last_name) VALUES(?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, serviceUser.getUsername());
             preparedStatement.setString(2, serviceUser.getEmail());
             preparedStatement.setString(3, serviceUser.getPass());
@@ -130,6 +144,9 @@ public class ServiceUserRepository implements IServiceUserRepository {
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
             throw new AddException(exceptionMessage);
+        }
+        finally {
+            connection.close();
         }
         ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add user: " + serviceUser);
         throw new AddException(exceptionMessage);
@@ -240,9 +257,10 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public Integer deleteServiceUserById(Integer id) throws JsonProcessingException, DeleteException {
+    public Integer deleteServiceUserById(Integer id) throws JsonProcessingException, DeleteException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "DELETE FROM service_user WHERE id = ?";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if(rowsAffected >= 0){
@@ -252,6 +270,9 @@ public class ServiceUserRepository implements IServiceUserRepository {
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
             throw new DeleteException(exceptionMessage);
+        }
+        finally {
+            connection.close();
         }
         ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete user with id: " + id);
         throw new DeleteException(exceptionMessage);
@@ -295,9 +316,10 @@ public class ServiceUserRepository implements IServiceUserRepository {
         String columnLastName = resultSet.getString("last_name");
         return new ServiceUser(columnId, columnUsername, columnEmail, columnPass, columnUserRole, columnIsEnabled, columnFirstName, columnLastName);
     }
-    private Integer saveServiceUser(ServiceUser serviceUser) throws  JsonProcessingException, UpdateException {
+    private Integer saveServiceUser(ServiceUser serviceUser) throws JsonProcessingException, UpdateException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "UPDATE service_user SET username = ?, email = ?, pass = ?, user_role = ?, is_enabled = ?, first_name = ?, last_name = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, serviceUser.getUsername());
             preparedStatement.setString(2, serviceUser.getEmail());
             preparedStatement.setString(3, serviceUser.getPass());
@@ -314,6 +336,9 @@ public class ServiceUserRepository implements IServiceUserRepository {
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update user with id: " + serviceUser.getId());
             throw new UpdateException(exceptionMessage);
+        }
+        finally {
+            connection.close();
         }
         ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update user with id: " + serviceUser.getId());
         throw new UpdateException(exceptionMessage);

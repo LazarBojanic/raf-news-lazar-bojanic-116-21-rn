@@ -19,10 +19,7 @@ import rs.raf.rafnews.repository.specification.IArticleWithTagRepository;
 import rs.raf.rafnews.service.specification.IArticleService;
 import rs.raf.rafnews.service.specification.ITagService;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 @RequestScoped
@@ -47,9 +44,10 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     }
 
     @Override
-    public ArticleWithTag getArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws JsonProcessingException, GetException {
+    public ArticleWithTag getArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "SELECT * FROM article_with_tag WHERE article_id = ? AND tag_id = ?";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, articleId);
             preparedStatement.setInt(2, tagId);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
@@ -64,6 +62,9 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
             throw new GetException(exceptionMessage);
+        }
+        finally {
+            connection.close();
         }
         return new ArticleWithTag();
     }
@@ -88,7 +89,7 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     }
 
     @Override
-    public ArticleWithTag addTagToArticle(ArticleWithTagRequest articleWithTagRequest) throws GetException, JoinException, JsonProcessingException, AddException {
+    public ArticleWithTag addTagToArticle(ArticleWithTagRequest articleWithTagRequest) throws GetException, JoinException, JsonProcessingException, AddException, SQLException {
         ArticleDto articleDto = articleService.getArticleById(articleWithTagRequest.getArticle_id());
         if(articleDto.getId() > 0){
             TagDto existingTag = tagService.getTagByTagName(articleWithTagRequest.getTag_name());
@@ -127,9 +128,10 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     }
 
     @Override
-    public ArticleWithTag addArticleWithTag(ArticleWithTag articleWithTag) throws JsonProcessingException, AddException {
+    public ArticleWithTag addArticleWithTag(ArticleWithTag articleWithTag) throws JsonProcessingException, AddException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "INSERT INTO article_with_tag(article_id, tag_id) VALUES(?, ?)";
-        try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, articleWithTag.getArticle_id());
             preparedStatement.setInt(2, articleWithTag.getTag_id());
             int affectedRows = preparedStatement.executeUpdate();
@@ -145,6 +147,9 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
             throw new AddException(exceptionMessage);
+        }
+        finally {
+            connection.close();
         }
         return new ArticleWithTag();
     }
