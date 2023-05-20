@@ -2,17 +2,16 @@ package rs.raf.rafnews.database;
 
 import org.postgresql.jdbc.PgConnection;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class RafNewsDatabase1 {
+public class RafNewsDatabaseRegular {
     private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/rafNews";
     private static final String JDBC_USER = "postgres";
     private static final String JDBC_PASSWORD = "1234";
-    private static volatile RafNewsDatabase1 instance;
+    private static volatile RafNewsDatabaseRegular instance;
 
-    private RafNewsDatabase1(){
+    private RafNewsDatabaseRegular(){
         try{
             Class.forName("org.postgresql.Driver");
         }
@@ -21,11 +20,11 @@ public class RafNewsDatabase1 {
         }
     }
 
-    public static RafNewsDatabase1 getInstance() {
+    public static RafNewsDatabaseRegular getInstance() {
         if (instance == null) {
-            synchronized (RafNewsDatabase1.class) {
+            synchronized (RafNewsDatabaseRegular.class) {
                 if (instance == null) {
-                    instance = new RafNewsDatabase1();
+                    instance = new RafNewsDatabaseRegular();
                 }
             }
         }

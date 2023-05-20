@@ -1,50 +1,51 @@
 <template>
-    <div class="container">
-      <div class="row justify-content-center">
-        <h1>Articles</h1>
-        <button class="btn btn-primary" @click="fetchCategoriesFromComponent">
-          Fetch categories
-        </button>
-        <div class="row justify-content-center">
-          <div v-for="comment in commentsStore.getComments" :key="comment.id" class="col-md justify-content-center" >
-            <CommentComponent :comment="comment"></CommentComponent>
-          </div>
+  <div class="container d-flex justify-content-center align-items-center">
+    <div class="col-md-8 text-center"> <!-- Added 'text-center' class -->
+      <h1 class="mt-4 mb-4">Comments</h1>
+      <button class="btn btn-primary mb-4" @click="fetchCategoriesFromComponent">
+        Fetch categories
+      </button>
+      <div>
+        <div v-for="comment in commentsStore.getComments" :key="comment.id" class="border p-3 mb-3">
+          <CommentComponent :comment="comment" />
         </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import CommentComponent from './CommentComponent.vue'
-  import { useCommentsStore } from '../stores/comments'
-  export default {
-    name: 'CommentsComponent',
-    components: {
-        CommentComponent
-    },
-    setup() {
-      const commentsStore = useCommentsStore()
-      return {
-        commentsStore
-      }
-    },
-    mounted() {
-      this.commentsStore.fetchCommentsByArticleId(this.articleId)
-    },
-    data() {
-      return {}
-    },
-    props: {
-        articleId: Number
-    },
-    computed: {},
-    methods: {
-      async fetchCategoriesFromComponent() {
-        //await this.categoriesStore.fetchCategories()
-      }
+  </div>
+</template>
+
+<script>
+import CommentComponent from './CommentComponent.vue';
+import { useCommentsStore } from '../stores/comments';
+
+export default {
+  name: 'CommentsComponent',
+  components: {
+    CommentComponent
+  },
+  setup() {
+    const commentsStore = useCommentsStore();
+    return {
+      commentsStore
+    };
+  },
+  mounted() {
+    this.commentsStore.fetchCommentsByArticleId(this.articleId);
+  },
+  props: {
+    articleId: Number
+  },
+  methods: {
+    async fetchCategoriesFromComponent() {
+      // await this.categoriesStore.fetchCategories()
     }
   }
-  </script>
-  
-  <style></style>
-  
+}
+</script>
+
+<style>
+.border {
+  border: 1px solid #000000;
+  border-radius: 5px;
+}
+</style>

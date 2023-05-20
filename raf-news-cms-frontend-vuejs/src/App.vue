@@ -4,7 +4,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/home">Home</RouterLink>
+            <router-link class="nav-link" to="/home">Home</router-link>
           </li>
           <li v-if="!validToken" class="nav-item">
             <router-link class="nav-link" to="/login">Login</router-link>
@@ -19,9 +19,9 @@
       </div>
     </nav>
     <br />
-    <div class="container">
-      <div class="row justify-content-center">
-        <RouterView @loggedIn="updateToken" />
+    <div class="container d-flex justify-content-center align-items-center">
+      <div class="col-md-8">
+        <router-view @loggedIn="updateToken" />
       </div>
     </div>
   </div>
@@ -32,6 +32,7 @@ import { useUsersStore } from './stores/users'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
 import { ref } from 'vue'
+
 export default {
   setup() {
     const usersStore = useUsersStore()
@@ -40,9 +41,6 @@ export default {
       usersStore,
       validToken
     }
-  },
-  data() {
-    return {}
   },
   mounted() {
     this.loginWithTokenFromComponent()
@@ -80,11 +78,6 @@ export default {
     updateToken() {
       this.validToken = jwtDecode(Cookies.get('token')).email !== ''
     }
-  },
-  computed: {
-    /*validToken(){
-      return jwtDecode(Cookies.get('token')).email !== ''
-    }*/
   }
 }
 </script>
