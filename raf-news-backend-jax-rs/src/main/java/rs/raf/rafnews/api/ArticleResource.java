@@ -27,7 +27,7 @@ public class ArticleResource {
     IArticleService articleService;
     @Inject
     IArticleWithTagService articleWithTagService;
-    
+
     @LogEndpoint
     @GET
     @Path("/getAll")
