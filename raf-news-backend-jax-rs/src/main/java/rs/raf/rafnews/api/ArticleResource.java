@@ -27,24 +27,7 @@ public class ArticleResource {
     IArticleService articleService;
     @Inject
     IArticleWithTagService articleWithTagService;
-
-    @LogEndpoint
-    @GET
-    @Path("/getFile")
-    @Produces(APPLICATION_OCTET_STREAM)
-    public Response downloadFile() {
-        try {
-            URL temp = getClass().getResource("testFile.txt");
-            File file = new File(temp.getPath());
-            FileInputStream fis = new FileInputStream(file);
-            return Response.ok().entity(fis).header("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName())).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.serverError().build();
-        }
-    }
-
-
+    
     @LogEndpoint
     @GET
     @Path("/getAll")
