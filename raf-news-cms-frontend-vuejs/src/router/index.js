@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RegisterComponent from '../components/RegisterComponent.vue'
 import LoginComponent from '../components/LoginComponent.vue'
+import ArticlesComponent from '../components/ArticlesComponent.vue'
 import FullArticleComponent from '../components/FullArticleComponent.vue'
 import EditCategoryComponent from '../components/EditCategoryComponent.vue'
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginComponent
+    },
+    {
+      path: '/articles',
+      name: 'articles',
+      component: ArticlesComponent
     },
     {
       path: '/fullArticle',

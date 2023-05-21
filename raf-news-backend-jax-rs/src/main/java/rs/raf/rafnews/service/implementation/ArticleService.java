@@ -9,6 +9,7 @@ import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Article;
+import rs.raf.rafnews.model.ArticleSearchParams;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.model.Tag;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
@@ -30,6 +31,11 @@ public class ArticleService implements IArticleService {
     @Override
     public List<ArticleDto> getAllArticles() throws GetException, JoinException, JsonProcessingException, SQLException {
         return this.articleRepository.getAllArticles();
+    }
+
+    @Override
+    public List<ArticleDto> getAllArticlesFiltered(ArticleSearchParams articleSearchParams) throws GetException, JoinException, SQLException, JsonProcessingException {
+        return this.articleRepository.getAllArticlesFiltered(articleSearchParams);
     }
 
     @Override

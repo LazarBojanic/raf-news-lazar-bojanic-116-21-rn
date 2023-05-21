@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import useArticlesStore from '../stores/articles'
+import {useArticlesStore} from '../stores/articles'
 
-export default {
+export default{
   name: 'SmallArticleComponent',
   setup() {
     const articlesStore = useArticlesStore()

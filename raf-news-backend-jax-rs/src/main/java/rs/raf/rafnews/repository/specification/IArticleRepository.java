@@ -14,7 +14,9 @@ import java.util.List;
 public interface IArticleRepository {
     List<Article> getAllRawArticles() throws JsonProcessingException, GetException, SQLException;
     List<ArticleDto> getAllArticles() throws GetException, JsonProcessingException, JoinException, SQLException;
+    List<ArticleDto> getAllArticlesFiltered(ArticleSearchParams articleSearchParams) throws GetException, JoinException, SQLException, JsonProcessingException;
     ArticleDto joinArticle(Article article) throws JsonProcessingException, JoinException;
+
     Article getRawArticleById(Integer id) throws JsonProcessingException, GetException, SQLException;
     ArticleDto getArticleById(Integer id) throws GetException, JsonProcessingException, JoinException, SQLException;
     Article addRawArticle(Article article) throws JsonProcessingException, AddException, GetException, SQLException;

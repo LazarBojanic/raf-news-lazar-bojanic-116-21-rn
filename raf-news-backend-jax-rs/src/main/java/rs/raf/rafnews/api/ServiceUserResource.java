@@ -5,6 +5,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.ServiceUserDto;
+import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.model.ServiceUserLogin;
 import rs.raf.rafnews.model.ServiceUserRegister;
@@ -23,25 +24,12 @@ public class ServiceUserResource {
     @Inject
     IServiceUserService serviceUserService;
 
-    @GET
-    @Path("/getAllRaw")
-    @Produces(APPLICATION_JSON)
-    public Response getAllRawServiceUsers(@HeaderParam("Authorization") String bearerToken){
-        try{
-            List<ServiceUser> serviceUserList = serviceUserService.getAllRawServiceUsers();
-            return Response.ok().entity(serviceUserList).build();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return Response.status(500).entity(e.getMessage()).build();
-        }
-    }
+    @LogEndpoint
     @GET
     @Path("/getAll")
     @Produces(APPLICATION_JSON)
     public Response getAllServiceUsers(@HeaderParam("Authorization") String bearerToken){
         try{
-            System.out.println("Getting All Users - " + Timestamp.from(Instant.now()));
             List<ServiceUserDto> serviceUserDtoList = serviceUserService.getAllServiceUsers();
             return Response.ok().entity(serviceUserDtoList).build();
         }
@@ -50,20 +38,7 @@ public class ServiceUserResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
-
-    @GET
-    @Path("/getRawById/{id}")
-    @Produces(APPLICATION_JSON)
-    public Response getRawServiceUserById(@PathParam("id") Integer id, @HeaderParam("Authorization") String bearerToken){
-        try{
-            ServiceUser serviceUser = serviceUserService.getRawServiceUserById(id);
-            return Response.ok().entity(serviceUser).build();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return Response.status(500).entity(e.getMessage()).build();
-        }
-    }
+    @LogEndpoint
     @GET
     @Path("/getById/{id}")
     @Produces(APPLICATION_JSON)
@@ -78,33 +53,7 @@ public class ServiceUserResource {
         }
     }
 
-    @GET
-    @Path("/getRawByEmail/{email}")
-    @Produces(APPLICATION_JSON)
-    public Response getRawServiceUserById(@PathParam("email") String email, @HeaderParam("Authorization") String bearerToken){
-        try{
-            ServiceUser serviceUser = serviceUserService.getRawServiceUserByEmail(email);
-            return Response.ok().entity(serviceUser).build();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return Response.status(500).entity(e.getMessage()).build();
-        }
-    }
-    @GET
-    @Path("/getByEmail/{email}")
-    @Produces(APPLICATION_JSON)
-    public Response getServiceUserById(@PathParam("email") String email, @HeaderParam("Authorization") String bearerToken){
-        try{
-            ServiceUserDto serviceUserDto = serviceUserService.getServiceUserByEmail(email);
-            return Response.ok().entity(serviceUserDto).build();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return Response.status(500).entity(e.getMessage()).build();
-        }
-    }
-
+    @LogEndpoint
     @POST
     @Path("/add")
     @Consumes(APPLICATION_JSON)
@@ -119,6 +68,7 @@ public class ServiceUserResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @PUT
     @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
@@ -134,6 +84,7 @@ public class ServiceUserResource {
         }
     }
 
+    @LogEndpoint
     @POST
     @Path("/register")
     @Consumes(APPLICATION_JSON)
@@ -149,6 +100,7 @@ public class ServiceUserResource {
         }
     }
 
+    @LogEndpoint
     @POST
     @Path("/login")
     @Consumes(APPLICATION_JSON)
@@ -163,6 +115,7 @@ public class ServiceUserResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @GET
     @Path("/loginWithToken")
     @Produces(APPLICATION_JSON)
@@ -185,6 +138,7 @@ public class ServiceUserResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @GET
     @Path("/logout")
     @Produces(APPLICATION_JSON)
@@ -199,6 +153,7 @@ public class ServiceUserResource {
         }
     }
 
+    @LogEndpoint
     @DELETE
     @Path("/deleteById/{id}")
     @Produces(APPLICATION_JSON)

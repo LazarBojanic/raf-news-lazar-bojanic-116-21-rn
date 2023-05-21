@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import rs.raf.rafnews.dto.CategoryDto;
+import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.service.implementation.CategoryService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
@@ -20,12 +21,12 @@ public class CategoryResource {
     @Inject
     ICategoryService categoryService;
 
+    @LogEndpoint
     @GET
     @Path("/getAll")
     @Produces(APPLICATION_JSON)
     public Response getAllCategories(@HeaderParam("Authorization") String bearerToken){
         try{
-            System.out.println("Getting All Categories - " + Timestamp.from(Instant.now()));
             List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
             return Response.ok().entity(categoryDtoList).build();
         }
@@ -34,6 +35,7 @@ public class CategoryResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @GET
     @Path("/getById/{id}")
     @Produces(APPLICATION_JSON)
@@ -48,6 +50,7 @@ public class CategoryResource {
         }
     }
 
+    @LogEndpoint
     @POST
     @Path("/add")
     @Consumes(APPLICATION_JSON)
@@ -62,6 +65,7 @@ public class CategoryResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @PUT
     @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
@@ -77,6 +81,7 @@ public class CategoryResource {
         }
     }
 
+    @LogEndpoint
     @DELETE
     @Path("/deleteById/{id}")
     @Produces(APPLICATION_JSON)

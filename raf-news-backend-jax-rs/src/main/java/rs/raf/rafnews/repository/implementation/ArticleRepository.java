@@ -22,6 +22,7 @@ import rs.raf.rafnews.service.specification.ITagService;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class ArticleRepository implements IArticleRepository {
@@ -66,6 +67,27 @@ public class ArticleRepository implements IArticleRepository {
         }
         return articleDtoList;
     }
+
+    @Override
+    public List<ArticleDto> getAllArticlesFiltered(ArticleSearchParams articleSearchParams) throws GetException, JoinException, SQLException, JsonProcessingException {
+        List<ArticleDto> articleDtoList = getAllArticles();
+
+        List<ArticleDto> articleDtoListFiltered = articleDtoList.stream()
+                .filter(articleDto -> {
+                    // Check category name filter
+                    String categoryName = articleSearchParams.getCategory_name();
+                    if (categoryName != null && !categoryName.isEmpty()) {
+                        return articleDto.getCategory().getCategory_name().equalsIgnoreCase(categoryName);
+                    }
+                    return true; // No category name filter or empty category name
+                })
+                .skip((long) (articleSearchParams.getPage() - 1) * articleSearchParams.getPage_size())
+                .limit(articleSearchParams.getPage_size())
+                .collect(Collectors.toList());
+
+        return articleDtoListFiltered;
+    }
+
     @Override
     public ArticleDto joinArticle(Article article) throws JsonProcessingException, JoinException {
         try{

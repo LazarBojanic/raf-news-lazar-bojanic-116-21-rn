@@ -21,6 +21,8 @@ public interface IServiceUserService {
     ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException, SQLException;
     ServiceUser getRawServiceUserByEmail(String email) throws JsonProcessingException, GetException, SQLException;
     ServiceUserDto getServiceUserByEmail(String email) throws JsonProcessingException, GetException, SQLException;
+    ServiceUser getRawServiceUserByUsername(String username) throws JsonProcessingException, GetException, SQLException;
+    ServiceUser getRawServiceUserByEmailOrUsername(String email, String username) throws JsonProcessingException, GetException, SQLException;
     ServiceUserDto addServiceUser(ServiceUser serviceUser) throws JsonProcessingException, AddException, SQLException;
     Integer updateServiceUserById(Integer id, ServiceUser serviceUser) throws JsonProcessingException, UpdateException, GetException;
     ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws JsonProcessingException, RegisterException, EmailAlreadyExists, GetException;

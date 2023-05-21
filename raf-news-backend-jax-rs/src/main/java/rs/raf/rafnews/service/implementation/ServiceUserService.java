@@ -56,6 +56,16 @@ public class ServiceUserService implements IServiceUserService {
     }
 
     @Override
+    public ServiceUser getRawServiceUserByUsername(String username) throws JsonProcessingException, GetException, SQLException {
+        return this.serviceUserRepository.getRawServiceUserByUsername(username);
+    }
+
+    @Override
+    public ServiceUser getRawServiceUserByEmailOrUsername(String email, String username) throws JsonProcessingException, GetException, SQLException {
+        return this.serviceUserRepository.getRawServiceUserByEmailOrUsername(email, username);
+    }
+
+    @Override
     public ServiceUserDto addServiceUser(ServiceUser serviceUser) throws AddException, JsonProcessingException, SQLException {
         return this.serviceUserRepository.addServiceUser(serviceUser);
     }

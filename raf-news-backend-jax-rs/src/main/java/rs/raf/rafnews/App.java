@@ -25,6 +25,5 @@ public class App extends Application {
         return classes;
     }
     public App(){
-        System.out.println(Util.workingDirectory.toString());
     }
 }

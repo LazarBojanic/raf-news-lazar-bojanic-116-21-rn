@@ -5,18 +5,21 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.dto.TagDto;
-import rs.raf.rafnews.model.Article;
-import rs.raf.rafnews.model.ArticleWithTag;
-import rs.raf.rafnews.model.ArticleWithTagRequest;
-import rs.raf.rafnews.model.Tag;
+import rs.raf.rafnews.logging.LogEndpoint;
+import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.service.specification.IArticleService;
 import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 
 @Path("/article")
 public class ArticleResource {
@@ -24,12 +27,30 @@ public class ArticleResource {
     IArticleService articleService;
     @Inject
     IArticleWithTagService articleWithTagService;
+
+    @LogEndpoint
+    @GET
+    @Path("/getFile")
+    @Produces(APPLICATION_OCTET_STREAM)
+    public Response downloadFile() {
+        try {
+            URL temp = getClass().getResource("testFile.txt");
+            File file = new File(temp.getPath());
+            FileInputStream fis = new FileInputStream(file);
+            return Response.ok().entity(fis).header("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName())).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+
+    @LogEndpoint
     @GET
     @Path("/getAll")
     @Produces(APPLICATION_JSON)
     public Response getAllArticles(@HeaderParam("Authorization") String bearerToken){
         try{
-            System.out.println("Getting All Articles - " + Timestamp.from(Instant.now()));
             List<ArticleDto> articleDtoList = articleService.getAllArticles();
             return Response.ok().entity(articleDtoList).build();
         }
@@ -38,7 +59,7 @@ public class ArticleResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
-
+    @LogEndpoint
     @GET
     @Path("/getById/{id}")
     @Produces(APPLICATION_JSON)
@@ -52,7 +73,22 @@ public class ArticleResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
-
+    @LogEndpoint
+    @POST
+    @Path("/getAllFiltered")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response getAllArticlesFiltered(ArticleSearchParams articleSearchParams, @HeaderParam("Authorization") String bearerToken){
+        try{
+            List<ArticleDto> articleDtoListFiltered = articleService.getAllArticlesFiltered(articleSearchParams);
+            return Response.ok().entity(articleDtoListFiltered).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @LogEndpoint
     @POST
     @Path("/add")
     @Consumes(APPLICATION_JSON)
@@ -67,6 +103,7 @@ public class ArticleResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @POST
     @Path("/addTagListToArticle")
     @Consumes(APPLICATION_JSON)
@@ -81,6 +118,7 @@ public class ArticleResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @POST
     @Path("/addTagToArticle")
     @Consumes(APPLICATION_JSON)
@@ -95,6 +133,7 @@ public class ArticleResource {
             return Response.status(500).entity(e.getMessage()).build();
         }
     }
+    @LogEndpoint
     @PUT
     @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
@@ -110,6 +149,7 @@ public class ArticleResource {
         }
     }
 
+    @LogEndpoint
     @DELETE
     @Path("/deleteById/{id}")
     @Produces(APPLICATION_JSON)

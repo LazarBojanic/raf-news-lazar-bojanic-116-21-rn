@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import { Exceptions } from '../globals'
-import { update } from 'ramda'
 export const useCategoriesStore = defineStore('categories', {
   state: () => {
     return {

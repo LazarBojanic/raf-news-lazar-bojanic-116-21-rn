@@ -22,6 +22,7 @@
 import { useCategoriesStore } from '../stores/categories'
 import router from '../router'
 export default {
+  name: 'EditCategoryComponent',
   setup() {
     const categoriesStore = useCategoriesStore()
     const category = {}
@@ -30,7 +31,6 @@ export default {
       category
     }
   },
-  name: 'EditCategoryComponent',
   data() {
     return {
       id: 0,

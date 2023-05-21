@@ -120,6 +120,51 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
+    public ServiceUser getRawServiceUserByUsername(String username) throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "SELECT * FROM service_user WHERE username = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setString(1, username);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if (resultSet.next()) {
+                    return extractServiceUserFromResultSet(resultSet);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return new ServiceUser();
+    }
+
+    @Override
+    public ServiceUser getRawServiceUserByEmailOrUsername(String email, String username) throws JsonProcessingException, GetException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "SELECT * FROM service_user WHERE email = ? OR username = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, username);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if (resultSet.next()) {
+                    return extractServiceUserFromResultSet(resultSet);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return new ServiceUser();
+    }
+
+    @Override
     public ServiceUserDto addServiceUser(ServiceUser serviceUser) throws JsonProcessingException, AddException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "INSERT INTO service_user(username, email, pass, user_role, is_enabled, first_name, last_name) VALUES(?, ?, ?, ?, ?, ?, ?)";
@@ -182,12 +227,12 @@ public class ServiceUserRepository implements IServiceUserRepository {
     @Override
     public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws JsonProcessingException, RegisterException, GetException {
         try{
-            if(getRawServiceUserByEmail(serviceUserRegister.getEmail()).getId() == -1){
+            if(getRawServiceUserByEmailOrUsername(serviceUserRegister.getEmail(), serviceUserRegister.getUsername()).getId() == -1){
                 String hashedPass = Hasher.hashPassword(serviceUserRegister.getPass());
                 return addServiceUser(new ServiceUser(0, serviceUserRegister.getUsername(), serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name()));
             }
             else{
-                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + serviceUserRegister.getEmail() + " already exists.");
+                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + serviceUserRegister.getEmail()  + " or username: " + serviceUserRegister.getUsername() + " already exist.");
                 throw new RegisterException(exceptionMessage);
             }
         }
@@ -288,7 +333,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             claims.put("pass", serviceUser.getPass());
             claims.put("user_role", userRole);
             claims.put("is_enabled", serviceUser.getIs_enabled());
-            return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).setExpiration(java.sql.Date.from(LocalDateTime.now().plusHours(6).atZone(ZoneId.systemDefault()).toInstant())).compact();
+            return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).setExpiration(java.sql.Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant())).compact();
         }
         catch(Exception e){
             ExceptionMessage exceptionMessage = new ExceptionMessage("TokenGenerateException", "Failed to generate token. Reason: " + e.getMessage());
