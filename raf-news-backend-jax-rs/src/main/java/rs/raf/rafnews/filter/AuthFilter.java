@@ -58,11 +58,11 @@ public class AuthFilter implements ContainerRequestFilter {
                     return true;
                 }
                 else if(userRole.equals(Util.ROLE_GUEST)){
-                    for (Object matchedResource : matchedResources) {
+                    /*for (Object matchedResource : matchedResources) {
                         if (matchedResource instanceof ServiceUserResource) {
                             return req.getUriInfo().getPath().contains("/get");
                         }
-                    }
+                    }*/
                     return true;
                 }
                 else {

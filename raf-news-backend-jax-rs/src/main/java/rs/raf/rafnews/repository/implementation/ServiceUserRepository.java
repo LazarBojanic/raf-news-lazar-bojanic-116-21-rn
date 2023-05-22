@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 @RequestScoped
 public class ServiceUserRepository implements IServiceUserRepository {
     private static final String JWT_SECRET = "NQu2mzEtCwrNaJCjsoHT";
@@ -291,7 +293,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
     @Override
     public Token logoutServiceUser() throws JsonProcessingException, LogoutException {
         try{
-            ServiceUser serviceUser = new ServiceUser(0, "", "", "", Util.ROLE_GUEST, "false", "", "");
+            ServiceUser serviceUser = new ServiceUser(0, "", "", "", Util.ROLE_GUEST, "true", "", "");
             return new Token(generateToken(serviceUser, Util.ROLE_GUEST));
         }
         catch(TokenGenerateException e){
@@ -333,7 +335,13 @@ public class ServiceUserRepository implements IServiceUserRepository {
             claims.put("pass", serviceUser.getPass());
             claims.put("user_role", userRole);
             claims.put("is_enabled", serviceUser.getIs_enabled());
-            return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).setExpiration(java.sql.Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant())).compact();
+            if(Objects.equals(userRole, Util.ROLE_GUEST)){
+                return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).compact();
+            }
+            else{
+                return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).setExpiration(java.sql.Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant())).compact();
+            }
+
         }
         catch(Exception e){
             ExceptionMessage exceptionMessage = new ExceptionMessage("TokenGenerateException", "Failed to generate token. Reason: " + e.getMessage());

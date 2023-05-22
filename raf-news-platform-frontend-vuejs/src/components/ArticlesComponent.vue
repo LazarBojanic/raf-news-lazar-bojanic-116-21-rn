@@ -1,27 +1,9 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <h1 class="mt-4 mb-4">Articles</h1>
-      <div>
-        <label for="category">Category:</label>
-        <select v-model="searchData.category_name" id="category">
-          <option value="">All Categories</option>
-          <option v-for="category in categoriesStore.getCategories" :value="category.category_name" :key="category.id">{{ category.category_name }}</option>
-        </select>
+      <div v-for="article in articlesStore.getArticles" :key="article.id">
+          <ArticleComponent :article="article" />
       </div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Title</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="smallArticle in articlesStore.getArticles" :key="smallArticle.id">
-            <ArticleRowComponent :smallArticle="smallArticle" />
-          </tr>
-        </tbody>
-      </table>
-      <button class="btn btn-success" @click="goToAddArticlePage">Add Category</button>
     </div>
   </div>
 </template>
@@ -30,11 +12,11 @@
 import { ref } from 'joi-browser'
 import { useArticlesStore } from '../stores/articles'
 import { useCategoriesStore } from '../stores/categories'
-import ArticleRowComponent from './ArticleRowComponent.vue'
+import ArticleComponent from './ArticleComponent.vue'
 import { isNil, isEmpty } from 'ramda'
 export default {
-  name: 'ArticlesTableComponent',
-  components: { ArticleRowComponent },
+  name: 'ArticlesComponent',
+  components: { ArticleComponent },
   setup() {
     const articlesStore = useArticlesStore()
     const categoriesStore = useCategoriesStore()
@@ -51,6 +33,8 @@ export default {
     }
   },
   mounted() {
+    console.log('articles instantiated')
+
     if (!isNil(this.categoriesStore.getCategories) && !isEmpty(this.categoriesStore.getCategories)) {
       this.categoriesStore.fetchAllCategories()
     }
@@ -59,7 +43,7 @@ export default {
     if (!isNil(receivedCategoryName)) {
       this.searchData.category_name = receivedCategoryName
     }
-
+    console.log('fetching articles')
     this.articlesStore.fetchAllArticlesFiltered(this.searchData)
   },
   methods: {

@@ -1,5 +1,8 @@
 <template>
-    <td :class="{ 'pushed-out' : isPushedOut, 'regular-scale' : isRegularScale, 'pushed-in': isPushedIn,  } " @mouseenter="pushOut"  @mouseup="resetScale" @mouseleave="resetScale" @mousedown="pushIn" @click="goToFullArticlePage()"  >{{ smallArticle.title }}</td>
+    <div :class="{ 'pushed-out' : isPushedOut, 'regular-scale' : isRegularScale, 'pushed-in': isPushedIn,  } " @mouseenter="pushOut"  @mouseup="resetScale" @mouseleave="resetScale" @mousedown="pushIn" @click="goToFullArticlePage()"  >
+      <h1>{{ article.title }}</h1>
+      <h3>{{ article.body }}</h3>
+    </div>
 </template>
 
 <script>
@@ -8,7 +11,7 @@ import {useArticlesStore} from '../stores/articles'
 import router from '../router'
 
 export default{
-  name: 'ArticleRowComponent',
+  name: 'ArticleComponent',
   setup() {
     const articlesStore = useArticlesStore()
     const isPushedOut = ref(false)
@@ -26,12 +29,12 @@ export default{
     return {}
   },
   props: {
-    smallArticle: Object
+    article: Object
   },
   computed: {},
   methods: {
     goToFullArticlePage(){
-      
+      //router.push()
     },
     pushOut() {
       this.isPushedOut = true
