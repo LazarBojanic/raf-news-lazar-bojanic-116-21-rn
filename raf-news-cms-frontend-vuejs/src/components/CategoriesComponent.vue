@@ -12,7 +12,7 @@
         </thead>
         <tbody>
           <tr v-for="category in categoriesStore.getCategories" :key="category.id">
-            <CategoryComponent :category="category"  />
+            <CategoryComponent :category="category" />
           </tr>
         </tbody>
       </table>
@@ -62,7 +62,7 @@ export default {
     const addCategoryFormVisible = ref(false)
     const category_name = ref('')
     const description = ref('')
-    
+
     const cancelAddCategory = () => {
       category_name.value = ''
       description.value = ''
@@ -78,18 +78,12 @@ export default {
     this.categoriesStore.fetchAllCategories()
   },
   methods: {
-    goToNewsWithCategoryPage(categoryId){
+    goToNewsWithCategoryPage(categoryId) {
       console.log(categoryId)
-    },
-    
-    
+    }
   },
   components: { CategoryComponent }
 }
 </script>
 
-<style>
-
-  
-
-</style>
+<style></style>

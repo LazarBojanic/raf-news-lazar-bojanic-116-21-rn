@@ -7,10 +7,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.exception.*;
-import rs.raf.rafnews.model.ServiceUser;
-import rs.raf.rafnews.model.ServiceUserLogin;
-import rs.raf.rafnews.model.ServiceUserRegister;
-import rs.raf.rafnews.model.Token;
+import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 
@@ -76,8 +73,13 @@ public class ServiceUserService implements IServiceUserService {
     }
 
     @Override
-    public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws RegisterException, JsonProcessingException, EmailAlreadyExists, GetException {
+    public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws RegisterException, JsonProcessingException {
         return this.serviceUserRepository.registerServiceUser(serviceUserRegister);
+    }
+
+    @Override
+    public ServiceUserDto registerServiceUserFromAdmin(ServiceUserFromAdminRegister serviceUserFromAdminRegister) throws JsonProcessingException, RegisterException{
+        return this.serviceUserRepository.registerServiceUserFromAdmin(serviceUserFromAdminRegister);
     }
 
     @Override

@@ -1,13 +1,22 @@
 <template>
-    <td :class="{ 'pushed-out' : isPushedOut, 'regular-scale' : isRegularScale, 'pushed-in': isPushedIn,  } " @mouseenter="pushOut"  @mouseup="resetScale" @mouseleave="resetScale" @mousedown="pushIn" @click="goToFullArticlePage()"  >{{ smallArticle.title }}</td>
+  <td
+    :class="{ 'pushed-out': isPushedOut, 'regular-scale': isRegularScale, 'pushed-in': isPushedIn }"
+    @mouseenter="pushOut"
+    @mouseup="resetScale"
+    @mouseleave="resetScale"
+    @mousedown="pushIn"
+    @click="goToFullArticlePage()"
+  >
+    {{ smallArticle.title }}
+  </td>
 </template>
 
 <script>
 import { ref } from 'vue'
-import {useArticlesStore} from '../stores/articles'
+import { useArticlesStore } from '../stores/articles'
 import router from '../router'
 
-export default{
+export default {
   name: 'ArticleRowComponent',
   setup() {
     const articlesStore = useArticlesStore()
@@ -30,9 +39,7 @@ export default{
   },
   computed: {},
   methods: {
-    goToFullArticlePage(){
-      
-    },
+    goToFullArticlePage() {},
     pushOut() {
       this.isPushedOut = true
       this.isRegularScale = false
@@ -47,23 +54,25 @@ export default{
       this.isPushedOut = false
       this.isRegularScale = false
       this.isPushedIn = true
-    },
+    }
   }
 }
 </script>
 
 <style scoped>
-.small-article {
-  border: 1px solid #ccc;
-  padding: 10px;
-  transition: transform 0.3s ease;
+.pushed-in {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(0.95);
 }
-
-.small-article:hover {
-  transform: scale(1.1);
+.regular-scale {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(1);
 }
-
-.small-article:active {
-  transform: scale(0.9);
+.pushed-out {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(1.05);
 }
 </style>

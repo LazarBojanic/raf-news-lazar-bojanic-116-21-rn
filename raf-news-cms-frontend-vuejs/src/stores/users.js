@@ -5,10 +5,12 @@ import { isNil, isEmpty } from 'ramda'
 export const useUsersStore = defineStore('users', {
   state: () => {
     return {
+      users: {},
       exception: {}
     }
   },
   getters: {
+    getUsers: (state) => state.users,
     getException: (state) => state.exception
   },
   actions: {
@@ -25,6 +27,33 @@ export const useUsersStore = defineStore('users', {
         console.log(data)
         console.log(res.status + ' ' + res.statusText + ' ' + res.text)
         if (res.status !== 500) {
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
+    },
+    async registerFromAdmin(registerData) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch('http://95.180.97.206:8081/api/service_user/registerFromAdmin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(registerData)
+        })
+        const data = await res.json()
+        console.log(data)
+        console.log(res.status + ' ' + res.statusText + ' ' + res.text)
+        if (res.status !== 500) {
+          this.fetchUsers()
           this.exception = {}
           console.log(JSON.stringify(data))
         } else {
@@ -114,6 +143,32 @@ export const useUsersStore = defineStore('users', {
     },
     clearException() {
       this.exception = {}
+    },
+    async fetchUsers() {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch('http://95.180.97.206:8081/api/service_user/getAll', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.users = data
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          Cookies.set('token', {})
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
+        Cookies.set('token', {})
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
     }
   }
 })

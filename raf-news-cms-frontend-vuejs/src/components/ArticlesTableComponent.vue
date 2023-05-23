@@ -6,7 +6,13 @@
         <label for="category">Category:</label>
         <select v-model="searchData.category_name" id="category">
           <option value="">All Categories</option>
-          <option v-for="category in categoriesStore.getCategories" :value="category.category_name" :key="category.id">{{ category.category_name }}</option>
+          <option
+            v-for="category in categoriesStore.getCategories"
+            :value="category.category_name"
+            :key="category.id"
+          >
+            {{ category.category_name }}
+          </option>
         </select>
       </div>
       <table class="table">
@@ -41,7 +47,7 @@ export default {
     const searchData = {
       page: 1,
       page_size: 3,
-      category_name: 'gaming',
+      category_name: 'gaming'
     }
 
     return {
@@ -51,7 +57,10 @@ export default {
     }
   },
   mounted() {
-    if (!isNil(this.categoriesStore.getCategories) && !isEmpty(this.categoriesStore.getCategories)) {
+    if (
+      !isNil(this.categoriesStore.getCategories) &&
+      !isEmpty(this.categoriesStore.getCategories)
+    ) {
       this.categoriesStore.fetchAllCategories()
     }
     const receivedCategoryName = this.$route.query.category_name
@@ -66,24 +75,24 @@ export default {
     goToAddArticlePage() {
       // Implement your goToAddArticlePage method here
     }
-  },
+  }
 }
 </script>
 
 <style>
 .pushed-in {
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-    transform: scale(0.95);
-  }
-  .regular-scale {
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-    transform: scale(1);
-  }
-  .pushed-out {
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-    transform: scale(1.05);
-  }
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(0.95);
+}
+.regular-scale {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(1);
+}
+.pushed-out {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(1.05);
+}
 </style>

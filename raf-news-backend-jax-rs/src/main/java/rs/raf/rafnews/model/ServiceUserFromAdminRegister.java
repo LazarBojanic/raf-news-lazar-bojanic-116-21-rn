@@ -1,6 +1,5 @@
 package rs.raf.rafnews.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Getter
@@ -9,11 +8,12 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ServiceUserRegister {
+public class ServiceUserFromAdminRegister {
     private String username;
     private String email;
     private String pass;
     private String confirm_pass;
+    private String user_role;
     private String first_name;
     private String last_name;
 }

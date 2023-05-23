@@ -12,6 +12,9 @@
           <li v-if="!validToken" class="nav-item">
             <router-link class="nav-link" to="/register">Register</router-link>
           </li>
+          <li v-if="userIsAdmin" class="nav-item">
+            <router-link class="nav-link" to="/users">Users</router-link>
+          </li>
           <li v-if="validToken" class="nav-item">
             <a class="nav-link" href="#" @click.prevent="logoutButton">Logout</a>
           </li>
@@ -37,9 +40,11 @@ export default {
   setup() {
     const usersStore = useUsersStore()
     const validToken = ref(false)
+    const userIsAdmin = ref(false)
     return {
       usersStore,
-      validToken
+      validToken,
+      userIsAdmin
     }
   },
   mounted() {
@@ -64,6 +69,7 @@ export default {
         console.log('login successful')
       } else {
         console.log('login failed')
+        await this.usersStore.logout()
       }
     },
     handleExceptions() {
@@ -77,6 +83,7 @@ export default {
     },
     updateToken() {
       this.validToken = jwtDecode(Cookies.get('token')).email !== ''
+      this.userIsAdmin = jwtDecode(Cookies.get('token')).user_role === 'admin'
     }
   }
 }

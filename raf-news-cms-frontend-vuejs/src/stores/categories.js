@@ -22,7 +22,7 @@ export const useCategoriesStore = defineStore('categories', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           }
         })
         const data = await res.json()
@@ -43,14 +43,17 @@ export const useCategoriesStore = defineStore('categories', {
     async updateCategory(updateData) {
       try {
         const token = Cookies.get('token')
-        const res = await fetch(`http://95.180.97.206:8081/api/category/updateById/${updateData.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(updateData)
-        })
+        const res = await fetch(
+          `http://95.180.97.206:8081/api/category/updateById/${updateData.id}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(updateData)
+          }
+        )
         const data = await res.json()
         if (res.status !== 500) {
           this.exception = {}
@@ -64,7 +67,6 @@ export const useCategoriesStore = defineStore('categories', {
         console.log(error)
       }
     },
-    async deleteCategory() {},
-    
+    async deleteCategory() {}
   }
 })

@@ -25,9 +25,7 @@ export default {
   },
   props: {},
   computed: {},
-  methods: {
-    
-  }
+  methods: {}
 }
 </script>
 

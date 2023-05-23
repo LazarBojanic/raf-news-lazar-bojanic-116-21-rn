@@ -20,7 +20,7 @@ export const useCommentsStore = defineStore('comments', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`
             }
           }
         )

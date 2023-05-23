@@ -6,6 +6,7 @@ import LoginComponent from '../components/LoginComponent.vue'
 import ArticlesTableComponent from '../components/ArticlesTableComponent.vue'
 import FullArticleComponent from '../components/FullArticleComponent.vue'
 import EditCategoryComponent from '../components/EditCategoryComponent.vue'
+import UsersTableComponent from '../components/UsersTableComponent.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -43,6 +44,11 @@ const router = createRouter({
       path: '/editCategory',
       name: 'editCategory',
       component: EditCategoryComponent
+    },
+    {
+      path: '/users',
+      name: 'users',
+      component: UsersTableComponent
     }
   ]
 })

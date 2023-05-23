@@ -6,10 +6,7 @@ import jakarta.ws.rs.core.*;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.logging.LogEndpoint;
-import rs.raf.rafnews.model.ServiceUser;
-import rs.raf.rafnews.model.ServiceUserLogin;
-import rs.raf.rafnews.model.ServiceUserRegister;
-import rs.raf.rafnews.model.Token;
+import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.exception.ExceptionMessage;
 
@@ -92,6 +89,22 @@ public class ServiceUserResource {
     public Response registerServiceUser(ServiceUserRegister serviceUserRegister){
         try{
             ServiceUserDto serviceUserDtoWithId = serviceUserService.registerServiceUser(serviceUserRegister);
+            return Response.ok().entity(serviceUserDtoWithId).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+
+    @LogEndpoint
+    @POST
+    @Path("/registerFromAdmin")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response registerServiceUserFromAdmin(ServiceUserFromAdminRegister serviceUserFromAdminRegister){
+        try{
+            ServiceUserDto serviceUserDtoWithId = serviceUserService.registerServiceUserFromAdmin(serviceUserFromAdminRegister);
             return Response.ok().entity(serviceUserDtoWithId).build();
         }
         catch(Exception e){

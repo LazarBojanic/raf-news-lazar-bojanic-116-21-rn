@@ -5,7 +5,7 @@ import jakarta.ws.rs.core.Application;
 import rs.raf.rafnews.api.*;
 import rs.raf.rafnews.filter.AuthFilter;
 import rs.raf.rafnews.filter.CorsFilter;
-import rs.raf.rafnews.util.Util;
+import rs.raf.rafnews.util.LifecycleHandler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +15,7 @@ public class App extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
+
         classes.add(CorsFilter.class);
         classes.add(AuthFilter.class);
         classes.add(ArticleResource.class);

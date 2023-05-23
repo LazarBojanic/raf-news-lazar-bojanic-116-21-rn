@@ -27,6 +27,10 @@
                   <label>Password</label>
                   <input type="password" v-model="pass" class="form-control" required />
                 </div>
+                <div class="form-group">
+                  <label>Confirm Password</label>
+                  <input type="password" v-model="confirm_pass" class="form-control" required />
+                </div>
                 <br />
                 <button type="submit" class="btn btn-primary">Register</button>
               </form>
@@ -59,7 +63,8 @@ export default {
       last_name: '',
       username: '',
       email: '',
-      pass: ''
+      pass: '',
+      confirm_pass: ''
     }
   },
   mounted() {},
@@ -69,6 +74,7 @@ export default {
         username: this.username,
         email: this.email,
         pass: this.pass,
+        confirm_pass: '',
         first_name: this.first_name,
         last_name: this.last_name
       }

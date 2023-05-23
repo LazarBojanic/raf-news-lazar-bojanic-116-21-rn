@@ -5,7 +5,13 @@
       <form @submit.prevent="updateCategory">
         <div class="form-group">
           <label for="category_name">Name:</label>
-          <input type="text" class="form-control" id="category_name" v-model="category_name" required />
+          <input
+            type="text"
+            class="form-control"
+            id="category_name"
+            v-model="category_name"
+            required
+          />
         </div>
         <div class="form-group">
           <label for="description">Description:</label>
@@ -39,8 +45,8 @@ export default {
     }
   },
   mounted() {
-    this.category_name = this.categoriesStore.getCategory.category_name;
-    this.description = this.categoriesStore.getCategory.description;
+    this.category_name = this.categoriesStore.getCategory.category_name
+    this.description = this.categoriesStore.getCategory.description
   },
   /*created() {
       /// Retrieve the categoryId from the route parameters

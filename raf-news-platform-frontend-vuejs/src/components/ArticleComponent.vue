@@ -21,6 +21,7 @@ export default{
       articlesStore,
       isPushedOut,
       isRegularScale,
+      
       isPushedIn
     }
   },

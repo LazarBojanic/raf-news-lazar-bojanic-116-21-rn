@@ -3,14 +3,10 @@ package rs.raf.rafnews.repository.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.*;
 import jakarta.enterprise.context.RequestScoped;
-import org.postgresql.jdbc.PgConnection;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.exception.*;
-import rs.raf.rafnews.model.ServiceUser;
-import rs.raf.rafnews.model.ServiceUserLogin;
-import rs.raf.rafnews.model.ServiceUserRegister;
-import rs.raf.rafnews.model.Token;
+import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
 import rs.raf.rafnews.util.Hasher;
 import rs.raf.rafnews.util.Util;
@@ -227,14 +223,20 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws JsonProcessingException, RegisterException, GetException {
+    public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws JsonProcessingException, RegisterException {
         try{
-            if(getRawServiceUserByEmailOrUsername(serviceUserRegister.getEmail(), serviceUserRegister.getUsername()).getId() == -1){
-                String hashedPass = Hasher.hashPassword(serviceUserRegister.getPass());
-                return addServiceUser(new ServiceUser(0, serviceUserRegister.getUsername(), serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name()));
+            if(serviceUserRegister.getPass().equals(serviceUserRegister.getConfirm_pass())){
+                if(getRawServiceUserByEmailOrUsername(serviceUserRegister.getEmail(), serviceUserRegister.getUsername()).getId() == -1){
+                    String hashedPass = Hasher.hashPassword(serviceUserRegister.getPass());
+                    return addServiceUser(new ServiceUser(0, serviceUserRegister.getUsername(), serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name()));
+                }
+                else{
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + serviceUserRegister.getEmail()  + " or username: " + serviceUserRegister.getUsername() + " already exist.");
+                    throw new RegisterException(exceptionMessage);
+                }
             }
             else{
-                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + serviceUserRegister.getEmail()  + " or username: " + serviceUserRegister.getUsername() + " already exist.");
+                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Passwords must match.");
                 throw new RegisterException(exceptionMessage);
             }
         }
@@ -243,6 +245,31 @@ public class ServiceUserRepository implements IServiceUserRepository {
             throw new RegisterException(exceptionMessage);
         }
     }
+
+    @Override
+    public ServiceUserDto registerServiceUserFromAdmin(ServiceUserFromAdminRegister serviceUserFromAdminRegister) throws JsonProcessingException, RegisterException {
+        try{
+            if(serviceUserFromAdminRegister.getPass().equals(serviceUserFromAdminRegister.getConfirm_pass())){
+                if(getRawServiceUserByEmailOrUsername(serviceUserFromAdminRegister.getEmail(), serviceUserFromAdminRegister.getUsername()).getId() == -1){
+                    String hashedPass = Hasher.hashPassword(serviceUserFromAdminRegister.getPass());
+                    return addServiceUser(new ServiceUser(0, serviceUserFromAdminRegister.getUsername(), serviceUserFromAdminRegister.getEmail(), hashedPass, serviceUserFromAdminRegister.getUser_role(), "true", serviceUserFromAdminRegister.getFirst_name(), serviceUserFromAdminRegister.getLast_name()));
+                }
+                else{
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + serviceUserFromAdminRegister.getEmail()  + " or username: " + serviceUserFromAdminRegister.getUsername() + " already exist.");
+                    throw new RegisterException(exceptionMessage);
+                }
+            }
+            else{
+                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Passwords must match.");
+                throw new RegisterException(exceptionMessage);
+            }
+        }
+        catch (Exception e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", e.getMessage());
+            throw new RegisterException(exceptionMessage);
+        }
+    }
+
     @Override
     public Token loginServiceUser(ServiceUserLogin serviceUserLogin) throws LoginException, JsonProcessingException, GetException {
         try{
