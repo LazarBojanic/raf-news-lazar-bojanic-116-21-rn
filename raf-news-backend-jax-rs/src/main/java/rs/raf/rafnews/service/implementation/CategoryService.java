@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.CategoryDto;
+import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.UpdateException;
 import rs.raf.rafnews.model.Category;
@@ -42,7 +43,12 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryDto addCategory(Category category) {
+    public Category addRawCategory(Category category) throws SQLException, AddException, JsonProcessingException {
+        return this.categoryRepository.addRawCategory(category);
+    }
+
+    @Override
+    public CategoryDto addCategory(Category category) throws SQLException, AddException, JsonProcessingException {
         return this.categoryRepository.addCategory(category);
     }
 

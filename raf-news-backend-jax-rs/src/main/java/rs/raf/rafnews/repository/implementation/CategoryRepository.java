@@ -5,16 +5,14 @@ import jakarta.enterprise.context.RequestScoped;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.dto.ServiceUserDto;
+import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.ExceptionMessage;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.UpdateException;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,8 +84,39 @@ public class CategoryRepository implements ICategoryRepository {
     }
 
     @Override
-    public CategoryDto addCategory(Category category) {
-        return null;
+    public Category addRawCategory(Category category) throws SQLException, JsonProcessingException, AddException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "INSERT INTO category(category_name, description) VALUES(?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, category.getCategory_name());
+                preparedStatement.setString(2, category.getDescription());
+                int affectedRows = preparedStatement.executeUpdate();
+                if (affectedRows > 0) {
+                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt("id");
+                        category.setId(id);
+                        return category;
+                    }
+                }
+            }
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add category: " + category);
+            throw new AddException(exceptionMessage);
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
+            throw new AddException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+    }
+
+    @Override
+    public CategoryDto addCategory(Category category) throws SQLException, AddException, JsonProcessingException {
+        Category addedRawCategory = addRawCategory(category);
+        return joinCategory(addedRawCategory);
     }
 
     @Override

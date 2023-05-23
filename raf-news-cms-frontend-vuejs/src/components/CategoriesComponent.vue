@@ -17,11 +17,11 @@
         </tbody>
       </table>
       <div>
-        <button class="btn btn-success" @click="addCategoryFormVisible = true">Add Category</button>
+        <button :disabled="!userIsAdmin" class="btn btn-success" @click="changeAddCategoryFormVisibility">Add Category</button>
       </div>
       <div v-if="addCategoryFormVisible">
         <h2>Add New Category</h2>
-        <form @submit.prevent="addCategory">
+        <form :disabled="!userIsAdmin" @submit.prevent="addCategory">
           <div class="form-group">
             <label for="category_name">Name:</label>
             <input
@@ -55,6 +55,9 @@ import router from '../router'
 import { useCategoriesStore } from '../stores/categories'
 import { ref } from 'vue'
 import CategoryComponent from './CategoryComponent.vue'
+import Cookies from 'js-cookie'
+import jwtDecode from 'jwt-decode'
+
 export default {
   name: 'CategoriesComponent',
   setup() {
@@ -62,24 +65,43 @@ export default {
     const addCategoryFormVisible = ref(false)
     const category_name = ref('')
     const description = ref('')
-
-    const cancelAddCategory = () => {
-      category_name.value = ''
-      description.value = ''
-      addCategoryFormVisible.value = false
-    }
+    const userIsAdmin = ref(false)
+    
     return {
       categoriesStore,
       addCategoryFormVisible,
-      cancelAddCategory
+      category_name,
+      description,
+      userIsAdmin
     }
   },
   mounted() {
+    this.checkIfAdmin()
     this.categoriesStore.fetchAllCategories()
   },
   methods: {
     goToNewsWithCategoryPage(categoryId) {
       console.log(categoryId)
+    },
+    changeAddCategoryFormVisibility(){
+      this.addCategoryFormVisible = !this.addCategoryFormVisible;
+    },
+    cancelAddCategory() {
+      this.category_name = ''
+      this.description = ''
+      this.addCategoryFormVisible = false
+    },
+    addCategory(){
+      const categoryAddData = {
+        id : 0,
+        category_name : this.category_name,
+        description : this.description
+      }
+      //console.log(categoryAddData)
+      this.categoriesStore.addCategory(categoryAddData);
+    },
+    checkIfAdmin(){
+      this.userIsAdmin = jwtDecode(Cookies.get('token')).user_role === 'admin'
     }
   },
   components: { CategoryComponent }
