@@ -39,7 +39,11 @@ export default {
   },
   computed: {},
   methods: {
-    goToFullArticlePage() {},
+    goToFullArticlePage() {
+      const articleId = this.smallArticle.id;
+      const url = `http://localhost:5174/fullArticle?articleId=${articleId}`;
+      window.open(url, '_blank');
+    },
     pushOut() {
       this.isPushedOut = true
       this.isRegularScale = false
