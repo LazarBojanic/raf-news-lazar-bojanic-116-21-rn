@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div v-for="article in articlesStore.getArticles" :key="article.id">
-          <ArticleComponent :article="article" />
+        <ArticleComponent :article="article" />
       </div>
     </div>
   </div>
@@ -23,7 +23,7 @@ export default {
     const searchData = {
       page: 1,
       page_size: 3,
-      category_name: 'gaming',
+      category_name: 'gaming'
     }
 
     return {
@@ -35,7 +35,10 @@ export default {
   mounted() {
     console.log('articles instantiated')
 
-    if (!isNil(this.categoriesStore.getCategories) && !isEmpty(this.categoriesStore.getCategories)) {
+    if (
+      !isNil(this.categoriesStore.getCategories) &&
+      !isEmpty(this.categoriesStore.getCategories)
+    ) {
       this.categoriesStore.fetchAllCategories()
     }
     const receivedCategoryName = this.$route.query.category_name
@@ -50,24 +53,24 @@ export default {
     goToAddArticlePage() {
       // Implement your goToAddArticlePage method here
     }
-  },
+  }
 }
 </script>
 
 <style>
 .pushed-in {
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-    transform: scale(0.95);
-  }
-  .regular-scale {
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-    transform: scale(1);
-  }
-  .pushed-out {
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-    transform: scale(1.05);
-  }
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(0.95);
+}
+.regular-scale {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(1);
+}
+.pushed-out {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(1.05);
+}
 </style>

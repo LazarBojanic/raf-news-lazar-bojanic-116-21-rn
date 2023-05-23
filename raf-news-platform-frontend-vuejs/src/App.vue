@@ -12,14 +12,14 @@
     <br />
     <div class="container d-flex justify-content-center align-items-center">
       <div class="col-md-8">
-        <router-view @loggedIn="updateToken" />
+        <router-view />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {useUsersStore} from './stores/users'
+import { useUsersStore } from './stores/users'
 export default {
   setup() {
     const usersStore = useUsersStore()
@@ -30,12 +30,8 @@ export default {
   mounted() {
     this.usersStore.logout()
   },
-  methods:{
-    
-    
-  }
+  methods: {}
 }
-
 </script>
 
 <style></style>

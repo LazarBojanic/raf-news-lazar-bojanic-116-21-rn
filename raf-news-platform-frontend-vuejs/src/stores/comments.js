@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia'
-import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
-export const useCommentsStore = defineStore('comments', {
+import { defineStore } from "pinia"
+import Cookies from "js-cookie"
+import { Exceptions } from "../globals"
+export const useCommentsStore = defineStore("comments", {
   state: () => {
     return {
       comments: {}
@@ -13,13 +13,13 @@ export const useCommentsStore = defineStore('comments', {
   actions: {
     async fetchCommentsByArticleId(articleId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get("token")
         const res = await fetch(
           `http://95.180.97.206:8081/api/comment/getAllByArticleId/${articleId}`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
               'Authorization': `Bearer ${token}`
             }
           }

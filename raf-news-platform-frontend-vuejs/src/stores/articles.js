@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia'
-import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
-export const useArticlesStore = defineStore('articles', {
+import { defineStore } from "pinia"
+import Cookies from "js-cookie"
+import { Exceptions } from "../globals"
+export const useArticlesStore = defineStore("articles", {
   state: () => {
     return {
       articles: {},
@@ -15,11 +15,11 @@ export const useArticlesStore = defineStore('articles', {
   actions: {
     async fetchArticle(articleId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get("token")
         const res = await fetch(`http://95.180.97.206:8081/api/article/getById/${articleId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
           }
         })
@@ -39,11 +39,11 @@ export const useArticlesStore = defineStore('articles', {
     },
     async fetchAllArticles() {
       try {
-        const token = Cookies.get('token')
-        const res = await fetch('http://95.180.97.206:8081/api/article/getAll', {
-          method: 'GET',
+        const token = Cookies.get("token")
+        const res = await fetch("http://95.180.97.206:8081/api/article/getAll", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
           }
         })
@@ -63,11 +63,11 @@ export const useArticlesStore = defineStore('articles', {
     },
     async fetchAllArticlesFiltered(searchData) {
       try {
-        const token = Cookies.get('token')
-        const res = await fetch('http://95.180.97.206:8081/api/article/getAllFiltered', {
-          method: 'POST',
+        const token = Cookies.get("token")
+        const res = await fetch("http://95.180.97.206:8081/api/article/getAllFiltered", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(searchData)

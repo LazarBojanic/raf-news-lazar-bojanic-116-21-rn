@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import ArticlesComponent from '../components/ArticlesComponent.vue';
+import ArticlesComponent from '../components/ArticlesComponent.vue'
 
 export default {
   name: 'HomeView',
@@ -23,13 +23,9 @@ export default {
   data() {
     return {}
   },
-  props: {
-    
-  },
+  props: {},
   computed: {},
-  methods: {
-    
-  }
+  methods: {}
 }
 </script>
 
