@@ -8,13 +8,10 @@ import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.dto.TagDto;
-import rs.raf.rafnews.exception.AddException;
-import rs.raf.rafnews.exception.ExceptionMessage;
-import rs.raf.rafnews.exception.GetException;
-import rs.raf.rafnews.exception.JoinException;
+import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
-import rs.raf.rafnews.service.specification.IArticleWithTagService;
+import rs.raf.rafnews.request.ArticleSearchRequest;
 import rs.raf.rafnews.service.specification.ICategoryService;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.service.specification.ITagService;
@@ -69,20 +66,20 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
-    public List<ArticleDto> getAllArticlesFiltered(ArticleSearchParams articleSearchParams) throws GetException, JoinException, SQLException, JsonProcessingException {
+    public List<ArticleDto> getAllArticlesFiltered(ArticleSearchRequest articleSearchRequest) throws GetException, JoinException, SQLException, JsonProcessingException {
         List<ArticleDto> articleDtoList = getAllArticles();
 
         List<ArticleDto> articleDtoListFiltered = articleDtoList.stream()
                 .filter(articleDto -> {
                     // Check category name filter
-                    String categoryName = articleSearchParams.getCategory_name();
+                    String categoryName = articleSearchRequest.getCategory_name();
                     if (categoryName != null && !categoryName.isEmpty()) {
                         return articleDto.getCategory().getCategory_name().equalsIgnoreCase(categoryName);
                     }
                     return true; // No category name filter or empty category name
                 })
-                .skip((long) (articleSearchParams.getPage() - 1) * articleSearchParams.getPage_size())
-                .limit(articleSearchParams.getPage_size())
+                .skip((long) (articleSearchRequest.getPage() - 1) * articleSearchRequest.getPage_size())
+                .limit(articleSearchRequest.getPage_size())
                 .collect(Collectors.toList());
 
         return articleDtoListFiltered;
@@ -210,8 +207,26 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
-    public Integer deleteArticleById(Integer id) {
-        return null;
+    public Integer deleteArticleById(Integer id) throws JsonProcessingException, DeleteException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "DELETE FROM article WHERE id = ?";
+            try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+                preparedStatement.setInt(1, id);
+                int affectedRows = preparedStatement.executeUpdate();
+                if(affectedRows > 0){
+                    return affectedRows;
+                }
+                else{
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete article. Id " + id + " not found.");
+                    throw new DeleteException(exceptionMessage);
+                }
+            }
+        }
+        catch (SQLException e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
+            throw new DeleteException(exceptionMessage);
+        }
     }
     private Article extractArticleFromResultSet(ResultSet resultSet) throws SQLException {
         Integer columnId = resultSet.getInt("id");

@@ -14,7 +14,7 @@ export const useUsersStore = defineStore("users", {
   actions: {
     async logout() {
       try {
-        const res = await fetch("http://95.180.97.206:8081/api/service_user/logout", {
+        const res = await fetch("http://95.180.97.206:8000/api/service_user/logout", {
           method: "GET",
           headers: {
             "Content-Type": "application/json"

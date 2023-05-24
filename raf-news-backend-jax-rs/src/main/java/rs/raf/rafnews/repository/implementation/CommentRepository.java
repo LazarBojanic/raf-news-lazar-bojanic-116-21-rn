@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.*;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.ExceptionMessage;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
@@ -158,8 +159,26 @@ public class CommentRepository implements ICommentRepository {
     }
 
     @Override
-    public Integer deleteCommentById(Integer id) {
-        return null;
+    public Integer deleteCommentById(Integer id) throws SQLException, JsonProcessingException, DeleteException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "DELETE FROM category WHERE id = ?";
+            try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+                preparedStatement.setInt(1, id);
+                int affectedRows = preparedStatement.executeUpdate();
+                if(affectedRows > 0){
+                    return affectedRows;
+                }
+                else{
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete comment. Id " + id + " not found.");
+                    throw new DeleteException(exceptionMessage);
+                }
+            }
+        }
+        catch (SQLException e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
+            throw new DeleteException(exceptionMessage);
+        }
     }
     private Comment extractCommentFromResultSet(ResultSet resultSet) throws SQLException {
         Integer columnId = resultSet.getInt("id");

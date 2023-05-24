@@ -1,4 +1,4 @@
-package rs.raf.rafnews.model;
+package rs.raf.rafnews.request;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ServiceUserFromAdminRegister {
+public class RegisterFromAdminRequest {
     private String username;
     private String email;
     private String pass;

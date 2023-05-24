@@ -4,22 +4,16 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import rs.raf.rafnews.dto.ArticleDto;
-import rs.raf.rafnews.dto.TagDto;
 import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
+import rs.raf.rafnews.request.ArticleSearchRequest;
+import rs.raf.rafnews.request.ArticleWithTagRequest;
 import rs.raf.rafnews.service.specification.IArticleService;
 import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 
 @Path("/article")
 public class ArticleResource {
@@ -61,9 +55,9 @@ public class ArticleResource {
     @Path("/getAllFiltered")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response getAllArticlesFiltered(ArticleSearchParams articleSearchParams, @HeaderParam("Authorization") String bearerToken){
+    public Response getAllArticlesFiltered(ArticleSearchRequest articleSearchRequest, @HeaderParam("Authorization") String bearerToken){
         try{
-            List<ArticleDto> articleDtoListFiltered = articleService.getAllArticlesFiltered(articleSearchParams);
+            List<ArticleDto> articleDtoListFiltered = articleService.getAllArticlesFiltered(articleSearchRequest);
             return Response.ok().entity(articleDtoListFiltered).build();
         }
         catch(Exception e){

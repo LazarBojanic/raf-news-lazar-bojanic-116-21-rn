@@ -15,7 +15,7 @@ export const useCommentsStore = defineStore("comments", {
       try {
         const token = Cookies.get("token")
         const res = await fetch(
-          `http://95.180.97.206:8081/api/comment/getAllByArticleId/${articleId}`,
+          `http://95.180.97.206:8000/api/comment/getAllByArticleId/${articleId}`,
           {
             method: "GET",
             headers: {

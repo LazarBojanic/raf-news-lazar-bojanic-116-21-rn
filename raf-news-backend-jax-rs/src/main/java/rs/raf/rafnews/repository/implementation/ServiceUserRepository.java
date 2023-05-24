@@ -8,6 +8,9 @@ import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
+import rs.raf.rafnews.request.RegisterFromAdminRequest;
+import rs.raf.rafnews.request.LoginRequest;
+import rs.raf.rafnews.request.RegisterRequest;
 import rs.raf.rafnews.util.Hasher;
 import rs.raf.rafnews.util.Util;
 
@@ -223,15 +226,15 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws JsonProcessingException, RegisterException {
+    public ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws JsonProcessingException, RegisterException {
         try{
-            if(serviceUserRegister.getPass().equals(serviceUserRegister.getConfirm_pass())){
-                if(getRawServiceUserByEmailOrUsername(serviceUserRegister.getEmail(), serviceUserRegister.getUsername()).getId() == -1){
-                    String hashedPass = Hasher.hashPassword(serviceUserRegister.getPass());
-                    return addServiceUser(new ServiceUser(0, serviceUserRegister.getUsername(), serviceUserRegister.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", serviceUserRegister.getFirst_name(), serviceUserRegister.getLast_name()));
+            if(registerRequest.getPass().equals(registerRequest.getConfirm_pass())){
+                if(getRawServiceUserByEmailOrUsername(registerRequest.getEmail(), registerRequest.getUsername()).getId() == -1){
+                    String hashedPass = Hasher.hashPassword(registerRequest.getPass());
+                    return addServiceUser(new ServiceUser(0, registerRequest.getUsername(), registerRequest.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", registerRequest.getFirst_name(), registerRequest.getLast_name()));
                 }
                 else{
-                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + serviceUserRegister.getEmail()  + " or username: " + serviceUserRegister.getUsername() + " already exist.");
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + registerRequest.getEmail()  + " or username: " + registerRequest.getUsername() + " already exist.");
                     throw new RegisterException(exceptionMessage);
                 }
             }
@@ -247,15 +250,15 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public ServiceUserDto registerServiceUserFromAdmin(ServiceUserFromAdminRegister serviceUserFromAdminRegister) throws JsonProcessingException, RegisterException {
+    public ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException {
         try{
-            if(serviceUserFromAdminRegister.getPass().equals(serviceUserFromAdminRegister.getConfirm_pass())){
-                if(getRawServiceUserByEmailOrUsername(serviceUserFromAdminRegister.getEmail(), serviceUserFromAdminRegister.getUsername()).getId() == -1){
-                    String hashedPass = Hasher.hashPassword(serviceUserFromAdminRegister.getPass());
-                    return addServiceUser(new ServiceUser(0, serviceUserFromAdminRegister.getUsername(), serviceUserFromAdminRegister.getEmail(), hashedPass, serviceUserFromAdminRegister.getUser_role(), "true", serviceUserFromAdminRegister.getFirst_name(), serviceUserFromAdminRegister.getLast_name()));
+            if(registerFromAdminRequest.getPass().equals(registerFromAdminRequest.getConfirm_pass())){
+                if(getRawServiceUserByEmailOrUsername(registerFromAdminRequest.getEmail(), registerFromAdminRequest.getUsername()).getId() == -1){
+                    String hashedPass = Hasher.hashPassword(registerFromAdminRequest.getPass());
+                    return addServiceUser(new ServiceUser(0, registerFromAdminRequest.getUsername(), registerFromAdminRequest.getEmail(), hashedPass, registerFromAdminRequest.getUser_role(), "true", registerFromAdminRequest.getFirst_name(), registerFromAdminRequest.getLast_name()));
                 }
                 else{
-                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + serviceUserFromAdminRegister.getEmail()  + " or username: " + serviceUserFromAdminRegister.getUsername() + " already exist.");
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + registerFromAdminRequest.getEmail()  + " or username: " + registerFromAdminRequest.getUsername() + " already exist.");
                     throw new RegisterException(exceptionMessage);
                 }
             }
@@ -271,18 +274,18 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public Token loginServiceUser(ServiceUserLogin serviceUserLogin) throws LoginException, JsonProcessingException, GetException {
+    public Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException {
         try{
-            ServiceUser serviceUser = getRawServiceUserByEmail(serviceUserLogin.getEmail());
+            ServiceUser serviceUser = getRawServiceUserByEmail(loginRequest.getEmail());
             if(serviceUser.getId() > 0){
                 if(serviceUser.getIs_enabled().equals("true")){
-                    if(Hasher.checkPassword(serviceUserLogin.getPass(), serviceUser.getPass())){
+                    if(Hasher.checkPassword(loginRequest.getPass(), serviceUser.getPass())){
                         return new Token(generateToken(serviceUser, serviceUser.getUser_role()));
                     }
                 }
             }
             else{
-                ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login. There is not user with email: " + serviceUserLogin.getEmail());
+                ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login. There is not user with email: " + loginRequest.getEmail());
                 throw new LoginException(exceptionMessage);
             }
         }
@@ -290,7 +293,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", e.getMessage());
             throw new LoginException(exceptionMessage);
         }
-        ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login user with email: " + serviceUserLogin.getEmail());
+        ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login user with email: " + loginRequest.getEmail());
         throw new LoginException(exceptionMessage);
     }
 

@@ -5,10 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.dto.ServiceUserDto;
-import rs.raf.rafnews.exception.AddException;
-import rs.raf.rafnews.exception.ExceptionMessage;
-import rs.raf.rafnews.exception.GetException;
-import rs.raf.rafnews.exception.UpdateException;
+import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
 
@@ -143,8 +140,26 @@ public class CategoryRepository implements ICategoryRepository {
     }
 
     @Override
-    public Integer deleteCategoryById(Integer id) {
-        return 0;
+    public Integer deleteCategoryById(Integer id) throws JsonProcessingException, DeleteException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "DELETE FROM category WHERE id = ?";
+            try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+                preparedStatement.setInt(1, id);
+                int affectedRows = preparedStatement.executeUpdate();
+                if(affectedRows > 0){
+                    return affectedRows;
+                }
+                else{
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete category. Id " + id + " not found.");
+                    throw new DeleteException(exceptionMessage);
+                }
+            }
+        }
+        catch (SQLException e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
+            throw new DeleteException(exceptionMessage);
+        }
     }
     private Category extractCategoryFromResultSet(ResultSet resultSet) throws SQLException {
         Integer columnId = resultSet.getInt("id");

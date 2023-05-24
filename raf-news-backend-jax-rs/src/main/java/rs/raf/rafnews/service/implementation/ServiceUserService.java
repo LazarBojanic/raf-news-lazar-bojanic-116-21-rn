@@ -9,6 +9,9 @@ import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
+import rs.raf.rafnews.request.RegisterFromAdminRequest;
+import rs.raf.rafnews.request.LoginRequest;
+import rs.raf.rafnews.request.RegisterRequest;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 
 import java.sql.SQLException;
@@ -73,18 +76,18 @@ public class ServiceUserService implements IServiceUserService {
     }
 
     @Override
-    public ServiceUserDto registerServiceUser(ServiceUserRegister serviceUserRegister) throws RegisterException, JsonProcessingException {
-        return this.serviceUserRepository.registerServiceUser(serviceUserRegister);
+    public ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws RegisterException, JsonProcessingException {
+        return this.serviceUserRepository.registerServiceUser(registerRequest);
     }
 
     @Override
-    public ServiceUserDto registerServiceUserFromAdmin(ServiceUserFromAdminRegister serviceUserFromAdminRegister) throws JsonProcessingException, RegisterException{
-        return this.serviceUserRepository.registerServiceUserFromAdmin(serviceUserFromAdminRegister);
+    public ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException{
+        return this.serviceUserRepository.registerServiceUserFromAdmin(registerFromAdminRequest);
     }
 
     @Override
-    public Token loginServiceUser(ServiceUserLogin serviceUserLogin) throws LoginException, JsonProcessingException, GetException {
-        return this.serviceUserRepository.loginServiceUser(serviceUserLogin);
+    public Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException {
+        return this.serviceUserRepository.loginServiceUser(loginRequest);
     }
 
     @Override

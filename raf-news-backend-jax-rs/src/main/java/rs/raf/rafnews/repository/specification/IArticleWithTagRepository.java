@@ -2,10 +2,11 @@ package rs.raf.rafnews.repository.specification;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import rs.raf.rafnews.exception.AddException;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.ArticleWithTag;
-import rs.raf.rafnews.model.ArticleWithTagRequest;
+import rs.raf.rafnews.request.ArticleWithTagRequest;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +22,7 @@ public interface IArticleWithTagRepository {
     Integer updateArticleWithTagById(ArticleWithTag articleWithTag);
     Integer updateArticleWithTagByArticleId(ArticleWithTag articleWithTag);
     Integer updateArticleWithTagByTagId(ArticleWithTag articleWithTag);
-    Integer deleteArticleWithTagById(Integer id);
+    Integer deleteArticleWithTagById(Integer id) throws SQLException, JsonProcessingException, DeleteException;
     Integer deleteArticleWithTagByArticleId(Integer id);
     Integer deleteArticleWithTagByTagId(Integer id);
 }

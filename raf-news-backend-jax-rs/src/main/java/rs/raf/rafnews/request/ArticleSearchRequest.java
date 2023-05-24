@@ -1,4 +1,4 @@
-package rs.raf.rafnews.model;
+package rs.raf.rafnews.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleWithTagRequest {
-    private Integer article_id;
-    private String tag_name;
+public class ArticleSearchRequest {
+    private Integer page;
+    private Integer page_size;
+    private String category_name;
 }

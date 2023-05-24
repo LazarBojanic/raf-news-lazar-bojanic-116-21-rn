@@ -6,8 +6,7 @@ import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Article;
-import rs.raf.rafnews.model.ArticleSearchParams;
-import rs.raf.rafnews.model.Tag;
+import rs.raf.rafnews.request.ArticleSearchRequest;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 public interface IArticleService {
     List<Article> getAllRawArticles() throws GetException, JsonProcessingException, SQLException;
     List<ArticleDto> getAllArticles() throws GetException, JoinException, JsonProcessingException, SQLException;
-    List<ArticleDto> getAllArticlesFiltered(ArticleSearchParams articleSearchParams) throws GetException, JoinException, SQLException, JsonProcessingException;
+    List<ArticleDto> getAllArticlesFiltered(ArticleSearchRequest articleSearchRequest) throws GetException, JoinException, SQLException, JsonProcessingException;
     ArticleDto joinArticle(Article article) throws JoinException, JsonProcessingException;
     Article getRawArticleById(Integer id) throws GetException, JsonProcessingException, SQLException;
     ArticleDto getArticleById(Integer id) throws GetException, JoinException, JsonProcessingException, SQLException;

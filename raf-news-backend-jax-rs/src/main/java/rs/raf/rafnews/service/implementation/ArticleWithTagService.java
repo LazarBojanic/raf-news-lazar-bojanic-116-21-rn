@@ -7,7 +7,7 @@ import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.ArticleWithTag;
-import rs.raf.rafnews.model.ArticleWithTagRequest;
+import rs.raf.rafnews.request.ArticleWithTagRequest;
 import rs.raf.rafnews.repository.specification.IArticleWithTagRepository;
 import rs.raf.rafnews.service.specification.IArticleWithTagService;
 

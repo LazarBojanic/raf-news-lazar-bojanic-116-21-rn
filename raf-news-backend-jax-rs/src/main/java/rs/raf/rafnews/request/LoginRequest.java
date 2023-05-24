@@ -1,6 +1,5 @@
-package rs.raf.rafnews.model;
+package rs.raf.rafnews.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Getter
@@ -9,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ServiceUserLogin {
+public class LoginRequest {
     private String email;
     private String pass;
 }

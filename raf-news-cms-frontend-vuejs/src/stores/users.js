@@ -16,7 +16,7 @@ export const useUsersStore = defineStore('users', {
   actions: {
     async register(registerData) {
       try {
-        const res = await fetch('http://95.180.97.206:8081/api/service_user/register', {
+        const res = await fetch('http://95.180.97.206:8000/api/service_user/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -41,11 +41,11 @@ export const useUsersStore = defineStore('users', {
     async registerFromAdmin(registerData) {
       try {
         const token = Cookies.get('token')
-        const res = await fetch('http://95.180.97.206:8081/api/service_user/registerFromAdmin', {
+        const res = await fetch('http://95.180.97.206:8000/api/service_user/registerFromAdmin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(registerData)
         })
@@ -67,7 +67,7 @@ export const useUsersStore = defineStore('users', {
     },
     async login(loginData) {
       try {
-        const res = await fetch('http://95.180.97.206:8081/api/service_user/login', {
+        const res = await fetch('http://95.180.97.206:8000/api/service_user/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -93,11 +93,12 @@ export const useUsersStore = defineStore('users', {
       try {
         const token = Cookies.get('token')
         if (!isEmpty(token) && !isNil(token)) {
-          const res = await fetch('http://95.180.97.206:8081/api/service_user/loginWithToken', {
+          console.log('logging in with token')
+          const res = await fetch('http://95.180.97.206:8000/api/service_user/loginWithToken', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
+              'Authorization': `Bearer ${token}`
             }
           })
           const data = await res.json()
@@ -118,7 +119,7 @@ export const useUsersStore = defineStore('users', {
     },
     async logout() {
       try {
-        const res = await fetch('http://95.180.97.206:8081/api/service_user/logout', {
+        const res = await fetch('http://95.180.97.206:8000/api/service_user/logout', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -147,11 +148,11 @@ export const useUsersStore = defineStore('users', {
     async fetchUsers() {
       try {
         const token = Cookies.get('token')
-        const res = await fetch('http://95.180.97.206:8081/api/service_user/getAll', {
+        const res = await fetch('http://95.180.97.206:8000/api/service_user/getAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            'Authorization': `Bearer ${token}`
           }
         })
         const data = await res.json()

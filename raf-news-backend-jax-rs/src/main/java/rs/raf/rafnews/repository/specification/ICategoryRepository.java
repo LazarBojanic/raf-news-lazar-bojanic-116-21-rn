@@ -3,6 +3,7 @@ package rs.raf.rafnews.repository.specification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.exception.AddException;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.UpdateException;
 import rs.raf.rafnews.model.Category;
@@ -19,5 +20,5 @@ public interface ICategoryRepository {
     Category addRawCategory(Category category) throws SQLException, JsonProcessingException, AddException;
     CategoryDto addCategory(Category category) throws SQLException, AddException, JsonProcessingException;
     Integer updateCategoryById(Integer id, Category category) throws SQLException, JsonProcessingException, UpdateException;
-    Integer deleteCategoryById(Integer id);
+    Integer deleteCategoryById(Integer id) throws JsonProcessingException, DeleteException, SQLException;
 }

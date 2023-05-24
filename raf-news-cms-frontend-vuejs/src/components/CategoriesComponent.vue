@@ -57,7 +57,7 @@ import { ref } from 'vue'
 import CategoryComponent from './CategoryComponent.vue'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
-
+import {isNil, isEmpty} from 'ramda'
 export default {
   name: 'CategoriesComponent',
   setup() {
@@ -101,7 +101,10 @@ export default {
       this.categoriesStore.addCategory(categoryAddData);
     },
     checkIfAdmin(){
-      this.userIsAdmin = jwtDecode(Cookies.get('token')).user_role === 'admin'
+      const token = Cookies.get('token')
+      if(!isNil(token) && !isEmpty(token)){
+        this.userIsAdmin = jwtDecode(token).user_role === 'admin'
+      }
     }
   },
   components: { CategoryComponent }

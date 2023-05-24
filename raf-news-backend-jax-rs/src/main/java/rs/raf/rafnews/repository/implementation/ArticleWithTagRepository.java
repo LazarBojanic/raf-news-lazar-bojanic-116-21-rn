@@ -6,15 +6,10 @@ import jakarta.inject.Inject;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.dto.TagDto;
-import rs.raf.rafnews.exception.AddException;
-import rs.raf.rafnews.exception.ExceptionMessage;
-import rs.raf.rafnews.exception.GetException;
-import rs.raf.rafnews.exception.JoinException;
-import rs.raf.rafnews.model.Article;
+import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.ArticleWithTag;
-import rs.raf.rafnews.model.ArticleWithTagRequest;
+import rs.raf.rafnews.request.ArticleWithTagRequest;
 import rs.raf.rafnews.model.Tag;
-import rs.raf.rafnews.repository.specification.IArticleRepository;
 import rs.raf.rafnews.repository.specification.IArticleWithTagRepository;
 import rs.raf.rafnews.service.specification.IArticleService;
 import rs.raf.rafnews.service.specification.ITagService;
@@ -170,8 +165,26 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     }
 
     @Override
-    public Integer deleteArticleWithTagById(Integer id) {
-        return null;
+    public Integer deleteArticleWithTagById(Integer id) throws SQLException, JsonProcessingException, DeleteException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "DELETE FROM article_with_tag WHERE id = ?";
+            try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+                preparedStatement.setInt(1, id);
+                int affectedRows = preparedStatement.executeUpdate();
+                if(affectedRows > 0){
+                    return affectedRows;
+                }
+                else{
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete article_with_tag. Id " + id + " not found.");
+                    throw new DeleteException(exceptionMessage);
+                }
+            }
+        }
+        catch (SQLException e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
+            throw new DeleteException(exceptionMessage);
+        }
     }
 
     @Override

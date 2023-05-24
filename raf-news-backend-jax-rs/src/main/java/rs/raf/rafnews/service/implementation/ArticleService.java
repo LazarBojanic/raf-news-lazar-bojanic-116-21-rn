@@ -4,14 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.ArticleDto;
-import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Article;
-import rs.raf.rafnews.model.ArticleSearchParams;
-import rs.raf.rafnews.model.Category;
-import rs.raf.rafnews.model.Tag;
+import rs.raf.rafnews.request.ArticleSearchRequest;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
 import rs.raf.rafnews.service.specification.IArticleService;
 
@@ -34,8 +31,8 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public List<ArticleDto> getAllArticlesFiltered(ArticleSearchParams articleSearchParams) throws GetException, JoinException, SQLException, JsonProcessingException {
-        return this.articleRepository.getAllArticlesFiltered(articleSearchParams);
+    public List<ArticleDto> getAllArticlesFiltered(ArticleSearchRequest articleSearchRequest) throws GetException, JoinException, SQLException, JsonProcessingException {
+        return this.articleRepository.getAllArticlesFiltered(articleSearchRequest);
     }
 
     @Override

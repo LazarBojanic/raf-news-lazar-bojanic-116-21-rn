@@ -1,13 +1,11 @@
 package rs.raf.rafnews.service.specification;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import rs.raf.rafnews.dto.TagDto;
 import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.ArticleWithTag;
-import rs.raf.rafnews.model.ArticleWithTagRequest;
-import rs.raf.rafnews.model.Tag;
+import rs.raf.rafnews.request.ArticleWithTagRequest;
 
 import java.sql.SQLException;
 import java.util.List;

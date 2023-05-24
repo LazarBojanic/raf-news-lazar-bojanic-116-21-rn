@@ -3,15 +3,15 @@ package rs.raf.rafnews.api;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
+import rs.raf.rafnews.request.RegisterFromAdminRequest;
+import rs.raf.rafnews.request.LoginRequest;
+import rs.raf.rafnews.request.RegisterRequest;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.exception.ExceptionMessage;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -86,9 +86,9 @@ public class ServiceUserResource {
     @Path("/register")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response registerServiceUser(ServiceUserRegister serviceUserRegister){
+    public Response registerServiceUser(RegisterRequest registerRequest){
         try{
-            ServiceUserDto serviceUserDtoWithId = serviceUserService.registerServiceUser(serviceUserRegister);
+            ServiceUserDto serviceUserDtoWithId = serviceUserService.registerServiceUser(registerRequest);
             return Response.ok().entity(serviceUserDtoWithId).build();
         }
         catch(Exception e){
@@ -102,9 +102,9 @@ public class ServiceUserResource {
     @Path("/registerFromAdmin")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response registerServiceUserFromAdmin(ServiceUserFromAdminRegister serviceUserFromAdminRegister){
+    public Response registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest){
         try{
-            ServiceUserDto serviceUserDtoWithId = serviceUserService.registerServiceUserFromAdmin(serviceUserFromAdminRegister);
+            ServiceUserDto serviceUserDtoWithId = serviceUserService.registerServiceUserFromAdmin(registerFromAdminRequest);
             return Response.ok().entity(serviceUserDtoWithId).build();
         }
         catch(Exception e){
@@ -118,9 +118,9 @@ public class ServiceUserResource {
     @Path("/login")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response loginServiceUser(ServiceUserLogin serviceUserLogin){
+    public Response loginServiceUser(LoginRequest loginRequest){
         try{
-            Token token = serviceUserService.loginServiceUser(serviceUserLogin);
+            Token token = serviceUserService.loginServiceUser(loginRequest);
             return Response.ok().entity(token).build();
         }
         catch(Exception e){

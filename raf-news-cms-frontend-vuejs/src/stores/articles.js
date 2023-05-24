@@ -16,7 +16,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchAllArticles() {
       try {
         const token = Cookies.get('token')
-        const res = await fetch('http://95.180.97.206:8081/api/article/getAll', {
+        const res = await fetch('http://95.180.97.206:8000/api/article/getAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchAllArticlesFiltered(searchData) {
       try {
         const token = Cookies.get('token')
-        const res = await fetch('http://95.180.97.206:8081/api/article/getAllFiltered', {
+        const res = await fetch('http://95.180.97.206:8000/api/article/getAllFiltered', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

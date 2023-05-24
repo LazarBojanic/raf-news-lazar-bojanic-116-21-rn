@@ -34,6 +34,7 @@
 import { useUsersStore } from './stores/users'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
+import { isEmpty, isNil } from 'ramda'
 import { ref } from 'vue'
 
 export default {
@@ -48,6 +49,7 @@ export default {
     }
   },
   mounted() {
+    this.updateToken()
     this.loginWithTokenFromComponent()
   },
   methods: {
@@ -82,8 +84,13 @@ export default {
       }
     },
     updateToken() {
-      this.validToken = jwtDecode(Cookies.get('token')).email !== ''
-      this.userIsAdmin = jwtDecode(Cookies.get('token')).user_role === 'admin'
+      const token = Cookies.get('token')
+      console.log(token);
+      if(!isNil(token) && !isEmpty(token)){
+        console.log(token);
+        this.validToken = jwtDecode(token).email !== ''
+        this.userIsAdmin = jwtDecode(token).user_role === 'admin'
+      }
     }
   }
 }
