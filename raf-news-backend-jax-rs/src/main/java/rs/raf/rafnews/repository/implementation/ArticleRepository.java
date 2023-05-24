@@ -5,13 +5,15 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.database.RafNewsDatabase;
+import rs.raf.rafnews.dto.ArticleWithTagDto;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.dto.ServiceUserDto;
-import rs.raf.rafnews.dto.TagDto;
 import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
+import rs.raf.rafnews.request.ArticleRequest;
 import rs.raf.rafnews.request.ArticleSearchRequest;
+import rs.raf.rafnews.service.specification.IArticleWithTagService;
 import rs.raf.rafnews.service.specification.ICategoryService;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.service.specification.ITagService;
@@ -29,7 +31,8 @@ public class ArticleRepository implements IArticleRepository {
     private ICategoryService categoryService;
     @Inject
     private ITagService tagService;
-
+    @Inject
+    private IArticleWithTagService articleWithTagService;
 
     @Override
     public List<Article> getAllRawArticles() throws JsonProcessingException, GetException, SQLException {
@@ -92,7 +95,7 @@ public class ArticleRepository implements IArticleRepository {
             String exceptionMessageString = "Failed to join article. ";
             ServiceUserDto serviceUserDto = serviceUserService.getServiceUserById(article.getService_user_id());
             CategoryDto categoryDto = categoryService.getCategoryById(article.getCategory_id());
-            List<TagDto> tagDtoList = tagService.getAllTagsByArticleId(article.getId());
+            List<ArticleWithTagDto> articleWithTagDtoList = articleWithTagService.getAllArticlesWithTagByByArticleId(article.getId());
             if(serviceUserDto.getId() <= 0){
                 exceptionMessageString += "Couldn't find a category with id = " + article.getCategory_id() + ". ";
                 exceptionOccurred = true;
@@ -102,7 +105,7 @@ public class ArticleRepository implements IArticleRepository {
                 exceptionOccurred = true;
             }
             if(!exceptionOccurred){
-                return new ArticleDto(article, serviceUserDto, categoryDto, tagDtoList);
+                return new ArticleDto(article, serviceUserDto, categoryDto, articleWithTagDtoList);
             }
             ExceptionMessage exceptionMessage = new ExceptionMessage("JoinException", exceptionMessageString);
             throw new JoinException(exceptionMessage);
@@ -140,9 +143,7 @@ public class ArticleRepository implements IArticleRepository {
         if(article.getId() > 0){
             return joinArticle(article);
         }
-        else{
-            return new ArticleDto();
-        }
+        return new ArticleDto();
     }
 
     @Override
@@ -162,11 +163,12 @@ public class ArticleRepository implements IArticleRepository {
                     preparedStatement.setInt(6, article.getNumber_of_views());
                     int affectedRows = preparedStatement.executeUpdate();
                     if (affectedRows > 0) {
-                        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                        if (generatedKeys.next()) {
-                            int id = generatedKeys.getInt("id");
-                            article.setId(id);
-                            return article;
+                        try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                            if (generatedKeys.next()) {
+                                int id = generatedKeys.getInt("id");
+                                article.setId(id);
+                                return article;
+                            }
                         }
                     }
                 }
@@ -196,13 +198,25 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
-    public ArticleDto addArticle(Article article) throws AddException, JsonProcessingException, GetException, JoinException, SQLException {
-        Article addedArticle = addRawArticle(article);
-        return joinArticle(addedArticle);
+    public ArticleDto addArticle(ArticleRequest articleRequest) throws AddException, JsonProcessingException, GetException, JoinException, SQLException {
+        Integer categoryId = categoryService.getCategoryByCategoryName(articleRequest.getCategory_name()).getId();
+        if(categoryId > 0){
+            Article addedRawArticle = addRawArticle(new Article(articleRequest.getId(), articleRequest.getService_user_id(), categoryId, articleRequest.getTitle(), articleRequest.getBody(), articleRequest.getTime_published(), articleRequest.getNumber_of_views()));
+            if(addedRawArticle.getId() > 0){
+                List<Tag> addedTagList = tagService.addTagList(articleRequest.getTag_list());
+                articleWithTagService.addTagListToArticle(addedRawArticle.getId(), addedTagList);
+                return joinArticle(addedRawArticle);
+            }
+        }
+        else{
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add article. Category with name: " + articleRequest.getCategory_name() + " not found.");
+            throw new AddException(exceptionMessage);
+        }
+        return new ArticleDto();
     }
 
     @Override
-    public Integer updateArticleById(Integer id, Article article) {
+    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) {
         return null;
     }
 

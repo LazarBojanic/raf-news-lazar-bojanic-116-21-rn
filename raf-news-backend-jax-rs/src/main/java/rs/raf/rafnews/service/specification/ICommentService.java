@@ -2,6 +2,7 @@ package rs.raf.rafnews.service.specification;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import rs.raf.rafnews.dto.CommentDto;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Comment;
@@ -20,5 +21,5 @@ public interface ICommentService {
     CommentDto getCommentById(Integer id) throws GetException, JsonProcessingException, JoinException, SQLException;
     CommentDto addComment(Comment comment);
     Integer updateCommentById(Integer id, Comment comment);
-    Integer deleteCommentById(Integer id);
+    Integer deleteCommentById(Integer id) throws SQLException, DeleteException, JsonProcessingException;
 }

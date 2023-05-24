@@ -179,11 +179,12 @@ public class ServiceUserRepository implements IServiceUserRepository {
             preparedStatement.setString(7, serviceUser.getLast_name());
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows > 0) {
-                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt("id");
-                    serviceUser.setId(id);
-                    return new ServiceUserDto(serviceUser);
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt("id");
+                        serviceUser.setId(id);
+                        return new ServiceUserDto(serviceUser);
+                    }
                 }
             }
         }

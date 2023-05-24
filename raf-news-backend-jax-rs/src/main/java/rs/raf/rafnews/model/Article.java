@@ -3,7 +3,6 @@ package rs.raf.rafnews.model;
 import lombok.*;
 import rs.raf.rafnews.dto.ArticleDto;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 

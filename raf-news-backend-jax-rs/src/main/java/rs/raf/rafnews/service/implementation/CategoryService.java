@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.exception.AddException;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.UpdateException;
 import rs.raf.rafnews.model.Category;
@@ -43,6 +44,16 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public Category getRawCategoryByCategoryName(String categoryName) throws GetException, JsonProcessingException, SQLException {
+        return this.categoryRepository.getRawCategoryByCategoryName(categoryName);
+    }
+
+    @Override
+    public CategoryDto getCategoryByCategoryName(String categoryName) throws GetException, JsonProcessingException, SQLException {
+        return this.categoryRepository.getCategoryByCategoryName(categoryName);
+    }
+
+    @Override
     public Category addRawCategory(Category category) throws SQLException, AddException, JsonProcessingException {
         return this.categoryRepository.addRawCategory(category);
     }
@@ -58,7 +69,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Integer deleteCategoryById(Integer id) {
+    public Integer deleteCategoryById(Integer id) throws SQLException, DeleteException, JsonProcessingException {
         return this.categoryRepository.deleteCategoryById(id);
     }
 }

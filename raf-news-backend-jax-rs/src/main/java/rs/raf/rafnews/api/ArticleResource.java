@@ -6,8 +6,8 @@ import jakarta.ws.rs.core.Response;
 import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
+import rs.raf.rafnews.request.ArticleRequest;
 import rs.raf.rafnews.request.ArticleSearchRequest;
-import rs.raf.rafnews.request.ArticleWithTagRequest;
 import rs.raf.rafnews.service.specification.IArticleService;
 import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
@@ -70,40 +70,10 @@ public class ArticleResource {
     @Path("/add")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response addArticle(Article article, @HeaderParam("Authorization") String bearerToken){
+    public Response addArticle(ArticleRequest articleRequest, @HeaderParam("Authorization") String bearerToken){
         try{
-            ArticleDto addedArticleDto = articleService.addArticle(article);
+            ArticleDto addedArticleDto = articleService.addArticle(articleRequest);
             return Response.ok().entity(addedArticleDto).build();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return Response.status(500).entity(e.getMessage()).build();
-        }
-    }
-    @LogEndpoint
-    @POST
-    @Path("/addTagListToArticle")
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response addTagListToArticle(List<ArticleWithTagRequest> articleWithTagRequestList, @HeaderParam("Authorization") String bearerToken){
-        try{
-            List<ArticleWithTag> articleWithTagList = articleWithTagService.addTagListToArticle(articleWithTagRequestList);
-            return Response.ok().entity(articleWithTagList).build();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return Response.status(500).entity(e.getMessage()).build();
-        }
-    }
-    @LogEndpoint
-    @POST
-    @Path("/addTagToArticle")
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response addTagToArticle(ArticleWithTagRequest articleWithTagRequest, @HeaderParam("Authorization") String bearerToken){
-        try{
-            ArticleWithTag articleWithTag = articleWithTagService.addTagToArticle(articleWithTagRequest);
-            return Response.ok().entity(articleWithTag).build();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -115,9 +85,9 @@ public class ArticleResource {
     @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateArticle(@PathParam("id") Integer id, Article article, @HeaderParam("Authorization") String bearerToken){
+    public Response updateArticle(@PathParam("id") Integer id, ArticleRequest articleRequest, @HeaderParam("Authorization") String bearerToken){
         try{
-            Integer affectedRows = articleService.updateArticleById(id, article);
+            Integer affectedRows = articleService.updateArticleById(id, articleRequest);
             return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){

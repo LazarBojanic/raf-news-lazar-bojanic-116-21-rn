@@ -2,6 +2,7 @@ package rs.raf.rafnews.dto;
 
 import lombok.*;
 import rs.raf.rafnews.model.Article;
+import rs.raf.rafnews.model.Tag;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -21,7 +22,7 @@ public class ArticleDto {
     private String body;
     private Timestamp time_published;
     private Integer number_of_views;
-    private List<TagDto> tag_list;
+    private List<ArticleWithTagDto> tag_list;
     public ArticleDto(){
         this.id = -1;
         this.service_user = new ServiceUserDto();
@@ -33,7 +34,7 @@ public class ArticleDto {
         this.tag_list = new ArrayList<>();
     }
 
-    public ArticleDto(Article article, ServiceUserDto serviceUserDto, CategoryDto categoryDto, List<TagDto> tag_list){
+    public ArticleDto(Article article, ServiceUserDto serviceUserDto, CategoryDto categoryDto, List<ArticleWithTagDto> tag_list){
         this.id = article.getId();
         this.service_user = serviceUserDto;
         this.category = categoryDto;

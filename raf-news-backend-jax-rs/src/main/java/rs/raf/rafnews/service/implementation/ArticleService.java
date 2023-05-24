@@ -5,9 +5,11 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.exception.AddException;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Article;
+import rs.raf.rafnews.request.ArticleRequest;
 import rs.raf.rafnews.request.ArticleSearchRequest;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
 import rs.raf.rafnews.service.specification.IArticleService;
@@ -56,17 +58,17 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public ArticleDto addArticle(Article article) throws GetException, JoinException, AddException, JsonProcessingException, SQLException {
-        return this.articleRepository.addArticle(article);
+    public ArticleDto addArticle(ArticleRequest articleRequest) throws GetException, JoinException, AddException, JsonProcessingException, SQLException {
+        return this.articleRepository.addArticle(articleRequest);
     }
 
     @Override
-    public Integer updateArticleById(Integer id, Article article) {
-        return this.articleRepository.updateArticleById(id, article);
+    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) {
+        return this.articleRepository.updateArticleById(id, articleRequest);
     }
 
     @Override
-    public Integer deleteArticleById(Integer id) {
+    public Integer deleteArticleById(Integer id) throws SQLException, DeleteException, JsonProcessingException {
         return this.articleRepository.deleteArticleById(id);
     }
 }

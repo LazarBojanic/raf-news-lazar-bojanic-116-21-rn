@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.CommentDto;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Comment;
@@ -63,7 +64,7 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public Integer deleteCommentById(Integer id) {
+    public Integer deleteCommentById(Integer id) throws SQLException, DeleteException, JsonProcessingException {
         return this.commentRepository.deleteCommentById(id);
     }
 }

@@ -81,6 +81,34 @@ public class CategoryRepository implements ICategoryRepository {
     }
 
     @Override
+    public Category getRawCategoryByCategoryName(String categoryName) throws GetException, JsonProcessingException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "SELECT * FROM category WHERE category_name = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setString(1, categoryName);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if (resultSet.next()) {
+                    return extractCategoryFromResultSet(resultSet);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return new Category();
+    }
+
+    @Override
+    public CategoryDto getCategoryByCategoryName(String categoryName) throws GetException, JsonProcessingException, SQLException {
+        Category category = getRawCategoryByCategoryName(categoryName);
+        return new CategoryDto(category);
+    }
+
+    @Override
     public Category addRawCategory(Category category) throws SQLException, JsonProcessingException, AddException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         try{
@@ -90,11 +118,12 @@ public class CategoryRepository implements ICategoryRepository {
                 preparedStatement.setString(2, category.getDescription());
                 int affectedRows = preparedStatement.executeUpdate();
                 if (affectedRows > 0) {
-                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                    if (generatedKeys.next()) {
-                        int id = generatedKeys.getInt("id");
-                        category.setId(id);
-                        return category;
+                    try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            int id = generatedKeys.getInt("id");
+                            category.setId(id);
+                            return category;
+                        }
                     }
                 }
             }

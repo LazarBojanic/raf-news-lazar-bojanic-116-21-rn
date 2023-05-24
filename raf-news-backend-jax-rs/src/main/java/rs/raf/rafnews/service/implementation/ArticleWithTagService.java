@@ -3,11 +3,11 @@ package rs.raf.rafnews.service.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import rs.raf.rafnews.dto.ArticleWithTagDto;
 import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.GetException;
-import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.ArticleWithTag;
-import rs.raf.rafnews.request.ArticleWithTagRequest;
+import rs.raf.rafnews.model.Tag;
 import rs.raf.rafnews.repository.specification.IArticleWithTagRepository;
 import rs.raf.rafnews.service.specification.IArticleWithTagService;
 
@@ -17,66 +17,49 @@ import java.util.List;
 public class ArticleWithTagService implements IArticleWithTagService {
     @Inject
     IArticleWithTagRepository articleWithTagRepository;
+
     @Override
-    public List<ArticleWithTag> getAllArticlesWithTag() {
-        return this.articleWithTagRepository.getAllArticlesWithTag();
+    public List<ArticleWithTag> getAllRawArticlesWithTagByByArticleId(Integer articleId) throws SQLException, JsonProcessingException, GetException {
+        return null;
     }
 
     @Override
-    public List<ArticleWithTag> getAllArticlesWithTagByArticleId(Integer tagId) {
-        return this.articleWithTagRepository.getAllArticlesWithTagByArticleId(tagId);
+    public ArticleWithTag getRawArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws GetException, JsonProcessingException, SQLException {
+        return null;
     }
 
     @Override
-    public List<ArticleWithTag> getAllArticlesWithTagByTagId(Integer tagId) {
-        return this.articleWithTagRepository.getAllArticlesWithTagByTagId(tagId);
+    public ArticleWithTag addRawTagToArticle(Integer articleId, Tag tag) throws GetException, SQLException, AddException, JsonProcessingException {
+        return null;
     }
 
     @Override
-    public ArticleWithTag getArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws GetException, JsonProcessingException, SQLException {
-        return this.articleWithTagRepository.getArticleWithTagByArticleIdAndTagId(articleId, tagId);
+    public List<ArticleWithTag> addRawTagListToArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, AddException, JsonProcessingException {
+        return null;
     }
 
     @Override
-    public ArticleWithTag addTagToArticle(ArticleWithTagRequest articleWithTagRequest) throws GetException, JoinException, AddException, JsonProcessingException, SQLException {
-        return this.articleWithTagRepository.addTagToArticle(articleWithTagRequest);
-    }
-    @Override
-    public List<ArticleWithTag> addTagListToArticle(List<ArticleWithTagRequest> articleWithTagRequestList) throws AddException, JsonProcessingException {
-        return this.articleWithTagRepository.addTagListToArticle(articleWithTagRequestList);
-    }
-    @Override
-    public ArticleWithTag addArticleWithTag(ArticleWithTag articleWithTag) throws AddException, JsonProcessingException, SQLException {
-        return this.articleWithTagRepository.addArticleWithTag(articleWithTag);
+    public List<ArticleWithTagDto> getAllArticlesWithTagByByArticleId(Integer articleId) throws SQLException, JsonProcessingException, GetException {
+        return null;
     }
 
     @Override
-    public Integer updateArticleWithTagById(ArticleWithTag articleWithTag) {
-        return this.articleWithTagRepository.updateArticleWithTagById(articleWithTag);
+    public ArticleWithTagDto getArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws GetException, JsonProcessingException, SQLException {
+        return null;
     }
 
     @Override
-    public Integer updateArticleWithTagByArticleId(ArticleWithTag articleWithTag) {
-        return this.articleWithTagRepository.updateArticleWithTagByArticleId(articleWithTag);
+    public ArticleWithTagDto addTagToArticle(Integer articleId, Tag tag) throws GetException, SQLException, AddException, JsonProcessingException {
+        return null;
     }
 
     @Override
-    public Integer updateArticleWithTagByTagId(ArticleWithTag articleWithTag) {
-        return this.articleWithTagRepository.updateArticleWithTagByTagId(articleWithTag);
+    public List<ArticleWithTagDto> addTagListToArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, AddException, JsonProcessingException {
+        return null;
     }
 
     @Override
-    public Integer deleteArticleWithTagById(Integer id) {
-        return this.articleWithTagRepository.deleteArticleWithTagById(id);
-    }
-
-    @Override
-    public Integer deleteArticleWithTagByArticleId(Integer id) {
-        return this.articleWithTagRepository.deleteArticleWithTagByArticleId(id);
-    }
-
-    @Override
-    public Integer deleteArticleWithTagByTagId(Integer id) {
-        return this.articleWithTagRepository.deleteArticleWithTagByTagId(id);
+    public ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag) {
+        return null;
     }
 }

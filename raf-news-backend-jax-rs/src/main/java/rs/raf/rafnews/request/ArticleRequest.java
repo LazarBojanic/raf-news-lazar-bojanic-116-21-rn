@@ -8,15 +8,16 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
-public class ArticleAddRequest {
+public class ArticleRequest {
     private Integer id;
     private Integer service_user_id;
-    private Integer category_name;
+    private String category_name;
     private String title;
     private String body;
-    private List<Tag> tagList;
+    private Timestamp time_published;
+    private Integer number_of_views;
+    private List<Tag> tag_list;
 }

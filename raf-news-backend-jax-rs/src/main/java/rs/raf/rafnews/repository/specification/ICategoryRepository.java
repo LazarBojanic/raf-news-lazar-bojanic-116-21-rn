@@ -17,6 +17,8 @@ public interface ICategoryRepository {
     CategoryDto joinCategory(Category category);
     Category getRawCategoryById(Integer id) throws JsonProcessingException, GetException, SQLException;
     CategoryDto getCategoryById(Integer id) throws JsonProcessingException, GetException, SQLException;
+    Category getRawCategoryByCategoryName(String categoryName) throws GetException, JsonProcessingException, SQLException;
+    CategoryDto getCategoryByCategoryName(String categoryName) throws GetException, JsonProcessingException, SQLException;
     Category addRawCategory(Category category) throws SQLException, JsonProcessingException, AddException;
     CategoryDto addCategory(Category category) throws SQLException, AddException, JsonProcessingException;
     Integer updateCategoryById(Integer id, Category category) throws SQLException, JsonProcessingException, UpdateException;

@@ -1,19 +1,19 @@
-package rs.raf.rafnews.model;
+package rs.raf.rafnews.dto;
 
 import lombok.*;
-
+import rs.raf.rafnews.model.Tag;
 @Getter
 @Setter
 @AllArgsConstructor
 @ToString
 @Builder
-public class ArticleWithTag {
+public class ArticleWithTagDto {
     private Integer id;
     private Integer article_id;
-    private Integer tag_id;
-    public ArticleWithTag(){
+    private Tag tag;
+    public ArticleWithTagDto(){
         this.id = -1;
         this.article_id = -1;
-        this.tag_id = -1;
+        this.tag = new Tag();
     }
 }

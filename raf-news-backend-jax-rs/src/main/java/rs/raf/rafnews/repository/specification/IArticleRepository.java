@@ -7,6 +7,7 @@ import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.*;
+import rs.raf.rafnews.request.ArticleRequest;
 import rs.raf.rafnews.request.ArticleSearchRequest;
 
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ public interface IArticleRepository {
     Article getRawArticleById(Integer id) throws JsonProcessingException, GetException, SQLException;
     ArticleDto getArticleById(Integer id) throws GetException, JsonProcessingException, JoinException, SQLException;
     Article addRawArticle(Article article) throws JsonProcessingException, AddException, GetException, SQLException;
-    ArticleDto addArticle(Article article) throws AddException, JsonProcessingException, GetException, JoinException, SQLException;
-    Integer updateArticleById(Integer id, Article article);
+    ArticleDto addArticle(ArticleRequest articleRequest) throws AddException, JsonProcessingException, GetException, JoinException, SQLException;
+    Integer updateArticleById(Integer id, ArticleRequest articleRequest);
     Integer deleteArticleById(Integer id) throws JsonProcessingException, DeleteException, SQLException;
 }
