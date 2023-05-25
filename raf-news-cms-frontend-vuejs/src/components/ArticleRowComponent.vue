@@ -7,7 +7,7 @@
     @mousedown="pushIn"
     @click="goToFullArticlePage()"
   >
-    {{ smallArticle.title }}
+    {{ articleRow.title }}
   </td>
 </template>
 
@@ -35,14 +35,14 @@ export default {
     return {}
   },
   props: {
-    smallArticle: Object
+    articleRow: Object
   },
   computed: {},
   methods: {
     goToFullArticlePage() {
-      const articleId = this.smallArticle.id;
-      const url = `http://localhost:5174/fullArticle?articleId=${articleId}`;
-      window.open(url, '_blank');
+      const articleId = this.articleRow.id
+      const url = `http://localhost:5174/fullArticle?articleId=${articleId}`
+      window.open(url, '_blank')
     },
     pushOut() {
       this.isPushedOut = true

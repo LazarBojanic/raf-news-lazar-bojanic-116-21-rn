@@ -19,6 +19,7 @@ import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.service.specification.ITagService;
 
 import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -201,10 +202,10 @@ public class ArticleRepository implements IArticleRepository {
     public ArticleDto addArticle(ArticleRequest articleRequest) throws AddException, JsonProcessingException, GetException, JoinException, SQLException {
         Integer categoryId = categoryService.getCategoryByCategoryName(articleRequest.getCategory_name()).getId();
         if(categoryId > 0){
-            Article addedRawArticle = addRawArticle(new Article(articleRequest.getId(), articleRequest.getService_user_id(), categoryId, articleRequest.getTitle(), articleRequest.getBody(), articleRequest.getTime_published(), articleRequest.getNumber_of_views()));
+            Article addedRawArticle = addRawArticle(new Article(articleRequest.getId(), articleRequest.getService_user_id(), categoryId, articleRequest.getTitle(), articleRequest.getBody(), Timestamp.from(Instant.now()), 0));
             if(addedRawArticle.getId() > 0){
                 List<Tag> addedTagList = tagService.addTagList(articleRequest.getTag_list());
-                articleWithTagService.addTagListToArticle(addedRawArticle.getId(), addedTagList);
+                articleWithTagService.addTagListToArticle(addedRawArticle.getId(), articleRequest.getTag_list());
                 return joinArticle(addedRawArticle);
             }
         }

@@ -85,9 +85,9 @@ export default {
     },
     updateToken() {
       const token = Cookies.get('token')
-      console.log(token);
-      if(!isNil(token) && !isEmpty(token)){
-        console.log(token);
+      console.log(token)
+      if (!isNil(token) && !isEmpty(token)) {
+        console.log(token)
         this.validToken = jwtDecode(token).email !== ''
         this.userIsAdmin = jwtDecode(token).user_role === 'admin'
       }

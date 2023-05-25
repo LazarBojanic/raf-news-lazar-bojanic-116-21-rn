@@ -45,7 +45,7 @@ export const useUsersStore = defineStore('users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(registerData)
         })
@@ -98,7 +98,7 @@ export const useUsersStore = defineStore('users', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`
             }
           })
           const data = await res.json()
@@ -152,7 +152,7 @@ export const useUsersStore = defineStore('users', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           }
         })
         const data = await res.json()

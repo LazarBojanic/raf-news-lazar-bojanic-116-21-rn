@@ -22,58 +22,61 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="smallArticle in articlesStore.getArticles" :key="smallArticle.id">
-            <ArticleRowComponent :smallArticle="smallArticle" />
+          <tr v-for="articleRow in articlesStore.getArticles" :key="articleRow.id">
+            <ArticleRowComponent :articleRow="articleRow" />
           </tr>
         </tbody>
       </table>
-      <button class="btn btn-success" @click="goToAddArticlePage">Add Category</button>
+      <button class="btn btn-success" @click="goToAddArticlePage">Add Article</button>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'joi-browser'
 import { useArticlesStore } from '../stores/articles'
 import { useCategoriesStore } from '../stores/categories'
 import ArticleRowComponent from './ArticleRowComponent.vue'
 import { isNil, isEmpty } from 'ramda'
+
 export default {
   name: 'ArticlesTableComponent',
   components: { ArticleRowComponent },
-  setup() {
-    const articlesStore = useArticlesStore()
-    const categoriesStore = useCategoriesStore()
-    const searchData = {
-      page: 1,
-      page_size: 3,
-      category_name: 'gaming'
-    }
-
-    return {
+  setup(){
+    const articlesStore = useArticlesStore();
+    const categoriesStore = useCategoriesStore();
+    return{
       articlesStore,
-      categoriesStore,
-      searchData
+      categoriesStore
     }
   },
+  data() {
+    return {
+      searchData: {
+        page: 1,
+        page_size: 15,
+        category_name: 'gaming'
+      }
+    };
+  },
   mounted() {
-    if (
-      !isNil(this.categoriesStore.getCategories) &&
-      !isEmpty(this.categoriesStore.getCategories)
-    ) {
-      this.categoriesStore.fetchAllCategories()
-    }
-    const receivedCategoryName = this.$route.query.category_name
-    console.log(receivedCategoryName)
+    this.categoriesStore.fetchAllCategories();
+
+    const receivedCategoryName = this.$route.query.category_name;
+    console.log(receivedCategoryName);
     if (!isNil(receivedCategoryName)) {
-      this.searchData.category_name = receivedCategoryName
+      this.searchData.category_name = receivedCategoryName;
     }
 
-    this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+    this.articlesStore.fetchAllArticlesFiltered(this.searchData);
   },
   methods: {
     goToAddArticlePage() {
-      // Implement your goToAddArticlePage method here
+      this.$router.push('addArticle');
+    }
+  },
+  watch: {
+    'searchData.category_name'(newCategoryName) {
+      this.articlesStore.fetchAllArticlesFiltered(this.searchData);
     }
   }
 }

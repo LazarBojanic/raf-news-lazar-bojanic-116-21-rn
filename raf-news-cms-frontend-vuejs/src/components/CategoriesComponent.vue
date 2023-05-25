@@ -17,7 +17,13 @@
         </tbody>
       </table>
       <div>
-        <button :disabled="!userIsAdmin" class="btn btn-success" @click="changeAddCategoryFormVisibility">Add Category</button>
+        <button
+          :disabled="!userIsAdmin"
+          class="btn btn-success"
+          @click="changeAddCategoryFormVisibility"
+        >
+          Add Category
+        </button>
       </div>
       <div v-if="addCategoryFormVisible">
         <h2>Add New Category</h2>
@@ -57,7 +63,7 @@ import { ref } from 'vue'
 import CategoryComponent from './CategoryComponent.vue'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
-import {isNil, isEmpty} from 'ramda'
+import { isNil, isEmpty } from 'ramda'
 export default {
   name: 'CategoriesComponent',
   setup() {
@@ -66,7 +72,7 @@ export default {
     const category_name = ref('')
     const description = ref('')
     const userIsAdmin = ref(false)
-    
+
     return {
       categoriesStore,
       addCategoryFormVisible,
@@ -83,26 +89,26 @@ export default {
     goToNewsWithCategoryPage(categoryId) {
       console.log(categoryId)
     },
-    changeAddCategoryFormVisibility(){
-      this.addCategoryFormVisible = !this.addCategoryFormVisible;
+    changeAddCategoryFormVisibility() {
+      this.addCategoryFormVisible = !this.addCategoryFormVisible
     },
     cancelAddCategory() {
       this.category_name = ''
       this.description = ''
       this.addCategoryFormVisible = false
     },
-    addCategory(){
+    addCategory() {
       const categoryAddData = {
-        id : 0,
-        category_name : this.category_name,
-        description : this.description
+        id: 0,
+        category_name: this.category_name,
+        description: this.description
       }
       //console.log(categoryAddData)
-      this.categoriesStore.addCategory(categoryAddData);
+      this.categoriesStore.addCategory(categoryAddData)
     },
-    checkIfAdmin(){
+    checkIfAdmin() {
       const token = Cookies.get('token')
-      if(!isNil(token) && !isEmpty(token)){
+      if (!isNil(token) && !isEmpty(token)) {
         this.userIsAdmin = jwtDecode(token).user_role === 'admin'
       }
     }

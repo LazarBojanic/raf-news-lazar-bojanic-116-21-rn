@@ -27,6 +27,6 @@ public interface IArticleWithTagService {
     List<ArticleWithTagDto> addTagListToArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, AddException, JsonProcessingException;
 
 
-    ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag);
+    ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag) throws GetException, SQLException, JsonProcessingException;
 
 }

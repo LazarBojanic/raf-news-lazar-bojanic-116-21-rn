@@ -16,8 +16,8 @@ public interface ITagService {
     Tag getTagById(Integer id) throws JsonProcessingException, GetException, SQLException;
     Tag getTagByTagName(String tagName) throws GetException, JsonProcessingException, SQLException;
 
-    Tag addTag(Tag tag) throws SQLException, AddException, JsonProcessingException;
-    List<Tag> addTagList(List<Tag> tagList) throws SQLException, AddException, JsonProcessingException;
+    Tag addTag(Tag tag) throws SQLException, AddException, JsonProcessingException, GetException;
+    List<Tag> addTagList(List<Tag> tagList) throws SQLException, AddException, JsonProcessingException, GetException;
 
     Integer updateTagById(Integer id, Tag tag) throws SQLException, JsonProcessingException, UpdateException;
     Integer deleteTagById(Integer id) throws JsonProcessingException, DeleteException, SQLException;

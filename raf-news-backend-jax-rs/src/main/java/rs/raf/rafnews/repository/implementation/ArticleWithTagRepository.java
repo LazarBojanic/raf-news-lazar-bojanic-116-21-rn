@@ -157,9 +157,9 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     }
 
     private ArticleWithTag extractArticleWithTagFromResultSet(ResultSet resultSet) throws SQLException {
-        Integer id = resultSet.getInt("id");
-        Integer articleId = resultSet.getInt("article_id");
-        Integer tagId = resultSet.getInt("tag_id");
-        return new ArticleWithTag(id, articleId, tagId);
+        Integer columnId = resultSet.getInt("id");
+        Integer columnArticleId = resultSet.getInt("article_id");
+        Integer columnTagId = resultSet.getInt("tag_id");
+        return new ArticleWithTag(columnId, columnArticleId, columnTagId);
     }
 }

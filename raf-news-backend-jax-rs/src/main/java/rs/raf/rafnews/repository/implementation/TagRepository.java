@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.ArticleWithTag;
+import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.model.Tag;
 import rs.raf.rafnews.repository.specification.ITagRepository;
 
@@ -25,7 +26,24 @@ public class TagRepository implements ITagRepository {
 
     @Override
     public Tag getTagByTagName(String tagName) throws GetException, JsonProcessingException, SQLException {
-        return null;
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "SELECT * FROM tag WHERE tag_name = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setString(1, tagName);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if (resultSet.next()) {
+                    return extractTagFromResultSet(resultSet);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return new Tag();
     }
 
 
@@ -81,5 +99,10 @@ public class TagRepository implements ITagRepository {
     @Override
     public Integer deleteTagById(Integer id) throws JsonProcessingException, DeleteException, SQLException {
         return null;
+    }
+    private Tag extractTagFromResultSet(ResultSet resultSet) throws SQLException {
+        Integer columnId = resultSet.getInt("id");
+        String columnTagName = resultSet.getString("tag_name");
+        return new Tag(columnId, columnTagName);
     }
 }
