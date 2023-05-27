@@ -26,31 +26,34 @@
         </button>
       </div>
       <div v-if="addCategoryFormVisible">
-        <h2>Add New Category</h2>
-        <form :disabled="!userIsAdmin" @submit.prevent="addCategory">
-          <div class="form-group">
-            <label for="category_name">Name:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="category_name"
-              v-model="category_name"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="description">Description:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="description"
-              v-model="description"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary">Save</button>
-          <button class="btn btn-secondary" @click="cancelAddCategory">Cancel</button>
-        </form>
+        <div class="col-md-12">
+          <h2>Add New Category</h2>
+          <form :disabled="!userIsAdmin" @submit.prevent="addCategory">
+            <div class="form-group">
+              <label for="category_name">Name:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="category_name"
+                v-model="category_name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="description">Description:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="description"
+                v-model="description"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button class="btn btn-secondary" @click="cancelAddCategory">Cancel</button>
+          </form>
+        </div>
+        
       </div>
     </div>
   </div>

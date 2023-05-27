@@ -1,5 +1,7 @@
 <template>
-  <div
+  <div class="container">
+    <div class="row justify-content-center">
+      <div
     :class="{ 'pushed-out': isPushedOut, 'regular-scale': isRegularScale, 'pushed-in': isPushedIn }"
     @mouseenter="pushOut"
     @mouseup="resetScale"
@@ -10,12 +12,13 @@
     <h1>{{ article.title }}</h1>
     <h3>{{ article.body }}</h3>
   </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue'
 import { useArticlesStore } from '../stores/articles'
-import router from '../router'
 
 export default {
   name: 'ArticleComponent',
@@ -24,11 +27,11 @@ export default {
     const isPushedOut = ref(false)
     const isRegularScale = ref(true)
     const isPushedIn = ref(false)
+
     return {
       articlesStore,
       isPushedOut,
       isRegularScale,
-
       isPushedIn
     }
   },

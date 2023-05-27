@@ -79,9 +79,7 @@ export default {
     this.categoriesStore.fetchAllCategories()
   },
   methods: {
-    goToNewsWithCategoryPage(categoryId) {
-      console.log(categoryId)
-    }
+    goToNewsWithCategoryPage(categoryId) {}
   }
 }
 </script>

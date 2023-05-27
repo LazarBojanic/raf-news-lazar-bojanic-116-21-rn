@@ -1,7 +1,7 @@
-import { defineStore } from "pinia"
-import Cookies from "js-cookie"
-import { Exceptions } from "../globals"
-export const useArticlesStore = defineStore("articles", {
+import { defineStore } from 'pinia'
+import Cookies from 'js-cookie'
+import { Exceptions } from '../globals'
+export const useArticlesStore = defineStore('articles', {
   state: () => {
     return {
       articles: {},
@@ -15,60 +15,54 @@ export const useArticlesStore = defineStore("articles", {
   actions: {
     async fetchArticle(articleId) {
       try {
-        const token = Cookies.get("token")
+        const token = Cookies.get('token')
         const res = await fetch(`http://95.180.97.206:8000/api/article/getById/${articleId}`, {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
           }
         })
         const data = await res.json()
         if (res.status !== 500) {
           this.article = data
           this.exception = {}
-          console.log(JSON.stringify(data))
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
         }
       } catch (error) {
         this.exception = Exceptions.ActionException
-        console.log(error)
       }
     },
     async fetchAllArticles() {
       try {
-        const token = Cookies.get("token")
-        const res = await fetch("http://95.180.97.206:8000/api/article/getAll", {
-          method: "GET",
+        const token = Cookies.get('token')
+        const res = await fetch('http://95.180.97.206:8000/api/article/getAll', {
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
           }
         })
         const data = await res.json()
         if (res.status !== 500) {
           this.articles = data
           this.exception = {}
-          console.log(JSON.stringify(data))
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
         }
       } catch (error) {
         this.exception = Exceptions.ActionException
-        console.log(error)
       }
     },
     async fetchAllArticlesFiltered(searchData) {
       try {
-        const token = Cookies.get("token")
-        const res = await fetch("http://95.180.97.206:8000/api/article/getAllFiltered", {
-          method: "POST",
+        const token = Cookies.get('token')
+        const res = await fetch('http://95.180.97.206:8000/api/article/getAllFiltered', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(searchData)
         })
@@ -76,14 +70,11 @@ export const useArticlesStore = defineStore("articles", {
         if (res.status !== 500) {
           this.articles = data
           this.exception = {}
-          console.log(JSON.stringify(data))
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
         }
       } catch (error) {
         this.exception = Exceptions.ActionException
-        console.log(error)
       }
     }
   }

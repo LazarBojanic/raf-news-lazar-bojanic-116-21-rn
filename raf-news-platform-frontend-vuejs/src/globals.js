@@ -1,3 +1,3 @@
 export const Exceptions = {
-  ActionException: { type: "ActionException", message: "Action failed." }
+  ActionException: { type: 'ActionException', message: 'Action failed.' }
 }

@@ -1,26 +1,28 @@
-import { defineStore } from "pinia"
-import Cookies from "js-cookie"
-import { Exceptions } from "../globals"
-export const useCommentsStore = defineStore("comments", {
+import { defineStore } from 'pinia'
+import Cookies from 'js-cookie'
+import { Exceptions } from '../globals'
+export const useCommentsStore = defineStore('comments', {
   state: () => {
     return {
-      comments: {}
+      comments: {},
+      comment: {}
     }
   },
   getters: {
-    getComments: (state) => state.comments
+    getComments: (state) => state.comments,
+    getComment: (state) => state.comment
   },
   actions: {
     async fetchCommentsByArticleId(articleId) {
       try {
-        const token = Cookies.get("token")
+        const token = Cookies.get('token')
         const res = await fetch(
           `http://95.180.97.206:8000/api/comment/getAllByArticleId/${articleId}`,
           {
-            method: "GET",
+            method: 'GET',
             headers: {
-              "Content-Type": "application/json",
-              'Authorization': `Bearer ${token}`
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
             }
           }
         )
@@ -28,14 +30,33 @@ export const useCommentsStore = defineStore("comments", {
         if (res.status !== 500) {
           this.comments = data
           this.exception = {}
-          console.log(JSON.stringify(data))
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
         }
       } catch (error) {
         this.exception = Exceptions.ActionException
-        console.log(error)
+      }
+    },
+    async addCommentToArticle(addCommentData) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch('http://95.180.97.206:8000/api/comment/addToArticle', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(addCommentData)
+        })
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.comment = data
+          this.exception = {}
+        } else {
+          this.exception = data
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
       }
     }
   }

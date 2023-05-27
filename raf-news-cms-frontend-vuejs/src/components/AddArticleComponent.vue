@@ -2,12 +2,17 @@
   <form @submit.prevent="addArticleButton" class="container">
     <div class="row mb-3">
       <div class="col">
-        <input
-          v-model="category_name"
-          type="text"
-          class="form-control"
-          placeholder="Category name"
-        />
+        <label for="category" class="form-label">Category:</label>
+        <select v-model="category_name" id="category" class="form-select">
+          <option value="">All Categories</option>
+          <option
+            v-for="category in categoriesStore.getCategories"
+            :value="category.category_name"
+            :key="category.id"
+          >
+            {{ category.category_name }}
+          </option>
+        </select>
       </div>
       <div class="col">
         <input v-model="title" type="text" class="form-control" placeholder="Title" />
@@ -35,6 +40,7 @@
 
 <script>
 import { useArticlesStore } from '../stores/articles'
+import { useCategoriesStore } from '../stores/categories'
 import router from '../router'
 import { isNil, isEmpty } from 'ramda'
 import Cookies from 'js-cookie'
@@ -44,8 +50,10 @@ export default {
   name: 'AddArticleComponent',
   setup() {
     const articlesStore = useArticlesStore()
+    const categoriesStore = useCategoriesStore()
     return {
-      articlesStore
+      articlesStore,
+      categoriesStore
     }
   },
   data() {
@@ -56,7 +64,13 @@ export default {
       tag_list: ''
     }
   },
-  mounted() {},
+  mounted() {
+    this.categoriesStore.fetchAllCategories()
+    const receivedCategoryName = this.$route.query.category_name;
+    if (!isNil(receivedCategoryName)) {
+      this.category_name = receivedCategoryName;
+    }
+  },
   methods: {
     getDecodedToken() {
       const token = Cookies.get('token')

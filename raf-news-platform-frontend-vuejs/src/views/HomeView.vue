@@ -17,9 +17,7 @@ export default {
   components: {
     ArticlesComponent
   },
-  mounted() {
-    console.log('home instantiated')
-  },
+  mounted() {},
   data() {
     return {}
   },

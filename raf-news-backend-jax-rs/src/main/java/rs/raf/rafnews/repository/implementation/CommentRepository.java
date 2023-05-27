@@ -5,17 +5,16 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.*;
-import rs.raf.rafnews.exception.DeleteException;
-import rs.raf.rafnews.exception.ExceptionMessage;
-import rs.raf.rafnews.exception.GetException;
-import rs.raf.rafnews.exception.JoinException;
+import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.Article;
 import rs.raf.rafnews.model.Comment;
 import rs.raf.rafnews.repository.specification.ICommentRepository;
+import rs.raf.rafnews.request.CommentRequest;
 import rs.raf.rafnews.service.specification.IArticleService;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 
 import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,8 +148,41 @@ public class CommentRepository implements ICommentRepository {
     }
 
     @Override
-    public CommentDto addComment(Comment comment) {
-        return null;
+    public Comment addRawComment(Comment comment) throws SQLException, JsonProcessingException, AddException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "INSERT INTO comment(service_user_id, article_id, body, time_published) VALUES(?, ?, ?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setInt(1, comment.getService_user_id());
+                preparedStatement.setInt(2, comment.getArticle_id());
+                preparedStatement.setString(3, comment.getBody());
+                preparedStatement.setTimestamp(4, comment.getTime_published());
+                if(preparedStatement.executeUpdate() > 0){
+                    try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            int id = generatedKeys.getInt("id");
+                            comment.setId(id);
+                            return comment;
+                        }
+                    }
+                }
+            }
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", "Failed to add comment: " + comment);
+            throw new AddException(exceptionMessage);
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("AddException", e.getMessage());
+            throw new AddException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+    }
+
+    @Override
+    public CommentDto addCommentToArticle(CommentRequest commentRequest) throws SQLException, AddException, JsonProcessingException, JoinException {
+        Comment comment = new Comment(-1, commentRequest.getService_user_id(), commentRequest.getArticle_id(), commentRequest.getBody(), Timestamp.from(Instant.now()));
+        return joinComment(addRawComment(comment));
     }
 
     @Override

@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.CommentDto;
+import rs.raf.rafnews.exception.AddException;
 import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Comment;
 import rs.raf.rafnews.repository.specification.ICommentRepository;
+import rs.raf.rafnews.request.CommentRequest;
 import rs.raf.rafnews.service.specification.ICommentService;
 
 import java.sql.SQLException;
@@ -54,8 +56,13 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public CommentDto addComment(Comment comment) {
-        return this.commentRepository.addComment(comment);
+    public Comment addRawComment(Comment comment) throws SQLException, AddException, JsonProcessingException {
+        return this.commentRepository.addRawComment(comment);
+    }
+
+    @Override
+    public CommentDto addCommentToArticle(CommentRequest commentRequest) throws JoinException, SQLException, AddException, JsonProcessingException {
+        return this.commentRepository.addCommentToArticle(commentRequest);
     }
 
     @Override

@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Response;
 import rs.raf.rafnews.dto.CommentDto;
 import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
+import rs.raf.rafnews.request.CommentRequest;
 import rs.raf.rafnews.service.implementation.CommentService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
 import rs.raf.rafnews.service.specification.ICommentService;
@@ -65,12 +66,12 @@ public class CommentResource {
     }
     @LogEndpoint
     @POST
-    @Path("/add")
+    @Path("/addToArticle")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response addComment(Comment comment, @HeaderParam("Authorization") String bearerToken){
+    public Response addCommentToArticle(CommentRequest commentRequest, @HeaderParam("Authorization") String bearerToken){
         try{
-            CommentDto commentDtoWithId = commentService.addComment(comment);
+            CommentDto commentDtoWithId = commentService.addCommentToArticle(commentRequest);
             return Response.ok().entity(commentDtoWithId).build();
         }
         catch(Exception e){

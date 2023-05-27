@@ -6,6 +6,7 @@ export const useCategoriesStore = defineStore('categories', {
     return {
       categories: {},
       category: {},
+      category_name: '',
       exception: {}
     }
   },

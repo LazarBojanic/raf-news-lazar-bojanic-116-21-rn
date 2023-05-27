@@ -3,8 +3,8 @@
     <div class="row justify-content-center">
       <h1 class="mt-4 mb-4">Articles</h1>
       <div>
-        <label for="category">Category:</label>
-        <select v-model="searchData.category_name" id="category">
+        <label for="category" class="form-label">Category:</label>
+        <select v-model="searchData.category_name" id="category" class="form-select">
           <option value="">All Categories</option>
           <option
             v-for="category in categoriesStore.getCategories"
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     goToAddArticlePage() {
-      this.$router.push('addArticle');
+      this.$router.push({ name: 'addArticle', query: { category_name: this.searchData.category_name } })
     }
   },
   watch: {

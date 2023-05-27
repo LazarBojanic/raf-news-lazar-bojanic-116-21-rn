@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="row justify-content-center">
+    <div class="col justify-content-center">
       <div v-for="article in articlesStore.getArticles" :key="article.id">
         <ArticleComponent :article="article" />
       </div>
@@ -22,7 +22,7 @@ export default {
     const categoriesStore = useCategoriesStore()
     const searchData = {
       page: 1,
-      page_size: 3,
+      page_size: 10,
       category_name: 'gaming'
     }
 
@@ -33,20 +33,11 @@ export default {
     }
   },
   mounted() {
-    console.log('articles instantiated')
-
-    if (
-      !isNil(this.categoriesStore.getCategories) &&
-      !isEmpty(this.categoriesStore.getCategories)
-    ) {
-      this.categoriesStore.fetchAllCategories()
-    }
+    this.categoriesStore.fetchAllCategories()
     const receivedCategoryName = this.$route.query.category_name
-    console.log(receivedCategoryName)
     if (!isNil(receivedCategoryName)) {
       this.searchData.category_name = receivedCategoryName
     }
-    console.log('fetching articles')
     this.articlesStore.fetchAllArticlesFiltered(this.searchData)
   },
   methods: {
