@@ -10,6 +10,7 @@ import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.exception.UpdateException;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
+import rs.raf.rafnews.request.CategorySearchRequest;
 import rs.raf.rafnews.service.specification.ICategoryService;
 
 import java.sql.SQLException;
@@ -27,6 +28,11 @@ public class CategoryService implements ICategoryService {
     @Override
     public List<CategoryDto> getAllCategories() throws GetException, JsonProcessingException, SQLException {
         return this.categoryRepository.getAllCategories();
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategoriesFiltered(CategorySearchRequest categorySearchRequest) throws GetException, JsonProcessingException, SQLException {
+        return this.categoryRepository.getAllCategoriesFiltered(categorySearchRequest);
     }
 
     @Override

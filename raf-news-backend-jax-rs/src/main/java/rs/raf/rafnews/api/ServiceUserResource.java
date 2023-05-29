@@ -6,9 +6,7 @@ import jakarta.ws.rs.core.*;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
-import rs.raf.rafnews.request.RegisterFromAdminRequest;
-import rs.raf.rafnews.request.LoginRequest;
-import rs.raf.rafnews.request.RegisterRequest;
+import rs.raf.rafnews.request.*;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.exception.ExceptionMessage;
 
@@ -28,6 +26,20 @@ public class ServiceUserResource {
     public Response getAllServiceUsers(@HeaderParam("Authorization") String bearerToken){
         try{
             List<ServiceUserDto> serviceUserDtoList = serviceUserService.getAllServiceUsers();
+            return Response.ok().entity(serviceUserDtoList).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @LogEndpoint
+    @POST
+    @Path("/getAllFiltered")
+    @Produces(APPLICATION_JSON)
+    public Response getAllServiceUsersFiltered(ServiceUserSearchRequest serviceUserSearchRequest, @HeaderParam("Authorization") String bearerToken){
+        try{
+            List<ServiceUserDto> serviceUserDtoList = serviceUserService.getAllServiceUsersFiltered(serviceUserSearchRequest);
             return Response.ok().entity(serviceUserDtoList).build();
         }
         catch(Exception e){
@@ -73,6 +85,21 @@ public class ServiceUserResource {
     public Response updateServiceUserById(@PathParam("id") Integer id, ServiceUser serviceUser,  @HeaderParam("Authorization") String bearerToken){
         try{
             Integer affectedRows = serviceUserService.updateServiceUserById(id, serviceUser);
+            return Response.ok().entity(affectedRows).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @LogEndpoint
+    @PUT
+    @Path("/switchEnabledById/{id}")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response switchServiceUserEnabledById(@PathParam("id") Integer id, ServiceUserSwitchEnabledRequest serviceUserSwitchEnabledRequest, @HeaderParam("Authorization") String bearerToken){
+        try{
+            Integer affectedRows = serviceUserService.switchServiceUserEnabledById(id, serviceUserSwitchEnabledRequest);
             return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){

@@ -10,12 +10,14 @@ import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.Category;
 import rs.raf.rafnews.model.ServiceUser;
 import rs.raf.rafnews.repository.specification.ICategoryRepository;
+import rs.raf.rafnews.request.CategorySearchRequest;
 import rs.raf.rafnews.service.specification.IArticleService;
 
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class CategoryRepository implements ICategoryRepository {
@@ -51,6 +53,15 @@ public class CategoryRepository implements ICategoryRepository {
             categoryDtoList.add(joinCategory(category));
         }
         return categoryDtoList;
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategoriesFiltered(CategorySearchRequest categorySearchRequest) throws GetException, JsonProcessingException, SQLException {
+        List<CategoryDto> categoryDtoList = getAllCategories();
+        return categoryDtoList.stream()
+                .skip((long) (categorySearchRequest.getPage() - 1) * categorySearchRequest.getPage_size())
+                .limit(categorySearchRequest.getPage_size())
+                .collect(Collectors.toList());
     }
 
     @Override

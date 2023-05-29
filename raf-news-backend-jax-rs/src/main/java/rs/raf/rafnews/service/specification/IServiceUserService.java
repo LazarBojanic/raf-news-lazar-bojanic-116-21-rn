@@ -6,9 +6,7 @@ import io.jsonwebtoken.Claims;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.*;
-import rs.raf.rafnews.request.RegisterFromAdminRequest;
-import rs.raf.rafnews.request.LoginRequest;
-import rs.raf.rafnews.request.RegisterRequest;
+import rs.raf.rafnews.request.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,6 +14,7 @@ import java.util.List;
 public interface IServiceUserService {
     List<ServiceUser> getAllRawServiceUsers() throws JsonProcessingException, ResourceNotFoundException, GetException, SQLException;
     List<ServiceUserDto> getAllServiceUsers() throws ResourceNotFoundException, JsonProcessingException, GetException, SQLException;
+    List<ServiceUserDto> getAllServiceUsersFiltered(ServiceUserSearchRequest serviceUserSearchRequest) throws JsonProcessingException, GetException, SQLException;
     ServiceUserDto joinServiceUser(ServiceUser serviceUser);
     ServiceUser getRawServiceUserById(Integer id) throws JsonProcessingException, GetException, SQLException;
     ServiceUserDto getServiceUserById(Integer id) throws JsonProcessingException, GetException, SQLException;
@@ -25,6 +24,7 @@ public interface IServiceUserService {
     ServiceUser getRawServiceUserByEmailOrUsername(String email, String username) throws JsonProcessingException, GetException, SQLException;
     ServiceUserDto addServiceUser(ServiceUser serviceUser) throws JsonProcessingException, AddException, SQLException;
     Integer updateServiceUserById(Integer id, ServiceUser serviceUser) throws JsonProcessingException, UpdateException, GetException;
+    Integer switchServiceUserEnabledById(Integer id, ServiceUserSwitchEnabledRequest serviceUserSwitchEnabledRequest) throws JsonProcessingException, UpdateException, GetException, SQLException;
     ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws JsonProcessingException, RegisterException, EmailAlreadyExists, GetException;
     ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException;
     Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException;

@@ -16,6 +16,17 @@
           </tr>
         </tbody>
       </table>
+      <div class="pagination">
+        <button
+          class="btn btn-primary"
+          :disabled="categoriesSearchData.page === 1"
+          @click="previousPage"
+        >
+          Previous Page
+        </button>
+        <span class="current-page">Page {{ categoriesSearchData.page }}</span>
+        <button class="btn btn-primary" @click="nextPage">Next Page</button>
+      </div>
       <div>
         <button
           :disabled="!userIsAdmin"
@@ -76,6 +87,10 @@ export default {
     const userIsAdmin = ref(false)
 
     return {
+      categoriesSearchData: {
+        page: 1,
+        page_size: 5
+      },
       categoriesStore,
       addCategoryFormVisible,
       category_name,
@@ -113,6 +128,17 @@ export default {
       if (!isNil(token) && !isEmpty(token)) {
         this.userIsAdmin = jwtDecode(token).user_role === 'admin'
       }
+    },
+    previousPage() {
+      if (this.categoriesSearchData.page > 1) {
+        this.categoriesSearchData.page--
+        this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
+      }
+    },
+
+    nextPage() {
+      this.categoriesSearchData.page++
+      this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
     }
   },
   components: { CategoryComponent }

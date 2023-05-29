@@ -36,8 +36,15 @@
     {{ service_user.last_name }}
   </td>
   <td>
-    <button :disabled="!validToken" class="btn btn-primary" @click="switchEnabled()">
-      Switch Enabled
+    <button
+      :disabled="!validToken"
+      :class="{
+        'btn-primary': service_user.is_enabled === 'true',
+        'btn-secondary': service_user.is_enabled === 'false'
+      }"
+      @click="switchEnabled()"
+    >
+      {{ service_user.is_enabled === 'true' ? 'Disable' : 'Enable' }}
     </button>
   </td>
   <td><button :disabled="!validToken" class="btn btn-danger" @click="editUser()">Edit</button></td>
@@ -110,6 +117,26 @@ export default {
       } else {
         this.validToken = false
       }
+    },
+    async editUser() {
+      this.$router.push({ name: 'editUser', query: { userId: this.service_user.id } })
+    },
+    async deleteUser() {
+      await this.usersStore.deleteUserById(this.service_user.id)
+      await this.usersStore.fetchAllUsersFiltered(this.usersStore.getSearchData)
+    },
+    async switchEnabled() {
+      const switchEnabledData = {
+        is_enabled: ''
+      }
+      if (this.service_user.is_enabled === 'true') {
+        switchEnabledData.is_enabled = 'false'
+        await this.usersStore.switchUserEnabled(this.service_user.id, switchEnabledData)
+      } else if (this.service_user.is_enabled === 'false') {
+        switchEnabledData.is_enabled = 'true'
+        await this.usersStore.switchUserEnabled(this.service_user.id, switchEnabledData)
+      }
+      await this.usersStore.fetchAllUsersFiltered(this.usersStore.getSearchData)
     }
   }
 }

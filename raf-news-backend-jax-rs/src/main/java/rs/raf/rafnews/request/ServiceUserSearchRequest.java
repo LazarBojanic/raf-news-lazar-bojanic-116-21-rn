@@ -8,8 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ArticleSearchRequest {
+public class ServiceUserSearchRequest {
     private Integer page;
     private Integer page_size;
-    private String category_name;
 }

@@ -78,4 +78,9 @@ public class ArticleService implements IArticleService {
     public Integer deleteArticleById(Integer id) throws SQLException, DeleteException, JsonProcessingException {
         return this.articleRepository.deleteArticleById(id);
     }
+
+    @Override
+    public Integer deleteAllArticlesByServiceUserId(Integer serviceUserId) throws SQLException, DeleteException, JsonProcessingException {
+        return this.articleRepository.deleteAllArticlesByServiceUserId(serviceUserId);
+    }
 }

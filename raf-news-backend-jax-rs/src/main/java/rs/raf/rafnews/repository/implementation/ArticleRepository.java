@@ -98,7 +98,7 @@ public class ArticleRepository implements IArticleRepository {
             CategoryDto categoryDto = categoryService.getCategoryById(article.getCategory_id());
             List<ArticleWithTagDto> articleWithTagDtoList = articleWithTagService.getAllArticlesWithTagByByArticleId(article.getId());
             if(serviceUserDto.getId() <= 0){
-                exceptionMessageString += "Couldn't find a category with id = " + article.getCategory_id() + ". ";
+                exceptionMessageString += "Couldn't find a user with id = " + article.getService_user_id() + ". ";
                 exceptionOccurred = true;
             }
             if(categoryDto.getId() <= 0){
@@ -325,6 +325,25 @@ public class ArticleRepository implements IArticleRepository {
             throw new DeleteException(exceptionMessage);
         }
     }
+
+    @Override
+    public Integer deleteAllArticlesByServiceUserId(Integer serviceUserId) throws JsonProcessingException, DeleteException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "DELETE FROM article WHERE service_user_id = ?";
+            try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+                preparedStatement.setInt(1, serviceUserId);
+                int affectedRows = preparedStatement.executeUpdate();
+                commentService.deleteAllCommentsByArticleId(serviceUserId);
+                return affectedRows;
+            }
+        }
+        catch (SQLException e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
+            throw new DeleteException(exceptionMessage);
+        }
+    }
+
     private Article extractArticleFromResultSet(ResultSet resultSet) throws SQLException {
         Integer columnId = resultSet.getInt("id");
         Integer columnServiceUserId = resultSet.getInt("service_user_id");

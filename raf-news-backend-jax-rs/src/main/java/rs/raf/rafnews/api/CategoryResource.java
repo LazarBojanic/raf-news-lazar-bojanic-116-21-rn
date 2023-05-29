@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Response;
 import rs.raf.rafnews.dto.CategoryDto;
 import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
+import rs.raf.rafnews.request.CategorySearchRequest;
 import rs.raf.rafnews.service.implementation.CategoryService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
 import rs.raf.rafnews.service.specification.ICategoryService;
@@ -28,6 +29,20 @@ public class CategoryResource {
     public Response getAllCategories(@HeaderParam("Authorization") String bearerToken){
         try{
             List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
+            return Response.ok().entity(categoryDtoList).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @LogEndpoint
+    @POST
+    @Path("/getAllFiltered")
+    @Produces(APPLICATION_JSON)
+    public Response getAllCategoriesFiltered(CategorySearchRequest categorySearchRequest, @HeaderParam("Authorization") String bearerToken){
+        try{
+            List<CategoryDto> categoryDtoList = categoryService.getAllCategoriesFiltered(categorySearchRequest);
             return Response.ok().entity(categoryDtoList).build();
         }
         catch(Exception e){

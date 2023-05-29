@@ -28,6 +28,13 @@
             </tr>
           </tbody>
         </table>
+        <div class="pagination">
+          <button class="btn btn-primary" :disabled="searchData.page === 1" @click="previousPage">
+            Previous Page
+          </button>
+          <span class="current-page">Page {{ searchData.page }}</span>
+          <button class="btn btn-primary" @click="nextPage">Next Page</button>
+        </div>
         <button class="btn btn-success" @click="goToAddArticlePage">Add Article</button>
       </div>
     </div>
@@ -55,7 +62,7 @@ export default {
     return {
       searchData: {
         page: 1,
-        page_size: 15,
+        page_size: 5,
         category_name: 'gaming'
       }
     }
@@ -77,6 +84,17 @@ export default {
         name: 'addArticle',
         query: { category_name: this.searchData.category_name }
       })
+    },
+    previousPage() {
+      if (this.searchData.page > 1) {
+        this.searchData.page--
+        this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+      }
+    },
+
+    nextPage() {
+      this.searchData.page++
+      this.articlesStore.fetchAllArticlesFiltered(this.searchData)
     }
   },
   watch: {

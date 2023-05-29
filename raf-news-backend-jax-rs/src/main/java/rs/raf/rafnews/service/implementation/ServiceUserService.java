@@ -9,9 +9,7 @@ import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
-import rs.raf.rafnews.request.RegisterFromAdminRequest;
-import rs.raf.rafnews.request.LoginRequest;
-import rs.raf.rafnews.request.RegisterRequest;
+import rs.raf.rafnews.request.*;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 
 import java.sql.SQLException;
@@ -31,6 +29,11 @@ public class ServiceUserService implements IServiceUserService {
     @Override
     public List<ServiceUserDto> getAllServiceUsers() throws GetException, ResourceNotFoundException, JsonProcessingException, SQLException {
         return this.serviceUserRepository.getAllServiceUsers();
+    }
+
+    @Override
+    public List<ServiceUserDto> getAllServiceUsersFiltered(ServiceUserSearchRequest serviceUserSearchRequest) throws  JsonProcessingException, GetException, SQLException {
+        return this.serviceUserRepository.getAllServiceUsersFiltered(serviceUserSearchRequest);
     }
 
     @Override
@@ -73,6 +76,11 @@ public class ServiceUserService implements IServiceUserService {
     @Override
     public Integer updateServiceUserById(Integer id, ServiceUser serviceUser) throws UpdateException, JsonProcessingException, GetException {
         return this.serviceUserRepository.updateServiceUserById(id, serviceUser);
+    }
+
+    @Override
+    public Integer switchServiceUserEnabledById(Integer id, ServiceUserSwitchEnabledRequest serviceUserSwitchEnabledRequest) throws JsonProcessingException, UpdateException, SQLException {
+        return this.serviceUserRepository.switchServiceUserEnabledById(id, serviceUserSwitchEnabledRequest);
     }
 
     @Override

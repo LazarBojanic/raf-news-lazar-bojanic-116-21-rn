@@ -23,4 +23,5 @@ public interface IArticleRepository {
     Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws JsonProcessingException, UpdateException;
     Integer saveArticle(Article article) throws JsonProcessingException, UpdateException, SQLException;
     Integer deleteArticleById(Integer id) throws JsonProcessingException, DeleteException, SQLException;
+    Integer deleteAllArticlesByServiceUserId(Integer serviceUserId) throws JsonProcessingException, DeleteException, SQLException;
 }

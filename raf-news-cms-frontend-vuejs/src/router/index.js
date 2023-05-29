@@ -9,7 +9,7 @@ import FullArticleComponent from '../components/FullArticleComponent.vue'
 import EditCategoryComponent from '../components/EditCategoryComponent.vue'
 import UsersTableComponent from '../components/UsersTableComponent.vue'
 import EditArticleComponent from '../components/EditArticleComponent.vue'
-
+import EditUserComponent from '../components/EditUserComponent.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -47,6 +47,11 @@ const router = createRouter({
       path: '/fullArticle',
       name: 'fullArticle',
       component: FullArticleComponent
+    },
+    {
+      path: '/editUser',
+      name: 'editUser',
+      component: EditUserComponent
     },
     {
       path: '/editCategory',

@@ -48,21 +48,7 @@ export default {
     this.category_name = this.categoriesStore.getCategory.category_name
     this.description = this.categoriesStore.getCategory.description
   },
-  /*created() {
-      /// Retrieve the categoryId from the route parameters
-      this.categoryId = this.$route.params.categoryId;
-      // Fetch the current category details
-      this.categoriesStore.fetchCategoryDetails();
-    },*/
   methods: {
-    async fetchCategoryDetails() {
-      // Fetch the category details from the server or store
-      // Assign the values to categoryName and categoryDescription
-      // Example:
-      // const category = await this.categoriesStore.fetchCategoryById(this.categoryId);
-      // this.categoryName = category.category_name;
-      // this.categoryDescription = category.description;
-    },
     async updateCategory() {
       const updateData = {
         id: this.categoriesStore.getCategory.id,

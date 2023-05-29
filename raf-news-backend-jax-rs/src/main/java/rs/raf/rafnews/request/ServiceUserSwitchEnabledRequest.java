@@ -8,8 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ArticleSearchRequest {
-    private Integer page;
-    private Integer page_size;
-    private String category_name;
+public class ServiceUserSwitchEnabledRequest {
+    private String is_enabled;
 }

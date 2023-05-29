@@ -5,11 +5,15 @@ import { isNil, isEmpty } from 'ramda'
 export const useUsersStore = defineStore('users', {
   state: () => {
     return {
+      searchData: {},
+      user: {},
       users: {},
       exception: {}
     }
   },
   getters: {
+    getSearchData: (state) => state.searchData,
+    getUser: (state) => state.user,
     getUsers: (state) => state.users,
     getException: (state) => state.exception
   },
@@ -145,7 +149,7 @@ export const useUsersStore = defineStore('users', {
     clearException() {
       this.exception = {}
     },
-    async fetchUsers() {
+    async fetchAllUsers() {
       try {
         const token = Cookies.get('token')
         const res = await fetch('http://95.180.97.206:8000/api/service_user/getAll', {
@@ -161,12 +165,135 @@ export const useUsersStore = defineStore('users', {
           this.exception = {}
           console.log(JSON.stringify(data))
         } else {
-          Cookies.set('token', {})
           this.exception = data
           console.log(JSON.stringify(this.exception))
         }
       } catch (error) {
-        Cookies.set('token', {})
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
+    },
+    async fetchAllUsersFiltered(usersSearchData) {
+      try {
+        this.searchData = usersSearchData
+        const token = Cookies.get('token')
+        const res = await fetch('http://95.180.97.206:8000/api/service_user/getAllFiltered', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(usersSearchData)
+        })
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.users = data
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
+    },
+    async fetchUserById(userId) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch(`http://95.180.97.206:8000/api/service_user/getById/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.user = data
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
+    },
+    async updateUserById(userId, updateData) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch(`http://95.180.97.206:8000/api/service_user/updateById/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(updateData)
+        })
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.user = data
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
+    },
+    async deleteUserById(userId) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch(`http://95.180.97.206:8000/api/service_user/deleteById/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
+    },
+    async switchUserEnabled(userId, switchEnabledData) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch(
+          `http://95.180.97.206:8000/api/service_user/switchEnabledById/${userId}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(switchEnabledData)
+          }
+        )
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
         this.exception = Exceptions.ActionException
         console.log(error)
       }

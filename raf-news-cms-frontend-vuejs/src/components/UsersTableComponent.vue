@@ -17,10 +17,22 @@
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="col">
-        <div class="text-right mb-2">
-          <button class="btn btn-primary mb-2" @click="addUserFormIsVisible = true">
+        <div class="pagination">
+          <button
+            class="btn btn-primary"
+            :disabled="usersSearchData.page === 1"
+            @click="previousPage"
+          >
+            Previous Page
+          </button>
+          <span class="current-page">Page {{ usersSearchData.page }}</span>
+          <button class="btn btn-primary" @click="nextPage">Next Page</button>
+        </div>
+        <div>
+          <button
+            class="btn btn-primary mb-2"
+            @click="addUserFormIsVisible = !addUserFormIsVisible"
+          >
             Add User
           </button>
         </div>
@@ -60,7 +72,12 @@
                   </div>
                   <br />
                   <button type="submit" class="btn btn-primary">Add User</button>
-                  <button class="btn btn-secondary" @click="cancelAddUser">Cancel</button>
+                  <button
+                    class="btn btn-secondary"
+                    @click="addUserFormIsVisible = !addUserFormIsVisible"
+                  >
+                    Cancel
+                  </button>
                 </form>
               </div>
             </div>
@@ -93,11 +110,15 @@ export default {
       addUserFormIsVisible
     }
   },
-  mounted() {
-    this.usersStore.fetchUsers()
+  async mounted() {
+    await this.usersStore.fetchAllUsersFiltered(this.usersSearchData)
   },
   data() {
     return {
+      usersSearchData: {
+        page: 1,
+        page_size: 5
+      },
       first_name: '',
       last_name: '',
       user_role: '',
@@ -142,6 +163,17 @@ export default {
       } else {
         console.log('registration failed')
       }
+    },
+    previousPage() {
+      if (this.usersSearchData.page > 1) {
+        this.usersSearchData.page--
+        this.usersStore.fetchAllUsersFiltered(this.usersSearchData)
+      }
+    },
+
+    nextPage() {
+      this.usersSearchData.page++
+      this.usersStore.fetchAllUsersFiltered(this.usersSearchData)
     }
   },
   components: { UserRowComponent }

@@ -40,6 +40,31 @@ export const useCategoriesStore = defineStore('categories', {
         console.log(error)
       }
     },
+    async fetchAllCategoriesFiltered(categoriesSearchData) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch('http://95.180.97.206:8000/api/category/getAllFiltered', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(categoriesSearchData)
+        })
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.categories = data
+          this.exception = {}
+          console.log(JSON.stringify(data))
+        } else {
+          this.exception = data
+          console.log(JSON.stringify(this.exception))
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
+        console.log(error)
+      }
+    },
     async addCategory(categoryAddData) {
       try {
         const token = Cookies.get('token')

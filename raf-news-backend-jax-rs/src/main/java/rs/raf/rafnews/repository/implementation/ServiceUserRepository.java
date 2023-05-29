@@ -3,14 +3,16 @@ package rs.raf.rafnews.repository.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.*;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.dto.ServiceUserDto;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IServiceUserRepository;
-import rs.raf.rafnews.request.RegisterFromAdminRequest;
-import rs.raf.rafnews.request.LoginRequest;
-import rs.raf.rafnews.request.RegisterRequest;
+import rs.raf.rafnews.request.*;
+import rs.raf.rafnews.service.specification.IArticleService;
+import rs.raf.rafnews.service.specification.ICommentService;
 import rs.raf.rafnews.util.Hasher;
 import rs.raf.rafnews.util.Util;
 
@@ -21,12 +23,16 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class ServiceUserRepository implements IServiceUserRepository {
     private static final String JWT_SECRET = "NQu2mzEtCwrNaJCjsoHT";
     public static final String MASTER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3MiOiJhZG1pbiJ9.EcbsD0Wn1wkI8iVVTEOX0IWHuwyqOndzPUFtDAM4TMI";
-
+    @Inject
+    private IArticleService articleService;
+    @Inject
+    private ICommentService commentService;
     @Override
     public List<ServiceUser> getAllRawServiceUsers() throws JsonProcessingException, GetException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
@@ -58,6 +64,15 @@ public class ServiceUserRepository implements IServiceUserRepository {
             serviceUserDtoList.add(joinServiceUser(serviceUser));
         }
         return serviceUserDtoList;
+    }
+
+    @Override
+    public List<ServiceUserDto> getAllServiceUsersFiltered(ServiceUserSearchRequest serviceUserSearchRequest) throws JsonProcessingException, GetException, SQLException {
+        List<ServiceUserDto> serviceUserDtoList = getAllServiceUsers();
+        return serviceUserDtoList.stream()
+                .skip((long) (serviceUserSearchRequest.getPage() - 1) * serviceUserSearchRequest.getPage_size())
+                .limit(serviceUserSearchRequest.getPage_size())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -227,6 +242,24 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
+    public Integer switchServiceUserEnabledById(Integer id, ServiceUserSwitchEnabledRequest serviceUserSwitchEnabledRequest) throws JsonProcessingException, UpdateException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "UPDATE service_user SET is_enabled = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, serviceUserSwitchEnabledRequest.getIs_enabled());
+            preparedStatement.setInt(2, id);
+            return preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to switch enabled for user with id: " + id);
+            throw new UpdateException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+    }
+
+    @Override
     public ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws JsonProcessingException, RegisterException {
         try{
             if(registerRequest.getPass().equals(registerRequest.getConfirm_pass())){
@@ -340,7 +373,9 @@ public class ServiceUserRepository implements IServiceUserRepository {
         String query = "DELETE FROM service_user WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
-            return preparedStatement.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
+            articleService.deleteAllArticlesByServiceUserId(id);
+            return affectedRows;
         }
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
@@ -407,10 +442,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             preparedStatement.setString(6, serviceUser.getFirst_name());
             preparedStatement.setString(7, serviceUser.getLast_name());
             preparedStatement.setInt(8, serviceUser.getId());
-            int affectedRows = preparedStatement.executeUpdate();
-            if(affectedRows >= 0){
-                return affectedRows;
-            }
+            return preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update user with id: " + serviceUser.getId());
@@ -419,7 +451,5 @@ public class ServiceUserRepository implements IServiceUserRepository {
         finally {
             connection.close();
         }
-        ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update user with id: " + serviceUser.getId());
-        throw new UpdateException(exceptionMessage);
     }
 }
