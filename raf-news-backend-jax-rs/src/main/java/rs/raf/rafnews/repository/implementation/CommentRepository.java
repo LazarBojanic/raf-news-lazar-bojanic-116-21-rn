@@ -194,7 +194,7 @@ public class CommentRepository implements ICommentRepository {
     public Integer deleteCommentById(Integer id) throws SQLException, JsonProcessingException, DeleteException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         try{
-            String query = "DELETE FROM category WHERE id = ?";
+            String query = "DELETE FROM comment WHERE id = ?";
             try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
                 preparedStatement.setInt(1, id);
                 int affectedRows = preparedStatement.executeUpdate();
@@ -212,6 +212,23 @@ public class CommentRepository implements ICommentRepository {
             throw new DeleteException(exceptionMessage);
         }
     }
+
+    @Override
+    public Integer deleteAllCommentsByArticleId(Integer articleId) throws SQLException, DeleteException, JsonProcessingException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "DELETE FROM comment WHERE article_id = ?";
+            try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+                preparedStatement.setInt(1, articleId);
+                return preparedStatement.executeUpdate();
+            }
+        }
+        catch (SQLException e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
+            throw new DeleteException(exceptionMessage);
+        }
+    }
+
     private Comment extractCommentFromResultSet(ResultSet resultSet) throws SQLException {
         Integer columnId = resultSet.getInt("id");
         Integer columnServiceUserId = resultSet.getInt("service_user_id");

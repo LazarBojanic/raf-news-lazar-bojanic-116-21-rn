@@ -74,4 +74,9 @@ public class CommentService implements ICommentService {
     public Integer deleteCommentById(Integer id) throws SQLException, DeleteException, JsonProcessingException {
         return this.commentRepository.deleteCommentById(id);
     }
+
+    @Override
+    public Integer deleteAllCommentsByArticleId(Integer articleId) throws SQLException, DeleteException, JsonProcessingException {
+        return this.commentRepository.deleteAllCommentsByArticleId(articleId);
+    }
 }

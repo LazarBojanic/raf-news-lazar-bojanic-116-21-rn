@@ -340,10 +340,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
         String query = "DELETE FROM service_user WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
-            int rowsAffected = preparedStatement.executeUpdate();
-            if(rowsAffected >= 0){
-                return rowsAffected;
-            }
+            return preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
@@ -352,8 +349,6 @@ public class ServiceUserRepository implements IServiceUserRepository {
         finally {
             connection.close();
         }
-        ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete user with id: " + id);
-        throw new DeleteException(exceptionMessage);
     }
 
     @Override

@@ -24,4 +24,5 @@ public interface ICommentRepository {
     CommentDto addCommentToArticle(CommentRequest commentRequest) throws SQLException, AddException, JsonProcessingException, JoinException;
     Integer updateCommentById(Integer id, Comment comment);
     Integer deleteCommentById(Integer id) throws SQLException, JsonProcessingException, DeleteException;
+    Integer deleteAllCommentsByArticleId(Integer articleId) throws SQLException, DeleteException, JsonProcessingException;
 }

@@ -15,7 +15,6 @@ public class App extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-
         classes.add(CorsFilter.class);
         classes.add(AuthFilter.class);
         classes.add(ArticleResource.class);
@@ -23,6 +22,7 @@ public class App extends Application {
         classes.add(CommentResource.class);
         classes.add(ServiceUserResource.class);
         classes.add(TagResource.class);
+        classes.add(ArticleWithTagResource.class);
         return classes;
     }
     public App(){

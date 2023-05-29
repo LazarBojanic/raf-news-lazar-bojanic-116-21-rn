@@ -208,14 +208,7 @@ public class CategoryRepository implements ICategoryRepository {
                 String query = "DELETE FROM category WHERE id = ?";
                 try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
                     preparedStatement.setInt(1, id);
-                    int affectedRows = preparedStatement.executeUpdate();
-                    if(affectedRows > 0){
-                        return affectedRows;
-                    }
-                    else{
-                        ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete category. Id " + id + " not found.");
-                        throw new DeleteException(exceptionMessage);
-                    }
+                    return preparedStatement.executeUpdate();
                 }
             }
             catch (SQLException e){

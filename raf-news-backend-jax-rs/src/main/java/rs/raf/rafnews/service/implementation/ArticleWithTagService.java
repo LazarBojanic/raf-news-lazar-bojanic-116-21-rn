@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.ArticleWithTagDto;
 import rs.raf.rafnews.exception.AddException;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.ArticleWithTag;
 import rs.raf.rafnews.model.Tag;
@@ -64,12 +65,12 @@ public class ArticleWithTagService implements IArticleWithTagService {
     }
 
     @Override
-    public ArticleWithTagDto updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException {
+    public List<ArticleWithTagDto> updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException, DeleteException, AddException {
         return this.articleWithTagRepository.updateTagsForArticle(articleId, tagList);
     }
 
     @Override
-    public Integer deleteAllTagsForArticle(Integer articleId) {
+    public Integer deleteAllTagsForArticle(Integer articleId) throws SQLException, DeleteException, JsonProcessingException {
         return this.articleWithTagRepository.deleteAllTagsForArticle(articleId);
     }
 }

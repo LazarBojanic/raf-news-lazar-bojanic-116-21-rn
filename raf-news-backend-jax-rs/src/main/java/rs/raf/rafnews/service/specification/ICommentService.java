@@ -25,4 +25,5 @@ public interface ICommentService {
     CommentDto addCommentToArticle(CommentRequest commentRequest) throws JoinException, SQLException, AddException, JsonProcessingException;
     Integer updateCommentById(Integer id, Comment comment);
     Integer deleteCommentById(Integer id) throws SQLException, DeleteException, JsonProcessingException;
+    Integer deleteAllCommentsByArticleId(Integer articleId) throws SQLException, DeleteException, JsonProcessingException;
 }

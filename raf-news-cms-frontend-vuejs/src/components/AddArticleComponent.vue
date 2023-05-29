@@ -66,9 +66,9 @@ export default {
   },
   mounted() {
     this.categoriesStore.fetchAllCategories()
-    const receivedCategoryName = this.$route.query.category_name;
+    const receivedCategoryName = this.$route.query.category_name
     if (!isNil(receivedCategoryName)) {
-      this.category_name = receivedCategoryName;
+      this.category_name = receivedCategoryName
     }
   },
   methods: {

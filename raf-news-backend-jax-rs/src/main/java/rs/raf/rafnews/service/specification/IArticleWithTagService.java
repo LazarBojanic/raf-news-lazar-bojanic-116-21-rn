@@ -3,6 +3,7 @@ package rs.raf.rafnews.service.specification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import rs.raf.rafnews.dto.ArticleWithTagDto;
 import rs.raf.rafnews.exception.AddException;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.ArticleWithTag;
 import rs.raf.rafnews.model.Tag;
@@ -29,6 +30,6 @@ public interface IArticleWithTagService {
 
     ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag) throws GetException, SQLException, JsonProcessingException;
 
-    ArticleWithTagDto updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException;
-    Integer deleteAllTagsForArticle(Integer articleId);
+    List<ArticleWithTagDto>  updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException, DeleteException, AddException;
+    Integer deleteAllTagsForArticle(Integer articleId) throws SQLException, DeleteException, JsonProcessingException;
 }

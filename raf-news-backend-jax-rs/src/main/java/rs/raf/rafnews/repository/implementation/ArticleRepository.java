@@ -13,10 +13,7 @@ import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.repository.specification.IArticleRepository;
 import rs.raf.rafnews.request.ArticleRequest;
 import rs.raf.rafnews.request.ArticleSearchRequest;
-import rs.raf.rafnews.service.specification.IArticleWithTagService;
-import rs.raf.rafnews.service.specification.ICategoryService;
-import rs.raf.rafnews.service.specification.IServiceUserService;
-import rs.raf.rafnews.service.specification.ITagService;
+import rs.raf.rafnews.service.specification.*;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -35,6 +32,8 @@ public class ArticleRepository implements IArticleRepository {
     private ITagService tagService;
     @Inject
     private IArticleWithTagService articleWithTagService;
+    @Inject
+    private ICommentService commentService;
 
     @Override
     public List<Article> getAllRawArticles() throws JsonProcessingException, GetException, SQLException {
@@ -259,7 +258,7 @@ public class ArticleRepository implements IArticleRepository {
                         }
                         if(articleRequest.getTag_list() != null){
                             tagService.addTagList(articleRequest.getTag_list());
-                            articleWithTagService.updateArticleWithTags(articleRequest.getId(), articleRequest.getTag_list());
+                            articleWithTagService.updateTagsForArticle(articleRequest.getId(), articleRequest.getTag_list());
                         }
                         return saveArticle(currentArticle);
                     }
@@ -317,13 +316,8 @@ public class ArticleRepository implements IArticleRepository {
             try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
                 preparedStatement.setInt(1, id);
                 int affectedRows = preparedStatement.executeUpdate();
-                if(affectedRows > 0){
-                    return affectedRows;
-                }
-                else{
-                    ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", "Failed to delete article. Id " + id + " not found.");
-                    throw new DeleteException(exceptionMessage);
-                }
+                commentService.deleteAllCommentsByArticleId(id);
+                return affectedRows;
             }
         }
         catch (SQLException e){

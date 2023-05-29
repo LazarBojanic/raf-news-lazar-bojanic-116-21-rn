@@ -78,7 +78,7 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
 
     @Override
     public ArticleWithTag addRawTagToArticle(Integer articleId, Tag tag) throws GetException, SQLException, JsonProcessingException, AddException {
-        if(getArticleWithTagByArticleIdAndTagId(articleId, tag.getId()).getId() <= 0){
+        if(getArticleWithTagByArticleIdAndTagId(articleId, tagService.getTagByTagName(tag.getTag_name()).getId()).getId() <= 0){
             Connection connection = RafNewsDatabase.getInstance().getConnection();
             try{
                 String query = "INSERT INTO article_with_tag(article_id, tag_id) VALUES(?, ?)";
@@ -158,9 +158,9 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     }
 
     @Override
-    public ArticleWithTagDto updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException, DeleteException, AddException {
+    public List<ArticleWithTagDto> updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException, DeleteException, AddException {
         deleteAllTagsForArticle(articleId);
-        addTagListToArticle(articleId, tagList);
+        return addTagListToArticle(articleId, tagList);
     }
 
     @Override

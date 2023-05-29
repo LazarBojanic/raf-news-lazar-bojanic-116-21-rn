@@ -96,14 +96,13 @@ export const useCategoriesStore = defineStore('categories', {
     async deleteCategory(categoryId) {
       try {
         const token = Cookies.get('token')
-        const res = await fetch(`http://95.180.97.206:8000/api/category/deleteById/${categoryId}`,{
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
+        const res = await fetch(`http://95.180.97.206:8000/api/category/deleteById/${categoryId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
           }
-        )
+        })
         const data = await res.json()
         if (res.status !== 500) {
           this.exception = {}

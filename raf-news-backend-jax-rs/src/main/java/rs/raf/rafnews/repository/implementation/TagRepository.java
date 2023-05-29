@@ -21,7 +21,24 @@ public class TagRepository implements ITagRepository {
 
     @Override
     public Tag getTagById(Integer id) throws JsonProcessingException, GetException, SQLException {
-        return null;
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "SELECT * FROM tag WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setInt(1, id);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if (resultSet.next()) {
+                    return extractTagFromResultSet(resultSet);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return new Tag();
     }
 
     @Override

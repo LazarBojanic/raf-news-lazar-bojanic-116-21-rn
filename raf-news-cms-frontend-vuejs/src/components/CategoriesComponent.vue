@@ -53,7 +53,6 @@
             <button class="btn btn-secondary" @click="cancelAddCategory">Cancel</button>
           </form>
         </div>
-        
       </div>
     </div>
   </div>

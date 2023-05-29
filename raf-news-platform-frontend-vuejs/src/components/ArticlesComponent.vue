@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import { ref } from 'joi-browser'
 import { useArticlesStore } from '../stores/articles'
 import { useCategoriesStore } from '../stores/categories'
 import ArticleComponent from './ArticleComponent.vue'

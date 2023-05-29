@@ -61,11 +61,12 @@ export default {
       this.isRegularScale = false
       this.isPushedIn = true
     },
-    editArticle(){
-      this.$router.push('editArticle')  
+    editArticle() {
+      this.$router.push({ name: 'editArticle', query: { articleId: this.article.id } })
     },
-    async deleteArticle(){
-
+    async deleteArticle() {
+      await this.articlesStore.deleteArticleById(this.article.id)
+      await this.articlesStore.fetchAllArticlesFiltered(this.articlesStore.getSearchData)
     }
   }
 }

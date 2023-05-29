@@ -27,6 +27,6 @@ public interface IArticleWithTagRepository {
     List<ArticleWithTagDto> addTagListToArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, AddException, JsonProcessingException;
 
     ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag) throws GetException, SQLException, JsonProcessingException;
-    ArticleWithTagDto updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException, DeleteException, AddException;
+    List<ArticleWithTagDto>  updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException, DeleteException, AddException;
     Integer deleteAllTagsForArticle(Integer articleId) throws SQLException, JsonProcessingException, DeleteException;
 }
