@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import rs.raf.rafnews.dto.ArticleDto;
-import rs.raf.rafnews.exception.AddException;
-import rs.raf.rafnews.exception.DeleteException;
-import rs.raf.rafnews.exception.GetException;
-import rs.raf.rafnews.exception.JoinException;
+import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.Article;
 import rs.raf.rafnews.request.ArticleRequest;
 import rs.raf.rafnews.request.ArticleSearchRequest;
@@ -48,6 +45,11 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
+    public Article getRawArticleByCategoryId(Integer categoryId) throws GetException, JsonProcessingException, SQLException {
+        return this.articleRepository.getRawArticleByCategoryId(categoryId);
+    }
+
+    @Override
     public ArticleDto getArticleById(Integer id) throws GetException, JoinException, JsonProcessingException, SQLException {
         return this.articleRepository.getArticleById(id);
     }
@@ -63,8 +65,13 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) {
+    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws UpdateException, JsonProcessingException {
         return this.articleRepository.updateArticleById(id, articleRequest);
+    }
+
+    @Override
+    public Integer saveArticle(Article article) throws SQLException, UpdateException, JsonProcessingException {
+        return this.articleRepository.saveArticle(article);
     }
 
     @Override

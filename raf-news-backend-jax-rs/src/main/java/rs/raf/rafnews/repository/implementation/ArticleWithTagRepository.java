@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import rs.raf.rafnews.database.RafNewsDatabase;
 import rs.raf.rafnews.dto.ArticleWithTagDto;
 import rs.raf.rafnews.exception.AddException;
+import rs.raf.rafnews.exception.DeleteException;
 import rs.raf.rafnews.exception.ExceptionMessage;
 import rs.raf.rafnews.exception.GetException;
 import rs.raf.rafnews.model.ArticleWithTag;
@@ -154,6 +155,31 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     public ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag) throws GetException, SQLException, JsonProcessingException {
         Tag tag = tagService.getTagById(articleWithTag.getTag_id());
         return new ArticleWithTagDto(articleWithTag.getId(), articleWithTag.getArticle_id(), tag);
+    }
+
+    @Override
+    public ArticleWithTagDto updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException, DeleteException, AddException {
+        deleteAllTagsForArticle(articleId);
+        addTagListToArticle(articleId, tagList);
+    }
+
+    @Override
+    public Integer deleteAllTagsForArticle(Integer articleId) throws SQLException, JsonProcessingException, DeleteException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        try{
+            String query = "DELETE FROM article_with_tag WHERE article_id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setInt(1, articleId);
+                return preparedStatement.executeUpdate();
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("DeleteException", e.getMessage());
+            throw new DeleteException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
     }
 
     private ArticleWithTag extractArticleWithTagFromResultSet(ResultSet resultSet) throws SQLException {

@@ -53,8 +53,10 @@ export default {
       this.categoriesStore.category = this.category
       router.push('editCategory')
     },
-    deleteCategory() {
-      this.categoriesStore.deleteCategory(this.category.id)
+    async deleteCategory() {
+      //console.log(this.category.id)
+      await this.categoriesStore.deleteCategory(this.category.id)
+      await this.categoriesStore.fetchAllCategories()
     },
     goToArticlesWithCategoryPage() {
       router.push({ path: '/articles', query: { category_name: this.category.category_name } })

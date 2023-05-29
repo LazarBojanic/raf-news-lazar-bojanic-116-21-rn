@@ -7,8 +7,10 @@
     @mousedown="pushIn"
     @click="goToFullArticlePage()"
   >
-    {{ articleRow.title }}
+    {{ article.title }}
   </td>
+  <td><button class="btn btn-primary" @click="editArticle()">Edit</button></td>
+  <td><button class="btn btn-danger" @click="deleteArticle()">Delete</button></td>
 </template>
 
 <script>
@@ -35,12 +37,12 @@ export default {
     return {}
   },
   props: {
-    articleRow: Object
+    article: Object
   },
   computed: {},
   methods: {
     goToFullArticlePage() {
-      const articleId = this.articleRow.id
+      const articleId = this.article.id
       const url = `http://localhost:5174/fullArticle?articleId=${articleId}`
       window.open(url, '_blank')
     },
@@ -58,6 +60,12 @@ export default {
       this.isPushedOut = false
       this.isRegularScale = false
       this.isPushedIn = true
+    },
+    editArticle(){
+      this.$router.push('editArticle')  
+    },
+    async deleteArticle(){
+
     }
   }
 }

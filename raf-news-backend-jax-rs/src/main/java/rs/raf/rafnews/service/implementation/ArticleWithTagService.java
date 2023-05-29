@@ -62,4 +62,14 @@ public class ArticleWithTagService implements IArticleWithTagService {
     public ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag) throws GetException, SQLException, JsonProcessingException {
         return this.articleWithTagRepository.joinArticleWithTag(articleWithTag);
     }
+
+    @Override
+    public ArticleWithTagDto updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException {
+        return this.articleWithTagRepository.updateTagsForArticle(articleId, tagList);
+    }
+
+    @Override
+    public Integer deleteAllTagsForArticle(Integer articleId) {
+        return this.articleWithTagRepository.deleteAllTagsForArticle(articleId);
+    }
 }

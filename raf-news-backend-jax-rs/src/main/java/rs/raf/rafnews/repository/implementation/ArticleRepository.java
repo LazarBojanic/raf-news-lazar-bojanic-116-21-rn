@@ -18,6 +18,7 @@ import rs.raf.rafnews.service.specification.ICategoryService;
 import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.service.specification.ITagService;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -139,6 +140,28 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
+    public Article getRawArticleByCategoryId(Integer categoryId) throws GetException, JsonProcessingException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "SELECT * FROM article WHERE category_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setInt(1, categoryId);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if (resultSet.next()) {
+                    return extractArticleFromResultSet(resultSet);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("GetException", e.getMessage());
+            throw new GetException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return new Article();
+    }
+
+    @Override
     public ArticleDto getArticleById(Integer id) throws GetException, JsonProcessingException, JoinException, SQLException {
         Article article = getRawArticleById(id);
         if(article.getId() > 0){
@@ -217,8 +240,73 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
-    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) {
-        return null;
+    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws JsonProcessingException, UpdateException {
+        try {
+            if(articleRequest.getCategory_name() != null){
+                Integer categoryId = categoryService.getRawCategoryByCategoryName(articleRequest.getCategory_name()).getId();
+                if(categoryId > 0){
+                    Article currentArticle = getRawArticleById(id);
+                    if(currentArticle.getId() > 0){
+                        Article newArticle = new Article(articleRequest.getId(), articleRequest.getService_user_id(), categoryId, articleRequest.getTitle(), articleRequest.getBody(), Timestamp.from(Instant.now()), 0);
+                        Class<?> articleClass = Article.class;
+                        Field[] fields = articleClass.getDeclaredFields();
+                        for (Field field : fields) {
+                            field.setAccessible(true);
+                            Object newValue = field.get(newArticle);
+                            if (newValue != null) {
+                                field.set(currentArticle, newValue);
+                            }
+                        }
+                        if(articleRequest.getTag_list() != null){
+                            tagService.addTagList(articleRequest.getTag_list());
+                            articleWithTagService.updateArticleWithTags(articleRequest.getId(), articleRequest.getTag_list());
+                        }
+                        return saveArticle(currentArticle);
+                    }
+                    else{
+                        ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update article with id: " + id + ". Id not found");
+                        throw new UpdateException(exceptionMessage);
+                    }
+                }
+                else{
+                    ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update article with id: " + id + ". Category not found");
+                    throw new UpdateException(exceptionMessage);
+                }
+            }
+            else{
+                ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update article. Category may not be null");
+                throw new UpdateException(exceptionMessage);
+            }
+        }
+        catch (Exception e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update article with id: " + id + " with new article: " + articleRequest + ". " + e.getMessage());
+            throw new UpdateException(exceptionMessage);
+        }
+    }
+
+    @Override
+    public Integer saveArticle(Article article) throws JsonProcessingException, UpdateException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "UPDATE article SET service_user_id = ?, category_id = ?, title = ?, body = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setInt(1, article.getService_user_id());
+            preparedStatement.setInt(2, article.getCategory_id());
+            preparedStatement.setString(3, article.getTitle());
+            preparedStatement.setString(4, article.getBody());
+            preparedStatement.setInt(5, article.getId());
+            int affectedRows = preparedStatement.executeUpdate();
+            if(affectedRows >= 0){
+                return affectedRows;
+            }
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", e.getMessage());
+            throw new UpdateException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+        return -1;
     }
 
     @Override

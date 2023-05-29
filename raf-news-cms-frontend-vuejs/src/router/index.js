@@ -8,6 +8,8 @@ import ArticlesTableComponent from '../components/ArticlesTableComponent.vue'
 import FullArticleComponent from '../components/FullArticleComponent.vue'
 import EditCategoryComponent from '../components/EditCategoryComponent.vue'
 import UsersTableComponent from '../components/UsersTableComponent.vue'
+import EditArticleComponent from '../components/EditArticleComponent.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -50,6 +52,11 @@ const router = createRouter({
       path: '/editCategory',
       name: 'editCategory',
       component: EditCategoryComponent
+    },
+    {
+      path: '/editArticle',
+      name: 'editArticle',
+      component: EditArticleComponent
     },
     {
       path: '/users',

@@ -29,4 +29,6 @@ public interface IArticleWithTagService {
 
     ArticleWithTagDto joinArticleWithTag(ArticleWithTag articleWithTag) throws GetException, SQLException, JsonProcessingException;
 
+    ArticleWithTagDto updateTagsForArticle(Integer articleId, List<Tag> tagList) throws GetException, SQLException, JsonProcessingException;
+    Integer deleteAllTagsForArticle(Integer articleId);
 }

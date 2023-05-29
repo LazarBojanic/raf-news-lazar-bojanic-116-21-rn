@@ -2,10 +2,7 @@ package rs.raf.rafnews.service.specification;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import rs.raf.rafnews.dto.ArticleDto;
-import rs.raf.rafnews.exception.AddException;
-import rs.raf.rafnews.exception.DeleteException;
-import rs.raf.rafnews.exception.GetException;
-import rs.raf.rafnews.exception.JoinException;
+import rs.raf.rafnews.exception.*;
 import rs.raf.rafnews.model.Article;
 import rs.raf.rafnews.request.ArticleRequest;
 import rs.raf.rafnews.request.ArticleSearchRequest;
@@ -19,9 +16,11 @@ public interface IArticleService {
     List<ArticleDto> getAllArticlesFiltered(ArticleSearchRequest articleSearchRequest) throws GetException, JoinException, SQLException, JsonProcessingException;
     ArticleDto joinArticle(Article article) throws JoinException, JsonProcessingException;
     Article getRawArticleById(Integer id) throws GetException, JsonProcessingException, SQLException;
+    Article getRawArticleByCategoryId(Integer categoryId) throws GetException, JsonProcessingException, SQLException;
     ArticleDto getArticleById(Integer id) throws GetException, JoinException, JsonProcessingException, SQLException;
     Article addRawArticle(Article article) throws AddException, JsonProcessingException, GetException, SQLException;
     ArticleDto addArticle(ArticleRequest articleRequest) throws GetException, JoinException, AddException, JsonProcessingException, SQLException;
-    Integer updateArticleById(Integer id, ArticleRequest articleRequest);
+    Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws UpdateException, JsonProcessingException;
+    Integer saveArticle(Article article) throws SQLException, UpdateException, JsonProcessingException;
     Integer deleteArticleById(Integer id) throws SQLException, DeleteException, JsonProcessingException;
 }

@@ -38,6 +38,7 @@ public class CategoryService implements ICategoryService {
     public Category getRawCategoryById(Integer id) throws GetException, JsonProcessingException, SQLException {
         return this.categoryRepository.getRawCategoryById(id);
     }
+
     @Override
     public CategoryDto getCategoryById(Integer id) throws GetException, JsonProcessingException, SQLException {
         return this.categoryRepository.getCategoryById(id);
@@ -69,7 +70,12 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Integer deleteCategoryById(Integer id) throws SQLException, DeleteException, JsonProcessingException {
+    public Integer saveCategory(Category category) throws SQLException, UpdateException, JsonProcessingException {
+        return this.categoryRepository.saveCategory(category);
+    }
+
+    @Override
+    public Integer deleteCategoryById(Integer id) throws SQLException, DeleteException, JsonProcessingException, GetException {
         return this.categoryRepository.deleteCategoryById(id);
     }
 }

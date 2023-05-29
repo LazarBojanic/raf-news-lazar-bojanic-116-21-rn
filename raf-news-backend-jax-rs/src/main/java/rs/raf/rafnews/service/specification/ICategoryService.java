@@ -22,5 +22,6 @@ public interface ICategoryService {
     Category addRawCategory(Category category) throws SQLException, AddException, JsonProcessingException;
     CategoryDto addCategory(Category category) throws SQLException, AddException, JsonProcessingException;
     Integer updateCategoryById(Integer id, Category category) throws SQLException, UpdateException, JsonProcessingException;
-    Integer deleteCategoryById(Integer id) throws SQLException, DeleteException, JsonProcessingException;
+    Integer saveCategory(Category category) throws SQLException, UpdateException, JsonProcessingException;
+    Integer deleteCategoryById(Integer id) throws SQLException, DeleteException, JsonProcessingException, GetException;
 }

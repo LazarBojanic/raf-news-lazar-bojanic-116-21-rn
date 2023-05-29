@@ -221,7 +221,7 @@ public class ServiceUserRepository implements IServiceUserRepository {
             }
         }
         catch (Exception e) {
-            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update user with id: " + id + " with new user: " + serviceUser);
+            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update user with id: " + id + " with new user: " + serviceUser + ". " + e.getMessage());
             throw new UpdateException(exceptionMessage);
         }
     }

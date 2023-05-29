@@ -22,8 +22,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="articleRow in articlesStore.getArticles" :key="articleRow.id">
-            <ArticleRowComponent :articleRow="articleRow" />
+          <tr v-for="article in articlesStore.getArticles" :key="article.id">
+            <ArticleRowComponent :article="article" />
           </tr>
         </tbody>
       </table>
