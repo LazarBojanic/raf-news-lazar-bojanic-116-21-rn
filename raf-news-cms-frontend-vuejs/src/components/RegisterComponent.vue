@@ -46,8 +46,7 @@
 </template>
 
 <script>
-import jwtDecode from 'jwt-decode'
-import Cookies from 'js-cookie'
+import { isEmpty, isNil } from 'ramda'
 import { useUsersStore } from '../stores/users'
 export default {
   name: 'RegisterComponent',
@@ -74,26 +73,17 @@ export default {
         username: this.username,
         email: this.email,
         pass: this.pass,
-        confirm_pass: '',
+        confirm_pass: this.confirm_pass,
         first_name: this.first_name,
         last_name: this.last_name
       }
       console.log(registerData)
       await this.usersStore.register(registerData)
-      if (this.handleExceptions()) {
+      if (isEmpty(this.usersStore.getException)) {
         this.$router.push('login')
         console.log('registration successful')
       } else {
         console.log('registration failed')
-      }
-    },
-    handleExceptions() {
-      if (Object.keys(this.usersStore.getException).length !== 0) {
-        console.log(JSON.stringify(this.usersStore.getException.message))
-        return false
-      } else {
-        //TODO handle exceptions
-        return true
       }
     }
   },

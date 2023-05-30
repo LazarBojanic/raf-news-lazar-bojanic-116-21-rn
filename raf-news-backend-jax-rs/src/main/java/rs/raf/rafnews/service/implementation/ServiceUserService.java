@@ -84,27 +84,27 @@ public class ServiceUserService implements IServiceUserService {
     }
 
     @Override
-    public ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws RegisterException, JsonProcessingException {
+    public ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws RegisterException, JsonProcessingException, GetException, SQLException, AddException {
         return this.serviceUserRepository.registerServiceUser(registerRequest);
     }
 
     @Override
-    public ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException{
+    public ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException, GetException, SQLException, AddException {
         return this.serviceUserRepository.registerServiceUserFromAdmin(registerFromAdminRequest);
     }
 
     @Override
-    public Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException {
+    public Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException, SQLException, TokenGenerateException {
         return this.serviceUserRepository.loginServiceUser(loginRequest);
     }
 
     @Override
-    public Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException {
+    public Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException, TokenParseException, SQLException, TokenGenerateException {
         return this.serviceUserRepository.loginServiceUserWithToken(token);
     }
 
     @Override
-    public Token logoutServiceUser() throws JsonProcessingException, LogoutException {
+    public Token logoutServiceUser() throws JsonProcessingException, TokenGenerateException {
         return this.serviceUserRepository.logoutServiceUser();
     }
 

@@ -1,7 +1,6 @@
 <template>
   <div class="container d-flex justify-content-center align-items-center">
     <div class="col-md-8 text-center">
-      <!-- Added 'text-center' class -->
       <h1 class="mt-4 mb-4">Home</h1>
       <div>
         <CategoriesTableComponent />
@@ -18,7 +17,6 @@ export default {
     CategoriesTableComponent
   },
   mounted() {
-    // Add any logic here if needed
   },
   data() {
     return {}

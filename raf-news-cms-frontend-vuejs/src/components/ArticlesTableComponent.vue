@@ -28,7 +28,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="pagination">
+        <div class="centered">
           <button class="btn btn-primary" :disabled="searchData.page === 1" @click="previousPage">
             Previous Page
           </button>
@@ -144,5 +144,10 @@ export default {
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
   transform: scale(1.05);
+}
+.centered {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 </style>

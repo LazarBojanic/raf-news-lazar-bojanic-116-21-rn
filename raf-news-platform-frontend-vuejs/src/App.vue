@@ -23,22 +23,64 @@
         <router-view />
       </div>
     </div>
+    <div class="text-center">
+      <h1 v-if="exceptionOccured(articlesStore.getException)"> {{ articlesStore.getException.message }}</h1>
+      <h1 v-if="exceptionOccured(categoriesStore.getException)"> {{ categoriesStore.getException.message }}</h1>
+      <h1 v-if="exceptionOccured(commentsStore.getException)"> {{ commentsStore.getException.message }}</h1>
+      <h1 v-if="exceptionOccured(usersStore.getException)"> {{ usersStore.getException.message }}</h1>
+    </div>
   </div>
 </template>
 
 <script>
+import { isEmpty, isNil } from 'ramda'
+import { useArticlesStore } from './stores/articles'
+import { useCategoriesStore } from './stores/categories'
+import { useCommentsStore } from './stores/comments'
 import { useUsersStore } from './stores/users'
 export default {
   setup() {
+    const articlesStore = useArticlesStore()
+    const categoriesStore = useCategoriesStore()
+    const commentsStore = useCommentsStore()
     const usersStore = useUsersStore()
     return {
+      articlesStore,
+      categoriesStore,
+      commentsStore,
       usersStore
     }
   },
-  mounted() {
-    this.usersStore.logout()
+  async mounted() {
+    await this.usersStore.logout()
   },
-  methods: {}
+  methods: {
+    exceptionOccured(exception){
+      return !isEmpty(exception)
+    }
+  },
+  watch: {
+    'articlesStore.getException'(newException) {
+      if (this.exceptionOccured(newException)) {
+        setTimeout(() => { this.articlesStore.clearException(); }, 5000);
+      }
+    },
+    'categoriesStore.getException'(newException) {
+      if (this.exceptionOccured(newException)) {
+        setTimeout(() => { this.categoriesStore.clearException(); }, 5000);
+      }
+    },
+    'commentsStore.getException'(newException) {
+      if (this.exceptionOccured(newException)) {
+        setTimeout(() => { this.commentsStore.clearException(); }, 5000);
+      }
+    },
+    'usersStore.getException'(newException) {
+      if (this.exceptionOccured(newException)) {
+        setTimeout(() => { this.usersStore.clearException(); }, 5000);
+      }
+    },
+  }
 }
 </script>
 

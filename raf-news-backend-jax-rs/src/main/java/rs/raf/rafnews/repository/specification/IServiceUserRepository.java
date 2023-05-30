@@ -24,11 +24,11 @@ public interface IServiceUserRepository {
     ServiceUserDto addServiceUser(ServiceUser serviceUser) throws JsonProcessingException, AddException, SQLException;
     Integer updateServiceUserById(Integer id, ServiceUser serviceUser) throws JsonProcessingException, UpdateException, GetException;
     Integer switchServiceUserEnabledById(Integer id, ServiceUserSwitchEnabledRequest serviceUserSwitchEnabledRequest) throws JsonProcessingException, UpdateException, SQLException;
-    ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws JsonProcessingException, RegisterException;
-    ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException;
-    Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException;
-    Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException;
-    Token logoutServiceUser() throws JsonProcessingException, LogoutException;
+    ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws JsonProcessingException, RegisterException, GetException, SQLException, AddException;
+    ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException, GetException, SQLException, AddException;
+    Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException, SQLException, TokenGenerateException;
+    Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException, SQLException, TokenParseException, TokenGenerateException;
+    Token logoutServiceUser() throws JsonProcessingException, TokenGenerateException;
     Integer deleteServiceUserById(Integer id) throws JsonProcessingException, DeleteException, SQLException;
     String generateToken(ServiceUser serviceUser, String userRole) throws JsonProcessingException, TokenGenerateException;
     Claims parseToken(String token) throws LoginException, JsonProcessingException, TokenParseException;

@@ -17,7 +17,8 @@
             </tr>
           </tbody>
         </table>
-        <div class="pagination">
+        <div class="col">
+          <div class="centered">
           <button
             class="btn btn-primary"
             :disabled="usersSearchData.page === 1"
@@ -28,7 +29,8 @@
           <span class="current-page">Page {{ usersSearchData.page }}</span>
           <button class="btn btn-primary" @click="nextPage">Next Page</button>
         </div>
-        <div>
+        <br/>
+        <div class="centered">
           <button
             class="btn btn-primary mb-2"
             @click="addUserFormIsVisible = !addUserFormIsVisible"
@@ -83,6 +85,8 @@
             </div>
           </div>
         </div>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -92,6 +96,7 @@
 import { ref } from 'vue'
 import { useUsersStore } from '../stores/users'
 import UserRowComponent from './UserRowComponent.vue'
+import { isEmpty, isNil } from 'ramda'
 
 export default {
   name: 'UsersTableComponent',
@@ -157,11 +162,6 @@ export default {
       }
       console.log(registerData)
       await this.usersStore.registerFromAdmin(registerData)
-      if (this.handleExceptions()) {
-        console.log('registration successful')
-      } else {
-        console.log('registration failed')
-      }
     },
     async previousPage() {
       if (this.usersSearchData.page > 1) {
@@ -201,5 +201,10 @@ export default {
 
 .add-user-form-container {
   margin-left: 20px;
+}
+.centered {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 </style>

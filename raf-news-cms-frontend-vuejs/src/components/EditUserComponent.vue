@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <h1>Edit Category</h1>
+      <div class="col">
+        <h1>Edit User</h1>
       <form @submit.prevent="updateUser">
         <div class="form-group">
           <label for="first_name">First Name:</label>
@@ -30,6 +31,8 @@
         <button type="submit" class="btn btn-primary">Save</button>
         <button class="btn btn-secondary ml-2" @click="cancelEdit">Cancel</button>
       </form>
+      </div>
+      
     </div>
   </div>
 </template>

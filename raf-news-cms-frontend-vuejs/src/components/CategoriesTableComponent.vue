@@ -16,7 +16,8 @@
           </tr>
         </tbody>
       </table>
-      <div class="pagination">
+      <div class="col">
+        <div>
         <button
           class="btn btn-primary"
           :disabled="categoriesSearchData.page === 1"
@@ -27,7 +28,9 @@
         <span class="current-page">Page {{ categoriesSearchData.page }}</span>
         <button class="btn btn-primary" @click="nextPage">Next Page</button>
       </div>
+      <br/>
       <div>
+       
         <button
           :disabled="!userIsAdmin"
           class="btn btn-success"
@@ -65,6 +68,8 @@
           </form>
         </div>
       </div>
+      </div>
+      
     </div>
   </div>
 </template>

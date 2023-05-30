@@ -260,111 +260,72 @@ public class ServiceUserRepository implements IServiceUserRepository {
     }
 
     @Override
-    public ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws JsonProcessingException, RegisterException {
-        try{
-            if(registerRequest.getPass().equals(registerRequest.getConfirm_pass())){
-                if(getRawServiceUserByEmailOrUsername(registerRequest.getEmail(), registerRequest.getUsername()).getId() == -1){
-                    String hashedPass = Hasher.hashPassword(registerRequest.getPass());
-                    return addServiceUser(new ServiceUser(0, registerRequest.getUsername(), registerRequest.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", registerRequest.getFirst_name(), registerRequest.getLast_name()));
-                }
-                else{
-                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + registerRequest.getEmail()  + " or username: " + registerRequest.getUsername() + " already exist.");
-                    throw new RegisterException(exceptionMessage);
-                }
+    public ServiceUserDto registerServiceUser(RegisterRequest registerRequest) throws JsonProcessingException, RegisterException, GetException, SQLException, AddException {
+        if(registerRequest.getPass().equals(registerRequest.getConfirm_pass())){
+            if(getRawServiceUserByEmailOrUsername(registerRequest.getEmail(), registerRequest.getUsername()).getId() == -1){
+                String hashedPass = Hasher.hashPassword(registerRequest.getPass());
+                return addServiceUser(new ServiceUser(0, registerRequest.getUsername(), registerRequest.getEmail(), hashedPass, Util.ROLE_CONTENT_CREATOR, "true", registerRequest.getFirst_name(), registerRequest.getLast_name()));
             }
             else{
-                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Passwords must match.");
+                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + registerRequest.getEmail()  + " or username: " + registerRequest.getUsername() + " already exist.");
                 throw new RegisterException(exceptionMessage);
             }
         }
-        catch (Exception e){
-            ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", e.getMessage());
+        else{
+            ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Passwords must match.");
             throw new RegisterException(exceptionMessage);
         }
     }
 
     @Override
-    public ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException {
-        try{
-            if(registerFromAdminRequest.getPass().equals(registerFromAdminRequest.getConfirm_pass())){
-                if(getRawServiceUserByEmailOrUsername(registerFromAdminRequest.getEmail(), registerFromAdminRequest.getUsername()).getId() == -1){
-                    String hashedPass = Hasher.hashPassword(registerFromAdminRequest.getPass());
-                    return addServiceUser(new ServiceUser(0, registerFromAdminRequest.getUsername(), registerFromAdminRequest.getEmail(), hashedPass, registerFromAdminRequest.getUser_role(), "true", registerFromAdminRequest.getFirst_name(), registerFromAdminRequest.getLast_name()));
-                }
-                else{
-                    ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + registerFromAdminRequest.getEmail()  + " or username: " + registerFromAdminRequest.getUsername() + " already exist.");
-                    throw new RegisterException(exceptionMessage);
-                }
+    public ServiceUserDto registerServiceUserFromAdmin(RegisterFromAdminRequest registerFromAdminRequest) throws JsonProcessingException, RegisterException, GetException, SQLException, AddException {
+        if(registerFromAdminRequest.getPass().equals(registerFromAdminRequest.getConfirm_pass())){
+            if(getRawServiceUserByEmailOrUsername(registerFromAdminRequest.getEmail(), registerFromAdminRequest.getUsername()).getId() == -1){
+                String hashedPass = Hasher.hashPassword(registerFromAdminRequest.getPass());
+                return addServiceUser(new ServiceUser(0, registerFromAdminRequest.getUsername(), registerFromAdminRequest.getEmail(), hashedPass, registerFromAdminRequest.getUser_role(), "true", registerFromAdminRequest.getFirst_name(), registerFromAdminRequest.getLast_name()));
             }
             else{
-                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Passwords must match.");
+                ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Email: " + registerFromAdminRequest.getEmail()  + " or username: " + registerFromAdminRequest.getUsername() + " already exist.");
                 throw new RegisterException(exceptionMessage);
             }
         }
-        catch (Exception e){
-            ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", e.getMessage());
+        else{
+            ExceptionMessage exceptionMessage = new ExceptionMessage("RegisterException", "Failed to register. Passwords must match.");
             throw new RegisterException(exceptionMessage);
         }
     }
 
     @Override
-    public Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException {
-        try{
-            ServiceUser serviceUser = getRawServiceUserByEmail(loginRequest.getEmail());
-            if(serviceUser.getId() > 0){
-                if(serviceUser.getIs_enabled().equals("true")){
-                    if(Hasher.checkPassword(loginRequest.getPass(), serviceUser.getPass())){
-                        return new Token(generateToken(serviceUser, serviceUser.getUser_role()));
-                    }
+    public Token loginServiceUser(LoginRequest loginRequest) throws LoginException, JsonProcessingException, GetException, SQLException, TokenGenerateException {
+        ServiceUser serviceUser = getRawServiceUserByEmail(loginRequest.getEmail());
+        if(serviceUser.getId() > 0){
+            if(serviceUser.getIs_enabled().equals("true")){
+                if(Hasher.checkPassword(loginRequest.getPass(), serviceUser.getPass())){
+                    return new Token(generateToken(serviceUser, serviceUser.getUser_role()));
                 }
             }
-            else{
-                ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login. There is not user with email: " + loginRequest.getEmail());
-                throw new LoginException(exceptionMessage);
-            }
         }
-        catch(Exception e){
-            ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", e.getMessage());
-            throw new LoginException(exceptionMessage);
-        }
-        ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login user with email: " + loginRequest.getEmail());
+        ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login. There is no user with email: " + loginRequest.getEmail());
         throw new LoginException(exceptionMessage);
     }
 
     @Override
-    public Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException {
-        try{
-            Claims claims = parseToken(token);
-            ServiceUser serviceUser = getRawServiceUserByEmail(claims.get("email").toString());
-            if(serviceUser.getId() > 0){
-                if(serviceUser.getIs_enabled().equals("true")){
-                    return new Token(generateToken(serviceUser, claims.get("user_role").toString()));
-                }
+    public Token loginServiceUserWithToken(String token) throws LoginException, JsonProcessingException, GetException, SQLException, TokenParseException, TokenGenerateException {
+        Claims claims = parseToken(token);
+        ServiceUser serviceUser = getRawServiceUserByEmail(claims.get("email").toString());
+        if(serviceUser.getId() > 0){
+            if(serviceUser.getIs_enabled().equals("true")){
+                return new Token(generateToken(serviceUser, claims.get("user_role").toString()));
             }
-            else{
-                ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login user with token: " + token);
-                throw new LoginException(exceptionMessage);
-            }
-        }
-        catch(Exception e){
-            ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", e.getMessage());
-            throw new LoginException(exceptionMessage);
         }
         ExceptionMessage exceptionMessage = new ExceptionMessage("LoginException", "Failed to login user with token: " + token);
         throw new LoginException(exceptionMessage);
     }
 
     @Override
-    public Token logoutServiceUser() throws JsonProcessingException, LogoutException {
-        try{
-            ServiceUser serviceUser = new ServiceUser(0, "", "", "", Util.ROLE_GUEST, "true", "", "");
-            return new Token(generateToken(serviceUser, Util.ROLE_GUEST));
-        }
-        catch(TokenGenerateException e){
-            ExceptionMessage exceptionMessage = new ExceptionMessage("LogoutException", e.getMessage());
-            throw new LogoutException(exceptionMessage);
-        }
-
+    public Token logoutServiceUser() throws JsonProcessingException, TokenGenerateException {
+        ServiceUser serviceUser = new ServiceUser(0, "", "", "", Util.ROLE_GUEST, "true", "", "");
+        return new Token(generateToken(serviceUser, Util.ROLE_GUEST));
     }
 
     @Override
@@ -402,7 +363,6 @@ public class ServiceUserRepository implements IServiceUserRepository {
             else{
                 return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, JWT_SECRET).setExpiration(java.sql.Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant())).compact();
             }
-
         }
         catch(Exception e){
             ExceptionMessage exceptionMessage = new ExceptionMessage("TokenGenerateException", "Failed to generate token. Reason: " + e.getMessage());
