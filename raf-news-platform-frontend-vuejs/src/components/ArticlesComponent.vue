@@ -1,8 +1,28 @@
 <template>
   <div class="container">
-    <div class="col justify-content-center">
+    <div class="col">
+      <div v-if="searchData.category_name != null">
+        <label for="category" class="form-label">Category:</label>
+        <select v-model="searchData.category_name" id="category" class="form-select">
+          <option value="">All Categories</option>
+          <option
+            v-for="category in categoriesStore.getCategories"
+            :value="category.category_name"
+            :key="category.id"
+          >
+            {{ category.category_name }}
+          </option>
+        </select>
+      </div>
       <div v-for="article in articlesStore.getArticles" :key="article.id">
         <ArticleComponent :article="article" />
+      </div>
+      <div class="pagination">
+        <button class="btn btn-primary" :disabled="searchData.page === 1" @click="previousPage">
+          Previous Page
+        </button>
+        <span class="current-page">Page {{ searchData.page }}</span>
+        <button class="btn btn-primary" @click="nextPage">Next Page</button>
       </div>
     </div>
   </div>
@@ -16,32 +36,56 @@ import { isNil, isEmpty } from 'ramda'
 export default {
   name: 'ArticlesComponent',
   components: { ArticleComponent },
+  props: {
+    articleMode: String
+  },
   setup() {
     const articlesStore = useArticlesStore()
     const categoriesStore = useCategoriesStore()
-    const searchData = {
-      page: 1,
-      page_size: 10,
-      category_name: 'gaming'
-    }
-
     return {
       articlesStore,
-      categoriesStore,
-      searchData
+      categoriesStore
     }
   },
-  mounted() {
-    this.categoriesStore.fetchAllCategories()
-    const receivedCategoryName = this.$route.query.category_name
-    if (!isNil(receivedCategoryName)) {
-      this.searchData.category_name = receivedCategoryName
+  data() {
+    return {
+      searchData: {
+        page: 1,
+        page_size: 10,
+        category_name: null,
+        trending: false
+      }
     }
-    this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+  },
+  async mounted() {
+    await this.categoriesStore.fetchAllCategories()
+    if (this.articleMode === 'home') {
+      this.searchData.trending = false
+      this.searchData.category_name = null
+    } else if (this.articleMode === 'trending') {
+      this.searchData.trending = true
+      this.searchData.category_name = null
+    } else if (this.articleMode === 'articlesByCategory') {
+      this.searchData.trending = false
+      this.searchData.category_name = this.categoriesStore.getCategories[0].category_name
+    }
+    await this.articlesStore.fetchAllArticlesFiltered(this.searchData)
   },
   methods: {
-    goToAddArticlePage() {
-      // Implement your goToAddArticlePage method here
+    previousPage() {
+      if (this.searchData.page > 1) {
+        this.searchData.page--
+        this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+      }
+    },
+    nextPage() {
+      this.searchData.page++
+      this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+    }
+  },
+  watch: {
+    'searchData.category_name'(newCategoryName) {
+      this.articlesStore.fetchAllArticlesFiltered(this.searchData)
     }
   }
 }

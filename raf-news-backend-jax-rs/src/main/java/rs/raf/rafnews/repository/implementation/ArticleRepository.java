@@ -18,7 +18,10 @@ import rs.raf.rafnews.service.specification.*;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +42,7 @@ public class ArticleRepository implements IArticleRepository {
     public List<Article> getAllRawArticles() throws JsonProcessingException, GetException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         List<Article> articleList = new ArrayList<>();
-        String query = "SELECT * FROM article";
+        String query = "SELECT * FROM article ORDER BY time_published DESC";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while (resultSet.next()) {
@@ -72,21 +75,43 @@ public class ArticleRepository implements IArticleRepository {
     @Override
     public List<ArticleDto> getAllArticlesFiltered(ArticleSearchRequest articleSearchRequest) throws GetException, JoinException, SQLException, JsonProcessingException {
         List<ArticleDto> articleDtoList = getAllArticles();
+        if (articleSearchRequest.getTrending()) {
+            // Sort articles by number of views and time published in the last 30 days
+            LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
+            articleDtoList = articleDtoList.stream()
+                    .filter(articleDto -> {
+                        // Check category name filter
+                        String categoryName = articleSearchRequest.getCategory_name();
+                        if (categoryName != null && !categoryName.isEmpty()) {
+                            return articleDto.getCategory().getCategory_name().equalsIgnoreCase(categoryName);
+                        }
+                        return true; // No category name filter or empty category name
+                    })
+                    .filter(articleDto -> {
+                        // Filter articles published in the last 30 days
+                        LocalDateTime articlePublishedDateTime = articleDto.getTime_published().toLocalDateTime();
+                        return articlePublishedDateTime.isAfter(thirtyDaysAgo) || articlePublishedDateTime.isEqual(thirtyDaysAgo);
+                    })
+                    .sorted(Comparator.comparingInt(ArticleDto::getNumber_of_views).reversed())
+                    .skip((long) (articleSearchRequest.getPage() - 1) * articleSearchRequest.getPage_size())
+                    .limit(articleSearchRequest.getPage_size())
+                    .collect(Collectors.toList());
+        } else {
+            articleDtoList = articleDtoList.stream()
+                    .filter(articleDto -> {
+                        // Check category name filter
+                        String categoryName = articleSearchRequest.getCategory_name();
+                        if (categoryName != null && !categoryName.isEmpty()) {
+                            return articleDto.getCategory().getCategory_name().equalsIgnoreCase(categoryName);
+                        }
+                        return true; // No category name filter or empty category name
+                    })
+                    .skip((long) (articleSearchRequest.getPage() - 1) * articleSearchRequest.getPage_size())
+                    .limit(articleSearchRequest.getPage_size())
+                    .collect(Collectors.toList());
+        }
 
-        List<ArticleDto> articleDtoListFiltered = articleDtoList.stream()
-                .filter(articleDto -> {
-                    // Check category name filter
-                    String categoryName = articleSearchRequest.getCategory_name();
-                    if (categoryName != null && !categoryName.isEmpty()) {
-                        return articleDto.getCategory().getCategory_name().equalsIgnoreCase(categoryName);
-                    }
-                    return true; // No category name filter or empty category name
-                })
-                .skip((long) (articleSearchRequest.getPage() - 1) * articleSearchRequest.getPage_size())
-                .limit(articleSearchRequest.getPage_size())
-                .collect(Collectors.toList());
-
-        return articleDtoListFiltered;
+        return articleDtoList;
     }
 
     @Override
@@ -119,7 +144,7 @@ public class ArticleRepository implements IArticleRepository {
     @Override
     public Article getRawArticleById(Integer id) throws JsonProcessingException, GetException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
-        String query = "SELECT * FROM article WHERE id = ?";
+        String query = "SELECT * FROM article WHERE id = ? ORDER BY time_published DESC";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
@@ -141,7 +166,7 @@ public class ArticleRepository implements IArticleRepository {
     @Override
     public Article getRawArticleByCategoryId(Integer categoryId) throws GetException, JsonProcessingException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
-        String query = "SELECT * FROM article WHERE category_id = ?";
+        String query = "SELECT * FROM article WHERE category_id = ? ORDER BY time_published DESC";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, categoryId);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
@@ -284,6 +309,23 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
+    public Integer incrementArticleNumberOfViewsById(Integer id) throws UpdateException, JsonProcessingException, SQLException {
+        Connection connection = RafNewsDatabase.getInstance().getConnection();
+        String query = "UPDATE article SET number_of_views = number_of_views + 1 WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
+            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", e.getMessage());
+            throw new UpdateException(exceptionMessage);
+        }
+        finally {
+            connection.close();
+        }
+    }
+
+    @Override
     public Integer saveArticle(Article article) throws JsonProcessingException, UpdateException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         String query = "UPDATE article SET service_user_id = ?, category_id = ?, title = ?, body = ? WHERE id = ?";
@@ -293,10 +335,7 @@ public class ArticleRepository implements IArticleRepository {
             preparedStatement.setString(3, article.getTitle());
             preparedStatement.setString(4, article.getBody());
             preparedStatement.setInt(5, article.getId());
-            int affectedRows = preparedStatement.executeUpdate();
-            if(affectedRows >= 0){
-                return affectedRows;
-            }
+            return preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
             ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", e.getMessage());
@@ -305,7 +344,6 @@ public class ArticleRepository implements IArticleRepository {
         finally {
             connection.close();
         }
-        return -1;
     }
 
     @Override

@@ -19,8 +19,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ArticleResource {
     @Inject
     IArticleService articleService;
-    @Inject
-    IArticleWithTagService articleWithTagService;
 
     @LogEndpoint
     @GET
@@ -88,6 +86,21 @@ public class ArticleResource {
     public Response updateArticle(@PathParam("id") Integer id, ArticleRequest articleRequest, @HeaderParam("Authorization") String bearerToken){
         try{
             Integer affectedRows = articleService.updateArticleById(id, articleRequest);
+            return Response.ok().entity(affectedRows).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @LogEndpoint
+    @PUT
+    @Path("/incrementNumberOfViewsById/{id}")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response incrementArticleNumberOfViewsById(@PathParam("id") Integer id, ArticleRequest articleRequest, @HeaderParam("Authorization") String bearerToken){
+        try{
+            Integer affectedRows = articleService.incrementArticleNumberOfViewsById(id);
             return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){

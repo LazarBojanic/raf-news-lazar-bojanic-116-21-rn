@@ -6,6 +6,14 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/home">Home</router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/trending">Trending</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/articlesByCategory"
+              >Articles by Category</router-link
+            >
+          </li>
         </ul>
       </div>
     </nav>

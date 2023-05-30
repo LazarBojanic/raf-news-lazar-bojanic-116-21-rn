@@ -1,7 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container" @click="goToFullArticlePage">
     <div class="row justify-content-center">
       <div
+        class="article-card"
         :class="{
           'pushed-out': isPushedOut,
           'regular-scale': isRegularScale,
@@ -13,8 +14,15 @@
         @mousedown="pushIn"
         @click="goToFullArticlePage()"
       >
-        <h1>{{ article.title }}</h1>
-        <h3>{{ article.body }}</h3>
+        <div class="article-info">
+          <h3>Number of Views: {{ article.number_of_views }}</h3>
+          <h1>{{ article.title }}</h1>
+          <h3>{{ article.category.category_name }}</h3>
+          <h1>{{ formattedTime }}</h1>
+        </div>
+        <div class="article-body">
+          <h3>{{ article.body.slice(0, 10) }}{{ article.body.length > 10 ? '...' : '' }}</h3>
+        </div>
       </div>
     </div>
   </div>
@@ -46,10 +54,9 @@ export default {
   props: {
     article: Object
   },
-  computed: {},
   methods: {
     goToFullArticlePage() {
-      //router.push()
+      this.$router.push({ path: '/fullArticle', query: { articleId: this.article.id } })
     },
     pushOut() {
       this.isPushedOut = true
@@ -66,22 +73,47 @@ export default {
       this.isRegularScale = false
       this.isPushedIn = true
     }
+  },
+  computed: {
+    formattedTime() {
+      const timestamp = new Date(this.article.time_published)
+      return timestamp.toLocaleString()
+    }
   }
 }
 </script>
 
 <style scoped>
-.small-article {
-  border: 1px solid #ccc;
+.pushed-in {
+  transform: scale(0.95);
+}
+.regular-scale {
+  transform: scale(1);
+}
+.pushed-out {
+  transform: scale(1.05);
+}
+.article-card {
+  border: 1px solid #000;
   padding: 10px;
-  transition: transform 0.3s ease;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  width: 800px; /* Adjust the width as per your preference */
+  margin: 10px; /* Add some margin to prevent overlapping */
+}
+.article-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.small-article:hover {
-  transform: scale(1.1);
+.article-body {
+  margin-top: 10px;
 }
 
-.small-article:active {
-  transform: scale(0.9);
+.article-body h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

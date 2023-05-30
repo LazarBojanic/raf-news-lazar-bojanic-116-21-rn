@@ -51,17 +51,15 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
     public ArticleWithTag getRawArticleWithTagByArticleIdAndTagId(Integer articleId, Integer tagId) throws GetException, JsonProcessingException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         try{
-            String query = "INSERT INTO article_with_tag(article_id, tag_id) VALUES(?, ?)";
+            String query = "SELECT * FROM article_with_tag WHERE article_id = ? AND tag_id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setInt(1, articleId);
                 preparedStatement.setInt(2, tagId);
-                int affectedRows = preparedStatement.executeUpdate();
-                if (affectedRows > 0) {
-                    try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            int id = generatedKeys.getInt("id");
-                            return new ArticleWithTag(id, articleId, tagId);
-                        }
+                preparedStatement.executeUpdate();
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt("id");
+                        return new ArticleWithTag(id, articleId, tagId);
                     }
                 }
             }

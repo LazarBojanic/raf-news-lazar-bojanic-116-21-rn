@@ -70,6 +70,11 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
+    public Integer incrementArticleNumberOfViewsById(Integer id) throws UpdateException, JsonProcessingException, SQLException {
+        return this.articleRepository.incrementArticleNumberOfViewsById(id);
+    }
+
+    @Override
     public Integer saveArticle(Article article) throws SQLException, UpdateException, JsonProcessingException {
         return this.articleRepository.saveArticle(article);
     }

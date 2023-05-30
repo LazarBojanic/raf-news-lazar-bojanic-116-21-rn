@@ -76,6 +76,29 @@ export const useArticlesStore = defineStore('articles', {
       } catch (error) {
         this.exception = Exceptions.ActionException
       }
+    },
+    async incrementArticleNumberOfViewsById(articleId) {
+      try {
+        const token = Cookies.get('token')
+        const res = await fetch(
+          `http://95.180.97.206:8000/api/article/incrementNumberOfViewsById/${articleId}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          }
+        )
+        const data = await res.json()
+        if (res.status !== 500) {
+          this.exception = {}
+        } else {
+          this.exception = data
+        }
+      } catch (error) {
+        this.exception = Exceptions.ActionException
+      }
     }
   }
 })

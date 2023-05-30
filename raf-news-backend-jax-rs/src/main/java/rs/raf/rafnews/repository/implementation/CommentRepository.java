@@ -28,7 +28,7 @@ public class CommentRepository implements ICommentRepository {
     public List<Comment> getAllRawComments() throws GetException, JsonProcessingException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         List<Comment> commentList = new ArrayList<>();
-        String query = "SELECT * FROM comment";
+        String query = "SELECT * FROM comment ORDER BY time_published DESC";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while (resultSet.next()) {
@@ -62,7 +62,7 @@ public class CommentRepository implements ICommentRepository {
     public List<Comment> getAllRawCommentsByArticleId(Integer articleId) throws GetException, JsonProcessingException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         List<Comment> commentList = new ArrayList<>();
-        String query = "SELECT * FROM comment WHERE article_id = ?";
+        String query = "SELECT * FROM comment WHERE article_id = ? ORDER BY time_published DESC";
         try (PreparedStatement preparedStatement = RafNewsDatabase.getInstance().getConnection().prepareStatement(query)){
             preparedStatement.setInt(1, articleId);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
@@ -122,7 +122,7 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public Comment getRawCommentById(Integer id) throws GetException, JsonProcessingException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
-        String query = "SELECT * FROM comment WHERE id = ?";
+        String query = "SELECT * FROM comment WHERE id = ? ORDER BY time_published DESC";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
             try(ResultSet resultSet = preparedStatement.executeQuery()){

@@ -63,7 +63,8 @@ export default {
       searchData: {
         page: 1,
         page_size: 5,
-        category_name: 'gaming'
+        category_name: 'gaming',
+        trending: false
       }
     }
   },

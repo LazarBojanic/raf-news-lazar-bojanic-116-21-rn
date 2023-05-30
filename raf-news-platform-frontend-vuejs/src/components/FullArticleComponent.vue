@@ -62,7 +62,6 @@ export default {
   async mounted() {
     await this.checkArticleIdAndFetchArticle()
     await this.commentsStore.fetchCommentsByArticleId(this.articlesStore.getArticle.id)
-    console.log('article ' + this.articlesStore.getArticle.id)
   },
   data() {
     return {}
@@ -73,7 +72,8 @@ export default {
     async checkArticleIdAndFetchArticle() {
       const urlParams = new URLSearchParams(window.location.search)
       const articleIdParam = urlParams.get('articleId')
-      if (!isNil(articleIdParam) && !isEmpty(articleIdParam)) {
+      if (!isNil(articleIdParam) || !isEmpty(articleIdParam)) {
+        await this.articlesStore.incrementArticleNumberOfViewsById(articleIdParam)
         await this.articlesStore.fetchArticle(articleIdParam)
       }
     },

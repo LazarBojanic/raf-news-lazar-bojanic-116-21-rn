@@ -3,7 +3,7 @@
     <div class="col-md-8 text-center">
       <h1 class="mt-4 mb-4">Home</h1>
       <div>
-        <ArticlesComponent />
+        <ArticlesComponent :articleMode="'home'" />
       </div>
     </div>
   </div>
