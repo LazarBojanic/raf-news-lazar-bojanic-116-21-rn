@@ -91,8 +91,8 @@
 <script>
 import { ref } from 'vue'
 import { useUsersStore } from '../stores/users'
-import router from '../router'
 import UserRowComponent from './UserRowComponent.vue'
+
 
 export default {
   name: 'UsersTableComponent',

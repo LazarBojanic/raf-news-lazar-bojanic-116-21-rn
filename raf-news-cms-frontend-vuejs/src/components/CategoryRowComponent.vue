@@ -19,26 +19,31 @@
   >
     {{ category.description }}
   </td>
-  <td><button class="btn btn-primary" @click="editCategory()">Edit</button></td>
-  <td><button class="btn btn-danger" @click="deleteCategory()">Delete</button></td>
+  <td><button :disabled="!validToken" class="btn btn-primary" @click="editCategory()">Edit</button></td>
+  <td><button :disabled="!validToken" class="btn btn-danger" @click="deleteCategory()">Delete</button></td>
 </template>
 
 <script>
 import { useCategoriesStore } from '../stores/categories'
 import router from '../router'
 import { ref } from 'vue'
+import jwtDecode from 'jwt-decode'
+import Cookies from 'js-cookie'
+import { isEmpty, isNil } from 'ramda'
 export default {
-  name: 'CategoryComponent',
+  name: 'CategoryRowComponent',
   setup() {
     const categoriesStore = useCategoriesStore()
     const isPushedOut = ref(false)
     const isRegularScale = ref(true)
     const isPushedIn = ref(false)
+    const validToken = ref(false)
     return {
       categoriesStore,
       isPushedOut,
       isRegularScale,
-      isPushedIn
+      isPushedIn,
+      validToken
     }
   },
   data() {
@@ -75,7 +80,20 @@ export default {
       this.isPushedOut = false
       this.isRegularScale = false
       this.isPushedIn = true
-    }
+    },
+    validateToken() {
+      const token = Cookies.get('token')
+      if (!isNil(token) && !isEmpty(token)) {
+        const decodedToken = jwtDecode(token)
+        if ( decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator' ) {
+          this.validToken = true
+        } else {
+          this.validToken = false
+        }
+      } else {
+        this.validToken = false
+      }
+    },
   }
 }
 </script>

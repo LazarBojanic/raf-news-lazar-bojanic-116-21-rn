@@ -9,14 +9,17 @@
   >
     {{ article.title }}
   </td>
-  <td><button class="btn btn-primary" @click="editArticle()">Edit</button></td>
-  <td><button class="btn btn-danger" @click="deleteArticle()">Delete</button></td>
+  <td><button :disabled="!validToken" class="btn btn-primary" @click="editArticle()">Edit</button></td>
+  <td><button :disabled="!validToken" class="btn btn-danger" @click="deleteArticle()">Delete</button></td>
 </template>
 
 <script>
 import { ref } from 'vue'
 import { useArticlesStore } from '../stores/articles'
 import router from '../router'
+import jwtDecode from 'jwt-decode'
+import Cookies from 'js-cookie'
+import { isEmpty, isNil } from 'ramda'
 
 export default {
   name: 'ArticleRowComponent',
@@ -25,11 +28,13 @@ export default {
     const isPushedOut = ref(false)
     const isRegularScale = ref(true)
     const isPushedIn = ref(false)
+    const validToken = ref(false)
     return {
       articlesStore,
       isPushedOut,
       isRegularScale,
-      isPushedIn
+      isPushedIn,
+      validToken
     }
   },
   mounted() {},
@@ -67,7 +72,20 @@ export default {
     async deleteArticle() {
       await this.articlesStore.deleteArticleById(this.article.id)
       await this.articlesStore.fetchAllArticlesFiltered(this.articlesStore.getSearchData)
-    }
+    },
+    validateToken() {
+      const token = Cookies.get('token')
+      if (!isNil(token) && !isEmpty(token)) {
+        const decodedToken = jwtDecode(token)
+        if ( decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator' ) {
+          this.validToken = true
+        } else {
+          this.validToken = false
+        }
+      } else {
+        this.validToken = false
+      }
+    },
   }
 }
 </script>

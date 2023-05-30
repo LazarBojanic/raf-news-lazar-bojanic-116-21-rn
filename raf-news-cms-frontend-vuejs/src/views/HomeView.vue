@@ -4,18 +4,18 @@
       <!-- Added 'text-center' class -->
       <h1 class="mt-4 mb-4">Home</h1>
       <div>
-        <CategoriesComponent />
+        <CategoriesTableComponent />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import CategoriesComponent from '../components/CategoriesComponent.vue'
+import CategoriesTableComponent from '../components/CategoriesTableComponent.vue'
 export default {
   name: 'HomeView',
   components: {
-    CategoriesComponent
+    CategoriesTableComponent
   },
   mounted() {
     // Add any logic here if needed

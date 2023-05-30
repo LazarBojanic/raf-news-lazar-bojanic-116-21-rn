@@ -6,7 +6,7 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
-import rs.raf.rafnews.api.ServiceUserResource;
+import rs.raf.rafnews.api.*;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
 import rs.raf.rafnews.util.Util;
 
@@ -46,24 +46,55 @@ public class AuthFilter implements ContainerRequestFilter {
             if(claims.get("is_enabled").toString().equals("true")){
                 String userRole = claims.get("user_role").toString();
                 List<Object> matchedResources = req.getUriInfo().getMatchedResources();
+                String path = req.getUriInfo().getPath();
                 if(userRole.equals(Util.ROLE_ADMIN)){
                     return true;
                 }
                 else if(userRole.equals(Util.ROLE_CONTENT_CREATOR)){
                     for (Object matchedResource : matchedResources) {
-                        if (matchedResource instanceof ServiceUserResource) {
-                            return req.getUriInfo().getPath().contains("/get");
+                        if (matchedResource instanceof ArticleResource) {
+                            return true;
+                        }
+                        else if (matchedResource instanceof ArticleWithTagResource) {
+                            return true;
+                        }
+                        else if (matchedResource instanceof CategoryResource) {
+                            return path.contains("/get");
+                        }
+                        else if (matchedResource instanceof CommentResource) {
+                            return true;
+                        }
+                        else if (matchedResource instanceof ServiceUserResource) {
+                            return !path.contains("/registerFromAdmin") && !path.contains("/add") && !path.contains("/update") && !path.contains("/switchEnabled") && !path.contains("/delete");
+                        }
+                        else if (matchedResource instanceof TagResource) {
+                            return !path.contains("/add") && !path.contains("/update") && !path.contains("/delete");
                         }
                     }
-                    return true;
+                    return false;
                 }
                 else if(userRole.equals(Util.ROLE_GUEST)){
-                    /*for (Object matchedResource : matchedResources) {
-                        if (matchedResource instanceof ServiceUserResource) {
-                            return req.getUriInfo().getPath().contains("/get");
+                    for (Object matchedResource : matchedResources) {
+                        if (matchedResource instanceof ArticleResource) {
+                            return path.contains("get") || path.contains("/increment");
                         }
-                    }*/
-                    return true;
+                        else if (matchedResource instanceof ArticleWithTagResource) {
+                            return true;
+                        }
+                        else if (matchedResource instanceof CategoryResource) {
+                            return path.contains("get");
+                        }
+                        else if (matchedResource instanceof CommentResource) {
+                            return path.contains("get");
+                        }
+                        else if (matchedResource instanceof ServiceUserResource) {
+                            return !path.contains("/registerFromAdmin") && !path.contains("/add") && !path.contains("/update") && !path.contains("/switchEnabled") && !path.contains("/delete") && !path.contains("/get");
+                        }
+                        else if (matchedResource instanceof TagResource) {
+                            return path.contains("get");
+                        }
+                    }
+                    return false;
                 }
                 else {
                     return false;

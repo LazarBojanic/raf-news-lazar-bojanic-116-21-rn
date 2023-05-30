@@ -12,7 +12,7 @@
         </thead>
         <tbody>
           <tr v-for="category in categoriesStore.getCategories" :key="category.id">
-            <CategoryComponent :category="category" />
+            <CategoryRowComponent :category="category" />
           </tr>
         </tbody>
       </table>
@@ -73,12 +73,12 @@
 import router from '../router'
 import { useCategoriesStore } from '../stores/categories'
 import { ref } from 'vue'
-import CategoryComponent from './CategoryComponent.vue'
+import CategoryRowComponent from '../components/CategoryRowComponent.vue'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
 import { isNil, isEmpty } from 'ramda'
 export default {
-  name: 'CategoriesComponent',
+  name: 'CategoriesTableComponent',
   setup() {
     const categoriesStore = useCategoriesStore()
     const addCategoryFormVisible = ref(false)
@@ -141,7 +141,7 @@ export default {
       this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
     }
   },
-  components: { CategoryComponent }
+  components: { CategoryRowComponent }
 }
 </script>
 
