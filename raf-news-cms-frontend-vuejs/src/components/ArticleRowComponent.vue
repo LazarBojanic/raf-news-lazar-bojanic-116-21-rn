@@ -37,7 +37,9 @@ export default {
       validToken
     }
   },
-  mounted() {},
+  mounted() {
+    this.validateToken()
+  },
   data() {
     return {}
   },

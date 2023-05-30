@@ -49,7 +49,9 @@ export default {
   data() {
     return {}
   },
-  mounted() {},
+  mounted() {
+    this.validateToken()
+  },
   props: {
     category: Object
   },
