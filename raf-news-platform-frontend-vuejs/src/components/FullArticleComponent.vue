@@ -6,28 +6,17 @@
         <p class="lead">{{ articlesStore.getArticle.body }}</p>
 
         <div v-for="articleWithTag in articlesStore.getArticle.tag_list" :key="articleWithTag.id">
-            <router-link :to="{ name: 'articles', query: { tag_name: articleWithTag.tag.tag_name } }">{{ articleWithTag.tag.tag_name }}</router-link>
-          </div>
-
+          <router-link
+            :to="{ name: 'articles', query: { tag_name: articleWithTag.tag.tag_name } }"
+            >{{ articleWithTag.tag.tag_name }}</router-link
+          >
+        </div>
 
         <div class="my-4">
-          <CommentsComponent :articleId="articlesStore.getArticle.id" />
+          <CommentsComponent v-if="articlesStore.getArticle.id" :articleId="articlesStore.getArticle.id" />
+
         </div>
-        <div class="my-4">
-          <button class="btn btn-primary" @click="toggleCommentForm">Add Comment</button>
-        </div>
-        <form v-if="showCommentForm" @submit.prevent="submitComment">
-          <div class="form-group">
-            <textarea
-              class="form-control"
-              v-model="body"
-              rows="4"
-              placeholder="Enter your comment"
-            ></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-          <button class="btn btn-secondary" @click="showCommentForm = false">Cancel</button>
-        </form>
+        
       </div>
     </div>
   </div>
@@ -37,9 +26,6 @@
 import { useArticlesStore } from '../stores/articles'
 import CommentsComponent from './CommentsComponent.vue'
 import { isNil, isEmpty } from 'ramda'
-import { ref } from 'vue'
-import Cookies from 'js-cookie'
-import jwtDecode from 'jwt-decode'
 import { useCommentsStore } from '../stores/comments'
 
 export default {
@@ -49,28 +35,25 @@ export default {
   },
   setup() {
     const articlesStore = useArticlesStore()
-    const showCommentForm = ref(false)
     const commentsStore = useCommentsStore()
-    const body = ref('')
-
-    const toggleCommentForm = () => {
-      showCommentForm.value = !showCommentForm.value
-    }
 
     return {
       articlesStore,
-      commentsStore,
-      showCommentForm,
-      body,
-      toggleCommentForm
+      commentsStore
     }
   },
-  async mounted() {
-    await this.checkArticleIdAndFetchArticle()
-    await this.commentsStore.fetchCommentsByArticleId(this.articlesStore.getArticle.id)
+  mounted() {
+    this.checkArticleIdAndFetchArticle()
   },
   data() {
-    return {}
+    return {
+      searchData: {
+        page: 1,
+        page_size: 10
+      },
+      author: '',
+      body: ''
+    }
   },
   props: {},
   computed: {},
@@ -81,18 +64,9 @@ export default {
       if (!isNil(articleIdParam) || !isEmpty(articleIdParam)) {
         await this.articlesStore.incrementArticleNumberOfViewsById(articleIdParam)
         await this.articlesStore.fetchArticle(articleIdParam)
+        //await this.commentsStore.fetchCommentsByArticleIdFiltered(articleIdParam, this.searchData)
+        this.$forceUpdate()
       }
-    },
-    async submitComment() {
-      const token = Cookies.get('token')
-      const decodedToken = jwtDecode(token)
-      const addCommentData = {
-        service_user_id: decodedToken.id,
-        article_id: this.articlesStore.getArticle.id,
-        body: this.body
-      }
-      await this.commentsStore.addCommentToArticle(addCommentData)
-      await this.commentsStore.fetchCommentsByArticleId(this.articlesStore.getArticle.id)
     }
   }
 }

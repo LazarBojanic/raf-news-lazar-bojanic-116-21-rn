@@ -9,6 +9,7 @@ import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Comment;
 import rs.raf.rafnews.model.Comment;
 import rs.raf.rafnews.request.CommentRequest;
+import rs.raf.rafnews.request.CommentSearchRequest;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,8 +17,10 @@ import java.util.List;
 public interface ICommentService {
     List<Comment> getAllRawComments() throws GetException, JsonProcessingException, SQLException;
     List<CommentDto> getAllComments() throws GetException, JsonProcessingException, JoinException, SQLException;
+    List<CommentDto> getAllCommentsFiltered(CommentSearchRequest commentSearchRequest) throws GetException, JsonProcessingException, JoinException, SQLException;
     List<Comment> getAllRawCommentsByArticleId(Integer articleId) throws GetException, JsonProcessingException, SQLException;
     List<CommentDto> getAllCommentsByArticleId(Integer articleId) throws GetException, JsonProcessingException, JoinException, SQLException;
+    List<CommentDto> getAllCommentsByArticleIdFiltered(Integer articleId, CommentSearchRequest commentSearchRequest) throws GetException, JsonProcessingException, JoinException, SQLException;
     CommentDto joinComment(Comment comment) throws JoinException, JsonProcessingException;
     Comment getRawCommentById(Integer id) throws GetException, JsonProcessingException, SQLException;
     CommentDto getCommentById(Integer id) throws GetException, JsonProcessingException, JoinException, SQLException;

@@ -5,7 +5,7 @@
         <h5>{{ formattedTime }}</h5>
       </div>
       <div class="col-md-6">
-        <h4>{{ comment.service_user.username }}</h4>
+        <h4>{{ comment.author }}</h4>
       </div>
       <div class="col-md-12">
         <p>{{ comment.body }}</p>

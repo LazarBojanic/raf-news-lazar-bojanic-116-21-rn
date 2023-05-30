@@ -5,25 +5,31 @@ export const useCommentsStore = defineStore('comments', {
   state: () => {
     return {
       comments: {},
-      comment: {}
+      comment: {},
+      exception: {}
     }
   },
   getters: {
     getComments: (state) => state.comments,
-    getComment: (state) => state.comment
+    getComment: (state) => state.comment,
+    getException: (state) => state.exception
   },
   actions: {
-    async fetchCommentsByArticleId(articleId) {
+    clearException() {
+      this.exception = {}
+    },
+    async fetchCommentsByArticleIdFiltered(articleId, searchData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('platform_token')
         const res = await fetch(
-          `http://95.180.97.206:8000/api/comment/getAllByArticleId/${articleId}`,
+          `http://95.180.97.206:8000/api/comment/getAllByArticleIdFiltered/${articleId}`,
           {
-            method: 'GET',
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`
-            }
+            },
+            body: JSON.stringify(searchData)
           }
         )
         const data = await res.json()
@@ -39,7 +45,7 @@ export const useCommentsStore = defineStore('comments', {
     },
     async addCommentToArticle(addCommentData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('platform_token')
         const res = await fetch('http://95.180.97.206:8000/api/comment/addToArticle', {
           method: 'POST',
           headers: {

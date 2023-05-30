@@ -4,13 +4,18 @@ import { Exceptions } from '../globals'
 export const useCommentsStore = defineStore('comments', {
   state: () => {
     return {
-      comments: {}
+      comments: {},
+      exception: {}
     }
   },
   getters: {
-    getComments: (state) => state.comments
+    getComments: (state) => state.comments,
+    getException: (state) => state.exception
   },
   actions: {
+    clearException() {
+      this.exception = {}
+    },
     async fetchCommentsByArticleId(articleId) {
       try {
         const token = Cookies.get('token')

@@ -4,13 +4,18 @@ import { Exceptions } from '../globals'
 export const useTagsStore = defineStore('tags', {
   state: () => {
     return {
-      tags: {}
+      tags: {},
+      exception: {}
     }
   },
   getters: {
-    getTags: (state) => state.tags
+    getTags: (state) => state.tags,
+    getException: (state) => state.exception
   },
   actions: {
+    clearException() {
+      this.exception = {}
+    },
     async fetchTagsForArticle(articleId) {
       try {
         const token = Cookies.get('token')

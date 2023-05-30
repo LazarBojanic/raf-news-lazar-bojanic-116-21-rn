@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import { Exceptions } from '../globals'
-import { isNil, isEmpty } from 'ramda'
 export const useUsersStore = defineStore('users', {
   state: () => {
     return {
@@ -12,6 +11,9 @@ export const useUsersStore = defineStore('users', {
     getException: (state) => state.exception
   },
   actions: {
+    clearException() {
+      this.exception = {}
+    },
     async logout() {
       try {
         const res = await fetch('http://95.180.97.206:8000/api/service_user/logout', {
@@ -32,9 +34,6 @@ export const useUsersStore = defineStore('users', {
         Cookies.set('platform_token', {})
         this.exception = Exceptions.ActionException
       }
-    },
-    clearException() {
-      this.exception = {}
     }
   }
 })

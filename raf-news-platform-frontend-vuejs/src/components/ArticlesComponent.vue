@@ -82,15 +82,15 @@ export default {
     await this.articlesStore.fetchAllArticlesFiltered(this.searchData)
   },
   methods: {
-    previousPage() {
+    async previousPage() {
       if (this.searchData.page > 1) {
         this.searchData.page--
-        this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+        await this.articlesStore.fetchAllArticlesFiltered(this.searchData)
       }
     },
-    nextPage() {
+    async nextPage() {
       this.searchData.page++
-      this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+      await this.articlesStore.fetchAllArticlesFiltered(this.searchData)
     }
   },
   watch: {

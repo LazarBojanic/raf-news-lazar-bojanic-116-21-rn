@@ -5,7 +5,6 @@ import RegisterComponent from '../components/RegisterComponent.vue'
 import LoginComponent from '../components/LoginComponent.vue'
 import AddArticleComponent from '../components/AddArticleComponent.vue'
 import ArticlesTableComponent from '../components/ArticlesTableComponent.vue'
-import FullArticleComponent from '../components/FullArticleComponent.vue'
 import EditCategoryComponent from '../components/EditCategoryComponent.vue'
 import UsersTableComponent from '../components/UsersTableComponent.vue'
 import EditArticleComponent from '../components/EditArticleComponent.vue'
@@ -42,11 +41,6 @@ const router = createRouter({
       path: '/articles',
       name: 'articles',
       component: ArticlesTableComponent
-    },
-    {
-      path: '/fullArticle',
-      name: 'fullArticle',
-      component: FullArticleComponent
     },
     {
       path: '/editUser',

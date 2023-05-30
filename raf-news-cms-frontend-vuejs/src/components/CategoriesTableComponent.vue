@@ -129,16 +129,16 @@ export default {
         this.userIsAdmin = jwtDecode(token).user_role === 'admin'
       }
     },
-    previousPage() {
+    async previousPage() {
       if (this.categoriesSearchData.page > 1) {
         this.categoriesSearchData.page--
-        this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
+        await this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
       }
     },
 
-    nextPage() {
+    async nextPage() {
       this.categoriesSearchData.page++
-      this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
+      await this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
     }
   },
   components: { CategoryRowComponent }

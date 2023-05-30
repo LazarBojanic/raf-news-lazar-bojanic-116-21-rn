@@ -67,7 +67,7 @@ export default {
       await this.usersStore.loginWithToken()
       this.updateToken()
       if (this.handleExceptions()) {
-        this.$router.push({ name: 'home' })
+        this.$router.push('home')
         console.log('login successful')
       } else {
         console.log('login failed')
@@ -75,19 +75,15 @@ export default {
       }
     },
     handleExceptions() {
-      if (Object.keys(this.usersStore.getException).length !== 0) {
-        console.log(JSON.stringify(this.usersStore.getException.message))
-        return false
-      } else {
-        //TODO handle exceptions
+      if (isEmpty(this.usersStore.getException)) {
         return true
+      } else {
+        //display error on screen through this.usersStore.getException.message
       }
     },
     updateToken() {
       const token = Cookies.get('token')
-      console.log(token)
       if (!isNil(token) && !isEmpty(token)) {
-        console.log(token)
         this.validToken = jwtDecode(token).email !== ''
         this.userIsAdmin = jwtDecode(token).user_role === 'admin'
       }

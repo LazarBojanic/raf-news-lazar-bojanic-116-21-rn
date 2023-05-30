@@ -5,17 +5,22 @@ export const useArticlesStore = defineStore('articles', {
   state: () => {
     return {
       articles: {},
-      article: {}
+      article: {},
+      exception: {}
     }
   },
   getters: {
     getArticles: (state) => state.articles,
-    getArticle: (state) => state.article
+    getArticle: (state) => state.article,
+    getException: (state) => state.exception
   },
   actions: {
+    clearException() {
+      this.exception = {}
+    },
     async fetchArticle(articleId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('platform_token')
         const res = await fetch(`http://95.180.97.206:8000/api/article/getById/${articleId}`, {
           method: 'GET',
           headers: {
@@ -36,7 +41,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async fetchAllArticles() {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('platform_token')
         const res = await fetch('http://95.180.97.206:8000/api/article/getAll', {
           method: 'GET',
           headers: {
@@ -57,7 +62,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async fetchAllArticlesFiltered(searchData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('platform_token')
         const res = await fetch('http://95.180.97.206:8000/api/article/getAllFiltered', {
           method: 'POST',
           headers: {
@@ -79,7 +84,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async incrementArticleNumberOfViewsById(articleId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('platform_token')
         const res = await fetch(
           `http://95.180.97.206:8000/api/article/incrementNumberOfViewsById/${articleId}`,
           {

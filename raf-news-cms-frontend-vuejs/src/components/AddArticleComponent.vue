@@ -15,12 +15,12 @@
         </select>
       </div>
       <div class="col">
-        <input v-model="title" type="text" class="form-control" placeholder="Title" />
+        <input v-model="title" type="text" class="form-control" placeholder="Title" required />
       </div>
     </div>
     <div class="row mb-3">
       <div class="col">
-        <textarea v-model="body" class="form-control" placeholder="Body"></textarea>
+        <textarea v-model="body" class="form-control" placeholder="Body" required></textarea>
       </div>
     </div>
     <div class="row mb-3"></div>
@@ -41,7 +41,6 @@
 <script>
 import { useArticlesStore } from '../stores/articles'
 import { useCategoriesStore } from '../stores/categories'
-import router from '../router'
 import { isNil, isEmpty } from 'ramda'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
@@ -89,10 +88,16 @@ export default {
       }
       console.log(addData)
       await this.articlesStore.addArticle(addData)
-      if (isNil(this.articlesStore.getException) || isEmpty(this.articlesStore.getException)) {
-        router.push('articles')
+      if (this.handleExceptions()) {
+        this.$router.push('articles')
+      }
+    },
+    handleExceptions() {
+      if (isEmpty(this.usersStore.getException)) {
+        return true
       } else {
-        console.log(this.articlesStore.getException)
+        console.log(this.usersStore.getException.message)
+        //display error on screen through this.usersStore.getException.message
       }
     }
   }

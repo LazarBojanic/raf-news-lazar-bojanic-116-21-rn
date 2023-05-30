@@ -9,8 +9,12 @@
   >
     {{ article.title }}
   </td>
-  <td><button :disabled="!validToken" class="btn btn-primary" @click="editArticle()">Edit</button></td>
-  <td><button :disabled="!validToken" class="btn btn-danger" @click="deleteArticle()">Delete</button></td>
+  <td>
+    <button :disabled="!validToken" class="btn btn-primary" @click="editArticle()">Edit</button>
+  </td>
+  <td>
+    <button :disabled="!validToken" class="btn btn-danger" @click="deleteArticle()">Delete</button>
+  </td>
 </template>
 
 <script>
@@ -79,7 +83,7 @@ export default {
       const token = Cookies.get('token')
       if (!isNil(token) && !isEmpty(token)) {
         const decodedToken = jwtDecode(token)
-        if ( decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator' ) {
+        if (decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator') {
           this.validToken = true
         } else {
           this.validToken = false
@@ -87,7 +91,7 @@ export default {
       } else {
         this.validToken = false
       }
-    },
+    }
   }
 }
 </script>

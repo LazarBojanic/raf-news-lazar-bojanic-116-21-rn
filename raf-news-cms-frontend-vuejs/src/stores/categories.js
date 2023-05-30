@@ -16,6 +16,9 @@ export const useCategoriesStore = defineStore('categories', {
     getException: (state) => state.exception
   },
   actions: {
+    clearException() {
+      this.exception = {}
+    },
     async fetchAllCategories() {
       try {
         const token = Cookies.get('token')

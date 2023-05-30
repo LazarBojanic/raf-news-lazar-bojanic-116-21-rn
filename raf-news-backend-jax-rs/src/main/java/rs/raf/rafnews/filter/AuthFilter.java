@@ -76,22 +76,22 @@ public class AuthFilter implements ContainerRequestFilter {
                 else if(userRole.equals(Util.ROLE_GUEST)){
                     for (Object matchedResource : matchedResources) {
                         if (matchedResource instanceof ArticleResource) {
-                            return path.contains("get") || path.contains("/increment");
+                            return path.contains("/get") || path.contains("/increment");
                         }
                         else if (matchedResource instanceof ArticleWithTagResource) {
                             return true;
                         }
                         else if (matchedResource instanceof CategoryResource) {
-                            return path.contains("get");
+                            return path.contains("/get");
                         }
                         else if (matchedResource instanceof CommentResource) {
-                            return path.contains("get");
+                            return path.contains("/get") || path.contains("/addToArticle");
                         }
                         else if (matchedResource instanceof ServiceUserResource) {
                             return !path.contains("/registerFromAdmin") && !path.contains("/add") && !path.contains("/update") && !path.contains("/switchEnabled") && !path.contains("/delete") && !path.contains("/get");
                         }
                         else if (matchedResource instanceof TagResource) {
-                            return path.contains("get");
+                            return path.contains("/get");
                         }
                     }
                     return false;

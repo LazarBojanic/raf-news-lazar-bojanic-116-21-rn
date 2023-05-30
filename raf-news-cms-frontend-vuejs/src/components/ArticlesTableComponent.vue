@@ -35,7 +35,9 @@
           <span class="current-page">Page {{ searchData.page }}</span>
           <button class="btn btn-primary" @click="nextPage">Next Page</button>
         </div>
-        <button :disabled="!validToken" class="btn btn-success" @click="goToAddArticlePage">Add Article</button>
+        <button :disabled="!validToken" class="btn btn-success" @click="goToAddArticlePage">
+          Add Article
+        </button>
       </div>
     </div>
   </div>
@@ -93,22 +95,22 @@ export default {
         query: { category_name: this.searchData.category_name }
       })
     },
-    previousPage() {
+    async previousPage() {
       if (this.searchData.page > 1) {
         this.searchData.page--
-        this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+        await this.articlesStore.fetchAllArticlesFiltered(this.searchData)
       }
     },
 
-    nextPage() {
+    async nextPage() {
       this.searchData.page++
-      this.articlesStore.fetchAllArticlesFiltered(this.searchData)
+      await this.articlesStore.fetchAllArticlesFiltered(this.searchData)
     },
     validateToken() {
       const token = Cookies.get('token')
       if (!isNil(token) && !isEmpty(token)) {
         const decodedToken = jwtDecode(token)
-        if ( decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator' ) {
+        if (decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator') {
           this.validToken = true
         } else {
           this.validToken = false
@@ -116,7 +118,7 @@ export default {
       } else {
         this.validToken = false
       }
-    },
+    }
   },
   watch: {
     'searchData.category_name'(newCategoryName) {

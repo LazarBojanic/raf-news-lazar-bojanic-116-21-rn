@@ -7,6 +7,7 @@ import rs.raf.rafnews.dto.CommentDto;
 import rs.raf.rafnews.logging.LogEndpoint;
 import rs.raf.rafnews.model.*;
 import rs.raf.rafnews.request.CommentRequest;
+import rs.raf.rafnews.request.CommentSearchRequest;
 import rs.raf.rafnews.service.implementation.CommentService;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
 import rs.raf.rafnews.service.specification.ICommentService;
@@ -51,12 +52,40 @@ public class CommentResource {
         }
     }
     @LogEndpoint
+    @POST
+    @Path("/getAllFiltered")
+    @Produces(APPLICATION_JSON)
+    public Response getAllCommentsFiltered(CommentSearchRequest commentSearchRequest, @HeaderParam("Authorization") String bearerToken){
+        try{
+            List<CommentDto> commentDtoList = commentService.getAllCommentsFiltered(commentSearchRequest);
+            return Response.ok().entity(commentDtoList).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @LogEndpoint
     @GET
     @Path("/getAllByArticleId/{articleId}")
     @Produces(APPLICATION_JSON)
     public Response getAllCommentsByArticleId(@PathParam("articleId") Integer articleId, @HeaderParam("Authorization") String bearerToken){
         try{
             List<CommentDto> commentDtoList = commentService.getAllCommentsByArticleId(articleId);
+            return Response.ok().entity(commentDtoList).build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+    @LogEndpoint
+    @POST
+    @Path("/getAllByArticleIdFiltered/{articleId}")
+    @Produces(APPLICATION_JSON)
+    public Response getAllCommentsByArticleIdFiltered(@PathParam("articleId") Integer articleId, CommentSearchRequest commentSearchRequest, @HeaderParam("Authorization") String bearerToken){
+        try{
+            List<CommentDto> commentDtoList = commentService.getAllCommentsByArticleIdFiltered(articleId, commentSearchRequest);
             return Response.ok().entity(commentDtoList).build();
         }
         catch(Exception e){

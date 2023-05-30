@@ -13,12 +13,12 @@ import java.time.Instant;
 @ToString
 @Builder
 public class CommentRequest {
-    private Integer service_user_id;
     private Integer article_id;
+    private String author;
     private String body;
     public CommentRequest(){
-        this.service_user_id = -1;
         this.article_id =  -1;
+        this.author = "";
         this.body = "";
     }
 }

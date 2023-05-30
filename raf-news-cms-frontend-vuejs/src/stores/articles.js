@@ -17,6 +17,9 @@ export const useArticlesStore = defineStore('articles', {
     getException: (state) => state.exception
   },
   actions: {
+    clearException() {
+      this.exception = {}
+    },
     async fetchArticleById(articleId) {
       try {
         const token = Cookies.get('token')

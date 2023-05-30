@@ -11,6 +11,7 @@ import rs.raf.rafnews.exception.JoinException;
 import rs.raf.rafnews.model.Comment;
 import rs.raf.rafnews.repository.specification.ICommentRepository;
 import rs.raf.rafnews.request.CommentRequest;
+import rs.raf.rafnews.request.CommentSearchRequest;
 import rs.raf.rafnews.service.specification.ICommentService;
 
 import java.sql.SQLException;
@@ -31,6 +32,11 @@ public class CommentService implements ICommentService {
     }
 
     @Override
+    public List<CommentDto> getAllCommentsFiltered(CommentSearchRequest commentSearchRequest) throws GetException, JsonProcessingException, JoinException, SQLException {
+        return this.commentRepository.getAllCommentsFiltered(commentSearchRequest);
+    }
+
+    @Override
     public List<Comment> getAllRawCommentsByArticleId(Integer articleId) throws GetException, JsonProcessingException, SQLException {
         return this.commentRepository.getAllRawCommentsByArticleId(articleId);
     }
@@ -38,6 +44,11 @@ public class CommentService implements ICommentService {
     @Override
     public List<CommentDto> getAllCommentsByArticleId(Integer articleId) throws GetException, JsonProcessingException, JoinException, SQLException {
         return this.commentRepository.getAllCommentsByArticleId(articleId);
+    }
+
+    @Override
+    public List<CommentDto> getAllCommentsByArticleIdFiltered(Integer articleId, CommentSearchRequest commentSearchRequest) throws GetException, JsonProcessingException, JoinException, SQLException {
+        return this.commentRepository.getAllCommentsByArticleIdFiltered(articleId, commentSearchRequest);
     }
 
     @Override

@@ -18,6 +18,9 @@ export const useUsersStore = defineStore('users', {
     getException: (state) => state.exception
   },
   actions: {
+    clearException() {
+      this.exception = {}
+    },
     async register(registerData) {
       try {
         const res = await fetch('http://95.180.97.206:8000/api/service_user/register', {

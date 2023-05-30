@@ -21,10 +21,13 @@
             <label for="title">Title:</label>
             <input type="text" class="form-control" id="title" v-model="title" required />
           </div>
-          <div class="form-group">
-            <label for="body">Body:</label>
-            <input type="text" class="form-control" id="body" v-model="body" required />
-          </div>
+          <textarea
+            class="form-control"
+            v-model="body"
+            rows="4"
+            placeholder="Body"
+            required
+          ></textarea>
           <div class="form-group">
             <label for="tag_names">Tags:</label>
             <input type="text" class="form-control" id="tag_names" v-model="tag_names" required />

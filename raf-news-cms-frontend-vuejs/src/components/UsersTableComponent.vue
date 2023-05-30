@@ -93,7 +93,6 @@ import { ref } from 'vue'
 import { useUsersStore } from '../stores/users'
 import UserRowComponent from './UserRowComponent.vue'
 
-
 export default {
   name: 'UsersTableComponent',
   setup() {
@@ -164,16 +163,16 @@ export default {
         console.log('registration failed')
       }
     },
-    previousPage() {
+    async previousPage() {
       if (this.usersSearchData.page > 1) {
         this.usersSearchData.page--
-        this.usersStore.fetchAllUsersFiltered(this.usersSearchData)
+        await this.usersStore.fetchAllUsersFiltered(this.usersSearchData)
       }
     },
 
-    nextPage() {
+    async nextPage() {
       this.usersSearchData.page++
-      this.usersStore.fetchAllUsersFiltered(this.usersSearchData)
+      await this.usersStore.fetchAllUsersFiltered(this.usersSearchData)
     }
   },
   components: { UserRowComponent }
