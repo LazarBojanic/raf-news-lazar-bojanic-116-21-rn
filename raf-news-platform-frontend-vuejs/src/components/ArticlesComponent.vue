@@ -95,6 +95,7 @@ export default {
   },
   watch: {
     'searchData.category_name'(newCategoryName) {
+      this.searchData.page = 1
       this.articlesStore.fetchAllArticlesFiltered(this.searchData)
     }
   }

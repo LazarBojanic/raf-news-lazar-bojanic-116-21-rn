@@ -35,17 +35,20 @@
           <span class="current-page">Page {{ searchData.page }}</span>
           <button class="btn btn-primary" @click="nextPage">Next Page</button>
         </div>
-        <button class="btn btn-success" @click="goToAddArticlePage">Add Article</button>
+        <button :disabled="!validToken" class="btn btn-success" @click="goToAddArticlePage">Add Article</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
 import { useArticlesStore } from '../stores/articles'
 import { useCategoriesStore } from '../stores/categories'
 import ArticleRowComponent from './ArticleRowComponent.vue'
 import { isNil, isEmpty } from 'ramda'
+import Cookies from 'js-cookie'
+import jwtDecode from 'jwt-decode'
 
 export default {
   name: 'ArticlesTableComponent',
@@ -53,9 +56,11 @@ export default {
   setup() {
     const articlesStore = useArticlesStore()
     const categoriesStore = useCategoriesStore()
+    const validToken = ref(false)
     return {
       articlesStore,
-      categoriesStore
+      categoriesStore,
+      validToken
     }
   },
   data() {
@@ -70,6 +75,7 @@ export default {
     }
   },
   mounted() {
+    this.validateToken()
     this.categoriesStore.fetchAllCategories()
 
     const receivedCategoryName = this.$route.query.category_name
@@ -97,10 +103,24 @@ export default {
     nextPage() {
       this.searchData.page++
       this.articlesStore.fetchAllArticlesFiltered(this.searchData)
-    }
+    },
+    validateToken() {
+      const token = Cookies.get('token')
+      if (!isNil(token) && !isEmpty(token)) {
+        const decodedToken = jwtDecode(token)
+        if ( decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator' ) {
+          this.validToken = true
+        } else {
+          this.validToken = false
+        }
+      } else {
+        this.validToken = false
+      }
+    },
   },
   watch: {
     'searchData.category_name'(newCategoryName) {
+      this.searchData.page = 1
       this.articlesStore.fetchAllArticlesFiltered(this.searchData)
     }
   }
