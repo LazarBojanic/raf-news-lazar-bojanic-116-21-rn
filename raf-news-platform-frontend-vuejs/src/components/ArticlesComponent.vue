@@ -53,7 +53,8 @@ export default {
         page: 1,
         page_size: 10,
         category_name: null,
-        trending: false
+        trending: false,
+        tag_name: null
       }
     }
   },
@@ -62,12 +63,21 @@ export default {
     if (this.articleMode === 'home') {
       this.searchData.trending = false
       this.searchData.category_name = null
+      this.searchData.tag_name = null
     } else if (this.articleMode === 'trending') {
       this.searchData.trending = true
       this.searchData.category_name = null
+      this.searchData.tag_name = null
     } else if (this.articleMode === 'articlesByCategory') {
       this.searchData.trending = false
       this.searchData.category_name = this.categoriesStore.getCategories[0].category_name
+      this.searchData.tag_name = null
+    }
+    const receivedTagName = this.$route.query.tag_name
+    if (!isNil(receivedTagName)) {
+      this.searchData.trending = false
+      this.searchData.category_name = null
+      this.searchData.tag_name = receivedTagName
     }
     await this.articlesStore.fetchAllArticlesFiltered(this.searchData)
   },

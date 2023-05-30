@@ -78,7 +78,7 @@ public class ArticleRepository implements IArticleRepository {
         if (articleSearchRequest.getTrending()) {
             // Sort articles by number of views and time published in the last 30 days
             LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
-            articleDtoList = articleDtoList.stream()
+            return articleDtoList.stream()
                     .filter(articleDto -> {
                         // Check category name filter
                         String categoryName = articleSearchRequest.getCategory_name();
@@ -97,12 +97,21 @@ public class ArticleRepository implements IArticleRepository {
                     .limit(articleSearchRequest.getPage_size())
                     .collect(Collectors.toList());
         } else {
-            articleDtoList = articleDtoList.stream()
+            return articleDtoList.stream()
                     .filter(articleDto -> {
                         // Check category name filter
                         String categoryName = articleSearchRequest.getCategory_name();
                         if (categoryName != null && !categoryName.isEmpty()) {
                             return articleDto.getCategory().getCategory_name().equalsIgnoreCase(categoryName);
+                        }
+                        String tagName = articleSearchRequest.getTag_name();
+                        if (tagName != null && !tagName.isEmpty()) {
+                            for(ArticleWithTagDto articleWithTagDto : articleDto.getTag_list()){
+                                if(articleWithTagDto.getTag().getTag_name().equalsIgnoreCase(tagName)){
+                                    return true;
+                                }
+                            }
+                            return false;
                         }
                         return true; // No category name filter or empty category name
                     })
@@ -110,8 +119,6 @@ public class ArticleRepository implements IArticleRepository {
                     .limit(articleSearchRequest.getPage_size())
                     .collect(Collectors.toList());
         }
-
-        return articleDtoList;
     }
 
     @Override

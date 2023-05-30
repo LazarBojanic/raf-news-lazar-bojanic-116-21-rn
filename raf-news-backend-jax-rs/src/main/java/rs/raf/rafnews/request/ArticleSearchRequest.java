@@ -13,4 +13,5 @@ public class ArticleSearchRequest {
     private Integer page_size;
     private String category_name;
     private Boolean trending;
+    private String tag_name;
 }

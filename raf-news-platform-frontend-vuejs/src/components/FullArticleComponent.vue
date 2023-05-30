@@ -4,6 +4,12 @@
       <div class="col text-center">
         <h1 class="display-4">{{ articlesStore.getArticle.title }}</h1>
         <p class="lead">{{ articlesStore.getArticle.body }}</p>
+
+        <div v-for="articleWithTag in articlesStore.getArticle.tag_list" :key="articleWithTag.id">
+            <router-link :to="{ name: 'articles', query: { tag_name: articleWithTag.tag.tag_name } }">{{ articleWithTag.tag.tag_name }}</router-link>
+          </div>
+
+
         <div class="my-4">
           <CommentsComponent :articleId="articlesStore.getArticle.id" />
         </div>

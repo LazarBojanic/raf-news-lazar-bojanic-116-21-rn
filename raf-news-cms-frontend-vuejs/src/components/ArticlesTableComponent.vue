@@ -64,7 +64,8 @@ export default {
         page: 1,
         page_size: 5,
         category_name: 'gaming',
-        trending: false
+        trending: false,
+        tag_name: null
       }
     }
   },
