@@ -81,7 +81,6 @@ export default {
     this.categoriesStore.fetchAllCategories()
 
     const receivedCategoryName = this.$route.query.category_name
-    console.log(receivedCategoryName)
     if (!isNil(receivedCategoryName)) {
       this.searchData.category_name = receivedCategoryName
     }

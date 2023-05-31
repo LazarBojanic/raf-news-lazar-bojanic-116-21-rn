@@ -16,5 +16,5 @@ public class ArticleRequest {
     private String category_name;
     private String title;
     private String body;
-    private List<Tag> tag_list;
+    private List<String> tag_name_list;
 }

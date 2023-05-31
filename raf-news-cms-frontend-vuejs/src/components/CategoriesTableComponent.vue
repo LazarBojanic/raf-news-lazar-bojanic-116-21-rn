@@ -108,9 +108,6 @@ export default {
     this.categoriesStore.fetchAllCategories()
   },
   methods: {
-    goToNewsWithCategoryPage(categoryId) {
-      console.log(categoryId)
-    },
     changeAddCategoryFormVisibility() {
       this.addCategoryFormVisible = !this.addCategoryFormVisible
     },
@@ -125,7 +122,6 @@ export default {
         category_name: this.category_name,
         description: this.description
       }
-      //console.log(categoryAddData)
       this.categoriesStore.addCategory(categoryAddData)
     },
     checkIfAdmin() {

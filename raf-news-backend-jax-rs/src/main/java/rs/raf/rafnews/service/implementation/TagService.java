@@ -18,6 +18,7 @@ import java.util.List;
 public class TagService implements ITagService {
     @Inject
     private ITagRepository tagRepository;
+
     @Override
     public List<Tag> getAllTags() throws GetException, JsonProcessingException, SQLException {
         return this.tagRepository.getAllTags();
@@ -33,21 +34,24 @@ public class TagService implements ITagService {
         return this.tagRepository.getTagByTagName(tagName);
     }
 
-
     @Override
-    public Tag addTag(Tag tag) throws SQLException, AddException, JsonProcessingException, GetException {
-        return this.tagRepository.addTag(tag);
+    public List<Tag> getTagListByTagNameList(List<String> tagNameList) throws GetException, JsonProcessingException, SQLException {
+        return this.tagRepository.getTagListByTagNameList(tagNameList);
     }
 
     @Override
-    public List<Tag> addTagList(List<Tag> tagList) throws SQLException, AddException, JsonProcessingException, GetException {
-        return this.tagRepository.addTagList(tagList);
+    public Tag addTag(String tagName) throws SQLException, AddException, JsonProcessingException, GetException {
+        return this.tagRepository.addTag(tagName);
     }
 
+    @Override
+    public List<Tag> addTagList(List<String> tagNameList) throws SQLException, AddException, JsonProcessingException, GetException {
+        return this.tagRepository.addTagList(tagNameList);
+    }
 
     @Override
-    public Integer updateTagById(Integer id, Tag tag) throws SQLException, JsonProcessingException, UpdateException {
-        return this.tagRepository.updateTagById(id, tag);
+    public Integer updateTagById(Integer id, String tagName) throws SQLException, JsonProcessingException, UpdateException {
+        return this.tagRepository.updateTagById(id, tagName);
     }
 
     @Override

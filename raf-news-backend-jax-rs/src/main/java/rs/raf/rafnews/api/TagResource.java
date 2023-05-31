@@ -49,9 +49,9 @@ public class TagResource {
     @Path("/add")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response addTag(Tag tag, @HeaderParam("Authorization") String bearerToken){
+    public Response addTag(String tagName, @HeaderParam("Authorization") String bearerToken){
         try{
-            Tag tagWithId = tagService.addTag(tag);
+            Tag tagWithId = tagService.addTag(tagName);
             return Response.ok().entity(tagWithId).build();
         }
         catch(Exception e){
@@ -64,9 +64,9 @@ public class TagResource {
     @Path("/updateById/{id}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateTagById(@PathParam("id") Integer id, Tag tag, @HeaderParam("Authorization") String bearerToken){
+    public Response updateTagById(@PathParam("id") Integer id, String tagName, @HeaderParam("Authorization") String bearerToken){
         try{
-            Integer affectedRows = tagService.updateTagById(id, tag);
+            Integer affectedRows = tagService.updateTagById(id, tagName);
             return Response.ok().entity(affectedRows).build();
         }
         catch(Exception e){

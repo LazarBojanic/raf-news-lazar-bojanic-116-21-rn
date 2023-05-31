@@ -27,7 +27,7 @@
     <div class="row mb-3">
       <div class="col">
         <input
-          v-model="tag_list"
+          v-model="tag_name_list"
           type="text"
           class="form-control"
           placeholder="Tag list (separated by spaces)"
@@ -60,7 +60,7 @@ export default {
       category_name: '',
       title: '',
       body: '',
-      tag_list: ''
+      tag_name_list: ''
     }
   },
   mounted() {
@@ -84,20 +84,11 @@ export default {
         category_name: this.category_name,
         title: this.title,
         body: this.body,
-        tag_list: this.tag_list.split(' ').map((tagName) => ({ id: 0, tag_name: tagName }))
+        tag_name_list: this.tag_name_list.trim().split(' ')
       }
-      console.log(addData)
       await this.articlesStore.addArticle(addData)
-      if (this.handleExceptions()) {
+      if (isEmpty(this.articlesStore.getException)) {
         this.$router.push('articles')
-      }
-    },
-    handleExceptions() {
-      if (isEmpty(this.usersStore.getException)) {
-        return true
-      } else {
-        console.log(this.usersStore.getException.message)
-        //display error on screen through this.usersStore.getException.message
       }
     }
   }

@@ -65,7 +65,7 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws UpdateException, JsonProcessingException {
+    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws UpdateException, JsonProcessingException, GetException, SQLException, DeleteException, AddException {
         return this.articleRepository.updateArticleById(id, articleRequest);
     }
 

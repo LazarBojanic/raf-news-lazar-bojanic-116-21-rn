@@ -52,14 +52,12 @@ public class ArticleWithTagRepository implements IArticleWithTagRepository {
         Connection connection = RafNewsDatabase.getInstance().getConnection();
         try{
             String query = "SELECT * FROM article_with_tag WHERE article_id = ? AND tag_id = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, articleId);
                 preparedStatement.setInt(2, tagId);
-                preparedStatement.executeUpdate();
-                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        int id = generatedKeys.getInt("id");
-                        return new ArticleWithTag(id, articleId, tagId);
+                try(ResultSet resultSet = preparedStatement.executeQuery()){
+                    if(resultSet.next()){
+                        return extractArticleWithTagFromResultSet(resultSet);
                     }
                 }
             }

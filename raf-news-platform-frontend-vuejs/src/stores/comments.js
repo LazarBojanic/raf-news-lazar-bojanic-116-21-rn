@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
 export const useCommentsStore = defineStore('comments', {
   state: () => {
     return {
@@ -35,12 +34,13 @@ export const useCommentsStore = defineStore('comments', {
         const data = await res.json()
         if (res.status !== 500) {
           this.comments = data
-          this.exception = {}
+          this.clearException()
         } else {
           this.exception = data
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async addCommentToArticle(addCommentData) {
@@ -57,12 +57,13 @@ export const useCommentsStore = defineStore('comments', {
         const data = await res.json()
         if (res.status !== 500) {
           this.comment = data
-          this.exception = {}
+          this.clearException()
         } else {
           this.exception = data
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
+        this.exception = error
+        console.log(this.exception)
       }
     }
   }

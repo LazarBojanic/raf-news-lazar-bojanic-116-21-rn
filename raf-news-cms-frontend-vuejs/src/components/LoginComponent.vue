@@ -26,8 +26,7 @@
 
 <script>
 import { useUsersStore } from '../stores/users'
-import jwtDecode from 'jwt-decode'
-import Cookies from 'js-cookie'
+import { isNil, isEmpty } from 'ramda'
 export default {
   name: 'LoginComponent',
   setup() {
@@ -50,21 +49,12 @@ export default {
         pass: this.pass
       }
       await this.usersStore.login(loginData)
-      if (this.handleExceptions()) {
+      if (isEmpty(this.usersStore.getException)) {
         this.$emit('loggedIn')
         this.$router.push({ name: 'home' })
         console.log('login successful')
       } else {
-        console.log('login successful')
-      }
-    },
-    handleExceptions() {
-      if (Object.keys(this.usersStore.getException).length !== 0) {
-        console.log(JSON.stringify(this.usersStore.getException.message))
-        return false
-      } else {
-        //TODO: handle exceptions
-        return true
+        console.log('login failed')
       }
     }
   },

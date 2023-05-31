@@ -29,8 +29,8 @@
             required
           ></textarea>
           <div class="form-group">
-            <label for="tag_names">Tags:</label>
-            <input type="text" class="form-control" id="tag_names" v-model="tag_names" required />
+            <label for="tag_name_list">Tags:</label>
+            <input type="text" class="form-control" id="tag_name_list" v-model="tag_name_list" required />
           </div>
           <button type="submit" class="btn btn-primary">Save</button>
           <button class="btn btn-secondary ml-2" @click="cancelEdit">Cancel</button>
@@ -45,6 +45,8 @@ import { useArticlesStore } from '../stores/articles'
 import { useCategoriesStore } from '../stores/categories'
 import { useTagsStore } from '../stores/tags'
 import { isEmpty, isNil } from 'ramda'
+import Cookies from 'js-cookie'
+import jwtDecode from 'jwt-decode'
 export default {
   name: 'EditArticleComponent',
   setup() {
@@ -60,10 +62,11 @@ export default {
   data() {
     return {
       id: 0,
+      service_user_id: 0,
       category_name: '',
       title: '',
       body: '',
-      tag_names: ''
+      tag_name_list: ''
     }
   },
   async mounted() {
@@ -81,16 +84,13 @@ export default {
   },
   methods: {
     async updateArticle() {
-      const tagNamesArray = this.tag_names.trim().split(' ')
-      const tagList = tagNamesArray.map((tag_name) => {
-        return { id: 0, tag_name }
-      })
       const updateData = {
         id: this.id,
+        service_user_id: this.getDecodedToken().id,
         category_name: this.category_name,
         title: this.title,
         body: this.body,
-        tag_list: tagList
+        tag_name_list: this.tag_name_list.trim().split(' ')
       }
       await this.articlesStore.updateArticleById(updateData.id, updateData)
       if (isEmpty(this.articlesStore.exception) || isNil(this.articlesStore.exception)) {
@@ -98,11 +98,17 @@ export default {
       }
     },
     getTagNames() {
-      for (let i = 0; i < this.tagsStore.getTags.length; i++) {
-        this.tag_names += this.tagsStore.getTags[i].tag.tag_name + ' '
+      for (let i = 0; i < this.articlesStore.getArticle.tag_list.length; i++) {
+        this.tag_name_list += this.articlesStore.getArticle.tag_list[i].tag.tag_name + ' '
       }
-      this.tag_names = this.tag_names.trim()
-    }
+      this.tag_name_list = this.tag_name_list.trim()
+    },
+    getDecodedToken() {
+      const token = Cookies.get('token')
+      if (!isNil(token) && !isEmpty(token)) {
+        return jwtDecode(token)
+      }
+    },
   }
 }
 </script>

@@ -65,7 +65,6 @@ export default {
       router.push('editCategory')
     },
     async deleteCategory() {
-      //console.log(this.category.id)
       await this.categoriesStore.deleteCategory(this.category.id)
       await this.categoriesStore.fetchAllCategories()
     },

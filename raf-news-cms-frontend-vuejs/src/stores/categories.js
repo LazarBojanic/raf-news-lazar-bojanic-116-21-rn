@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
 export const useCategoriesStore = defineStore('categories', {
   state: () => {
     return {
@@ -32,15 +31,14 @@ export const useCategoriesStore = defineStore('categories', {
         const data = await res.json()
         if (res.status !== 500) {
           this.categories = data
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async fetchAllCategoriesFiltered(categoriesSearchData) {
@@ -57,15 +55,14 @@ export const useCategoriesStore = defineStore('categories', {
         const data = await res.json()
         if (res.status !== 500) {
           this.categories = data
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async addCategory(categoryAddData) {
@@ -80,18 +77,16 @@ export const useCategoriesStore = defineStore('categories', {
           body: JSON.stringify(categoryAddData)
         })
         const data = await res.json()
-        console.log('data = ' + data)
         if (res.status !== 500) {
-          this.exception = {}
+          this.clearException()
           this.fetchAllCategories()
-          console.log(JSON.stringify(data))
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async updateCategory(updateData) {
@@ -110,15 +105,14 @@ export const useCategoriesStore = defineStore('categories', {
         )
         const data = await res.json()
         if (res.status !== 500) {
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async deleteCategory(categoryId) {
@@ -133,15 +127,14 @@ export const useCategoriesStore = defineStore('categories', {
         })
         const data = await res.json()
         if (res.status !== 500) {
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     }
   }

@@ -63,22 +63,29 @@ public class TagRepository implements ITagRepository {
         return new Tag();
     }
 
+    @Override
+    public List<Tag> getTagListByTagNameList(List<String> tagNameList) throws GetException, JsonProcessingException, SQLException {
+        List<Tag> tagList = new ArrayList<>();
+        for(String tagName : tagNameList){
+            tagList.add(getTagByTagName(tagName));
+        }
+        return tagList;
+    }
 
     @Override
-    public Tag addTag(Tag tag) throws SQLException, AddException, JsonProcessingException, GetException {
-        if(getTagByTagName(tag.getTag_name()).getId() <= 0){
+    public Tag addTag(String tagName) throws SQLException, AddException, JsonProcessingException, GetException {
+        if(getTagByTagName(tagName).getId() <= 0){
             Connection connection = RafNewsDatabase.getInstance().getConnection();
             try{
                 String query = "INSERT INTO tag(tag_name) VALUES(?)";
                 try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                    preparedStatement.setString(1, tag.getTag_name());
+                    preparedStatement.setString(1, tagName);
                     int affectedRows = preparedStatement.executeUpdate();
                     if (affectedRows > 0) {
                         try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                             if (generatedKeys.next()) {
                                 int id = generatedKeys.getInt("id");
-                                tag.setId(id);
-                                return tag;
+                                return new Tag(id, tagName);
                             }
                         }
                     }
@@ -96,10 +103,10 @@ public class TagRepository implements ITagRepository {
     }
 
     @Override
-    public List<Tag> addTagList(List<Tag> tagList) throws SQLException, AddException, JsonProcessingException, GetException {
+    public List<Tag> addTagList(List<String> tagNameList) throws SQLException, AddException, JsonProcessingException, GetException {
         List<Tag> addedTagList = new ArrayList<>();
-        for(Tag tag : tagList){
-            Tag addedTag = addTag(tag);
+        for(String tagName : tagNameList){
+            Tag addedTag = addTag(tagName);
             if(addedTag.getId() > 0){
                 addedTagList.add(addedTag);
             }
@@ -109,7 +116,7 @@ public class TagRepository implements ITagRepository {
 
 
     @Override
-    public Integer updateTagById(Integer id, Tag tag) throws SQLException, JsonProcessingException, UpdateException {
+    public Integer updateTagById(Integer id, String tagName) throws SQLException, JsonProcessingException, UpdateException {
         return null;
     }
 

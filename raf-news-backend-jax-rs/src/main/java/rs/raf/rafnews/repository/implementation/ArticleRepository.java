@@ -258,8 +258,9 @@ public class ArticleRepository implements IArticleRepository {
         if(categoryId > 0){
             Article addedRawArticle = addRawArticle(new Article(articleRequest.getId(), articleRequest.getService_user_id(), categoryId, articleRequest.getTitle(), articleRequest.getBody(), Timestamp.from(Instant.now()), 0));
             if(addedRawArticle.getId() > 0){
-                List<Tag> addedTagList = tagService.addTagList(articleRequest.getTag_list());
-                articleWithTagService.addTagListToArticle(addedRawArticle.getId(), articleRequest.getTag_list());
+                tagService.addTagList(articleRequest.getTag_name_list());
+                List<Tag> tagListToAdd = tagService.getTagListByTagNameList(articleRequest.getTag_name_list());
+                articleWithTagService.addTagListToArticle(addedRawArticle.getId(), tagListToAdd);
                 return joinArticle(addedRawArticle);
             }
         }
@@ -271,8 +272,8 @@ public class ArticleRepository implements IArticleRepository {
     }
 
     @Override
-    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws JsonProcessingException, UpdateException {
-        try {
+    public Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws JsonProcessingException, UpdateException, GetException, SQLException, AddException, DeleteException {
+        try{
             if(articleRequest.getCategory_name() != null){
                 Integer categoryId = categoryService.getRawCategoryByCategoryName(articleRequest.getCategory_name()).getId();
                 if(categoryId > 0){
@@ -288,9 +289,10 @@ public class ArticleRepository implements IArticleRepository {
                                 field.set(currentArticle, newValue);
                             }
                         }
-                        if(articleRequest.getTag_list() != null){
-                            tagService.addTagList(articleRequest.getTag_list());
-                            articleWithTagService.updateTagsForArticle(articleRequest.getId(), articleRequest.getTag_list());
+                        if(articleRequest.getTag_name_list() != null){
+                            tagService.addTagList(articleRequest.getTag_name_list());
+                            List<Tag> tagListToAdd = tagService.getTagListByTagNameList(articleRequest.getTag_name_list());
+                            articleWithTagService.updateTagsForArticle(articleRequest.getId(), tagListToAdd);
                         }
                         return saveArticle(currentArticle);
                     }
@@ -309,12 +311,11 @@ public class ArticleRepository implements IArticleRepository {
                 throw new UpdateException(exceptionMessage);
             }
         }
-        catch (Exception e) {
-            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update article with id: " + id + " with new article: " + articleRequest + ". " + e.getMessage());
+        catch (IllegalAccessException e){
+            ExceptionMessage exceptionMessage = new ExceptionMessage("UpdateException", "Failed to update article. " + e.getMessage());
             throw new UpdateException(exceptionMessage);
         }
     }
-
     @Override
     public Integer incrementArticleNumberOfViewsById(Integer id) throws UpdateException, JsonProcessingException, SQLException {
         Connection connection = RafNewsDatabase.getInstance().getConnection();

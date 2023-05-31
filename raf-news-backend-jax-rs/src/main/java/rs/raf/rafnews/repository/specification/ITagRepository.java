@@ -15,9 +15,9 @@ public interface ITagRepository {
     List<Tag> getAllTags() throws GetException, JsonProcessingException, SQLException;
     Tag getTagById(Integer id) throws JsonProcessingException, GetException, SQLException;
     Tag getTagByTagName(String tagName) throws GetException, JsonProcessingException, SQLException;
-    Tag addTag(Tag tag) throws SQLException, AddException, JsonProcessingException, GetException;
-    List<Tag> addTagList(List<Tag> tagList) throws SQLException, AddException, JsonProcessingException, GetException;
-
-    Integer updateTagById(Integer id, Tag tag) throws SQLException, JsonProcessingException, UpdateException;
+    List<Tag> getTagListByTagNameList(List<String> tagNameList) throws GetException, JsonProcessingException, SQLException;
+    Tag addTag(String tagName) throws SQLException, AddException, JsonProcessingException, GetException;
+    List<Tag> addTagList(List<String> tagNameList) throws SQLException, AddException, JsonProcessingException, GetException;
+    Integer updateTagById(Integer id, String tagName) throws SQLException, JsonProcessingException, UpdateException;
     Integer deleteTagById(Integer id) throws JsonProcessingException, DeleteException, SQLException;
 }

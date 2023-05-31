@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
 import { isNil, isEmpty } from 'ramda'
 export const useUsersStore = defineStore('users', {
   state: () => {
@@ -21,6 +20,9 @@ export const useUsersStore = defineStore('users', {
     clearException() {
       this.exception = {}
     },
+    clearToken(){
+      Cookies.set('token', {})
+    },
     async register(registerData) {
       try {
         const res = await fetch('http://95.180.97.206:8000/api/service_user/register', {
@@ -31,18 +33,15 @@ export const useUsersStore = defineStore('users', {
           body: JSON.stringify(registerData)
         })
         const data = await res.json()
-        console.log(data)
-        console.log(res.status + ' ' + res.statusText + ' ' + res.text)
         if (res.status !== 500) {
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async registerFromAdmin(registerData) {
@@ -57,19 +56,16 @@ export const useUsersStore = defineStore('users', {
           body: JSON.stringify(registerData)
         })
         const data = await res.json()
-        console.log(data)
-        console.log(res.status + ' ' + res.statusText + ' ' + res.text)
         if (res.status !== 500) {
           this.fetchUsers()
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async login(loginData) {
@@ -84,23 +80,21 @@ export const useUsersStore = defineStore('users', {
         const data = await res.json()
         if (res.status !== 500) {
           Cookies.set('token', data.token)
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           await this.logout()
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async loginWithToken() {
       try {
         const token = Cookies.get('token')
         if (!isEmpty(token) && !isNil(token)) {
-          console.log('logging in with token')
           const res = await fetch('http://95.180.97.206:8000/api/service_user/loginWithToken', {
             method: 'GET',
             headers: {
@@ -111,17 +105,16 @@ export const useUsersStore = defineStore('users', {
           const data = await res.json()
           if (res.status !== 500) {
             Cookies.set('token', data.token)
-            this.exception = {}
-            console.log(JSON.stringify(data))
+            this.clearException()
           } else {
             await this.logout()
             this.exception = data
-            console.log(JSON.stringify(this.exception))
+            console.log(this.exception)
           }
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async logout() {
@@ -135,22 +128,17 @@ export const useUsersStore = defineStore('users', {
         const data = await res.json()
         if (res.status !== 500) {
           Cookies.set('token', data.token)
-          //Cookies.remove('token')
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
-          Cookies.set('token', {})
+          this.clearToken()
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        Cookies.set('token', {})
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.clearToken()
+        this.exception = error
+        console.log(this.exception)
       }
-    },
-    clearException() {
-      this.exception = {}
     },
     async fetchAllUsers() {
       try {
@@ -165,15 +153,14 @@ export const useUsersStore = defineStore('users', {
         const data = await res.json()
         if (res.status !== 500) {
           this.users = data
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async fetchAllUsersFiltered(usersSearchData) {
@@ -191,15 +178,14 @@ export const useUsersStore = defineStore('users', {
         const data = await res.json()
         if (res.status !== 500) {
           this.users = data
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async fetchUserById(userId) {
@@ -215,15 +201,14 @@ export const useUsersStore = defineStore('users', {
         const data = await res.json()
         if (res.status !== 500) {
           this.user = data
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async updateUserById(userId, updateData) {
@@ -240,15 +225,14 @@ export const useUsersStore = defineStore('users', {
         const data = await res.json()
         if (res.status !== 500) {
           this.user = data
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async deleteUserById(userId) {
@@ -263,15 +247,14 @@ export const useUsersStore = defineStore('users', {
         })
         const data = await res.json()
         if (res.status !== 500) {
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async switchUserEnabled(userId, switchEnabledData) {
@@ -290,15 +273,14 @@ export const useUsersStore = defineStore('users', {
         )
         const data = await res.json()
         if (res.status !== 500) {
-          this.exception = {}
-          console.log(JSON.stringify(data))
+          this.clearException()
         } else {
           this.exception = data
-          console.log(JSON.stringify(this.exception))
+          console.log(this.exception)
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
-        console.log(error)
+        this.exception = error
+        console.log(this.exception)
       }
     }
   }

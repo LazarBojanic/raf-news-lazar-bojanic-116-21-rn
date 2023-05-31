@@ -9,9 +9,7 @@ import lombok.*;
 @ToString
 @Builder
 public class Tag {
-    @JsonProperty("id")
     private Integer id;
-    @JsonProperty("tag_name")
     private String tag_name;
 
     public Tag(){

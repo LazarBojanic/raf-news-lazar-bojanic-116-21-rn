@@ -20,7 +20,7 @@ public interface IArticleRepository {
     ArticleDto getArticleById(Integer id) throws GetException, JsonProcessingException, JoinException, SQLException;
     Article addRawArticle(Article article) throws JsonProcessingException, AddException, GetException, SQLException;
     ArticleDto addArticle(ArticleRequest articleRequest) throws AddException, JsonProcessingException, GetException, JoinException, SQLException;
-    Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws JsonProcessingException, UpdateException;
+    Integer updateArticleById(Integer id, ArticleRequest articleRequest) throws JsonProcessingException, UpdateException, GetException, SQLException, AddException, DeleteException;
     Integer incrementArticleNumberOfViewsById(Integer id) throws UpdateException, JsonProcessingException, SQLException;
     Integer saveArticle(Article article) throws JsonProcessingException, UpdateException, SQLException;
     Integer deleteArticleById(Integer id) throws JsonProcessingException, DeleteException, SQLException;

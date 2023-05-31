@@ -82,7 +82,6 @@ export default {
     }
   },
   async mounted() {
-    console.log(this.articleId)
     await this.commentsStore.fetchCommentsByArticleIdFiltered(this.articleId, this.searchData)
   },
   props: {

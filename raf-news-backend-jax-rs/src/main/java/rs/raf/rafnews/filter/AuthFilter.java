@@ -53,6 +53,9 @@ public class AuthFilter implements ContainerRequestFilter {
                 else if(userRole.equals(Util.ROLE_CONTENT_CREATOR)){
                     for (Object matchedResource : matchedResources) {
                         if (matchedResource instanceof ArticleResource) {
+                            if(path.contains("update") || path.contains("delete")){
+                                return Integer.parseInt(claims.get("id").toString()) == getIdFromPath(path);
+                            }
                             return true;
                         }
                         else if (matchedResource instanceof ArticleWithTagResource) {
@@ -107,5 +110,8 @@ public class AuthFilter implements ContainerRequestFilter {
         catch (Exception e){
             return false;
         }
+    }
+    private Integer getIdFromPath(String path){
+        return Integer.parseInt(path.substring(path.lastIndexOf("/")));
     }
 }

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
 export const useArticlesStore = defineStore('articles', {
   state: () => {
     return {
@@ -31,12 +30,13 @@ export const useArticlesStore = defineStore('articles', {
         const data = await res.json()
         if (res.status !== 500) {
           this.article = data
-          this.exception = {}
+          this.clearException()
         } else {
           this.exception = data
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async fetchAllArticles() {
@@ -52,12 +52,13 @@ export const useArticlesStore = defineStore('articles', {
         const data = await res.json()
         if (res.status !== 500) {
           this.articles = data
-          this.exception = {}
+          this.clearException()
         } else {
           this.exception = data
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async fetchAllArticlesFiltered(searchData) {
@@ -74,12 +75,13 @@ export const useArticlesStore = defineStore('articles', {
         const data = await res.json()
         if (res.status !== 500) {
           this.articles = data
-          this.exception = {}
+          this.clearException()
         } else {
           this.exception = data
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
+        this.exception = error
+        console.log(this.exception)
       }
     },
     async incrementArticleNumberOfViewsById(articleId) {
@@ -97,12 +99,13 @@ export const useArticlesStore = defineStore('articles', {
         )
         const data = await res.json()
         if (res.status !== 500) {
-          this.exception = {}
+          this.clearException()
         } else {
           this.exception = data
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
+        this.exception = error
+        console.log(this.exception)
       }
     }
   }

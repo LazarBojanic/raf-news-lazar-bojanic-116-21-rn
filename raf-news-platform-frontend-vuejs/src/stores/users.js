@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
 export const useUsersStore = defineStore('users', {
   state: () => {
     return {
@@ -14,6 +13,9 @@ export const useUsersStore = defineStore('users', {
     clearException() {
       this.exception = {}
     },
+    clearToken(){
+      Cookies.set('platform_token', {})
+    },
     async logout() {
       try {
         const res = await fetch('http://95.180.97.206:8000/api/service_user/logout', {
@@ -25,14 +27,15 @@ export const useUsersStore = defineStore('users', {
         const data = await res.json()
         if (res.status !== 500) {
           Cookies.set('platform_token', data.token)
-          this.exception = {}
+          this.clearException()
         } else {
-          Cookies.set('platform_token', {})
+          this.clearToken()
           this.exception = data
         }
       } catch (error) {
-        Cookies.set('platform_token', {})
-        this.exception = Exceptions.ActionException
+        this.clearToken()
+        this.exception = error
+        console.log(this.exception)
       }
     }
   }

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
-import { Exceptions } from '../globals'
 export const useCategoriesStore = defineStore('categories', {
   state: () => {
     return {
@@ -31,12 +30,13 @@ export const useCategoriesStore = defineStore('categories', {
         const data = await res.json()
         if (res.status !== 500) {
           this.categories = data
-          this.exception = {}
+          this.clearException()
         } else {
           this.exception = data
         }
       } catch (error) {
-        this.exception = Exceptions.ActionException
+        this.exception = error
+        console.log(this.exception)
       }
     }
   }
