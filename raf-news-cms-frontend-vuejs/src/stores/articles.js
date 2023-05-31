@@ -21,7 +21,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async fetchArticleById(articleId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(`http://95.180.97.206:8000/api/article/getById/${articleId}`, {
           method: 'GET',
           headers: {
@@ -44,7 +44,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async fetchAllArticles() {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/article/getAll', {
           method: 'GET',
           headers: {
@@ -68,7 +68,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchAllArticlesFiltered(searchData) {
       try {
         this.searchData = searchData
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/article/getAllFiltered', {
           method: 'POST',
           headers: {
@@ -92,7 +92,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async addArticle(addData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/article/add', {
           method: 'POST',
           headers: {
@@ -116,7 +116,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async updateArticleById(articleId, updateData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(`http://95.180.97.206:8000/api/article/updateById/${articleId}`, {
           method: 'PUT',
           headers: {
@@ -140,7 +140,7 @@ export const useArticlesStore = defineStore('articles', {
     },
     async deleteArticleById(articleId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(`http://95.180.97.206:8000/api/article/deleteById/${articleId}`, {
           method: 'DELETE',
           headers: {

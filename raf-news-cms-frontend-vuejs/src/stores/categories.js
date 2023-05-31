@@ -20,7 +20,8 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async fetchAllCategories() {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
+        console.log(token)
         const res = await fetch('http://95.180.97.206:8000/api/category/getAll', {
           method: 'GET',
           headers: {
@@ -43,7 +44,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async fetchAllCategoriesFiltered(categoriesSearchData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/category/getAllFiltered', {
           method: 'POST',
           headers: {
@@ -67,7 +68,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async addCategory(categoryAddData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/category/add/', {
           method: 'POST',
           headers: {
@@ -91,7 +92,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async updateCategory(updateData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(
           `http://95.180.97.206:8000/api/category/updateById/${updateData.id}`,
           {
@@ -117,7 +118,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async deleteCategory(categoryId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(`http://95.180.97.206:8000/api/category/deleteById/${categoryId}`, {
           method: 'DELETE',
           headers: {

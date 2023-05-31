@@ -19,7 +19,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async fetchAllCategories() {
       try {
-        const token = Cookies.get('platform_token')
+        const token = Cookies.get('platform_token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/category/getAll', {
           method: 'GET',
           headers: {

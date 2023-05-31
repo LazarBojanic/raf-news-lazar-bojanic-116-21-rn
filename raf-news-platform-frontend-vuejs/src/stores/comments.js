@@ -19,7 +19,7 @@ export const useCommentsStore = defineStore('comments', {
     },
     async fetchCommentsByArticleIdFiltered(articleId, searchData) {
       try {
-        const token = Cookies.get('platform_token')
+        const token = Cookies.get('platform_token') || ''
         const res = await fetch(
           `http://95.180.97.206:8000/api/comment/getAllByArticleIdFiltered/${articleId}`,
           {
@@ -45,7 +45,7 @@ export const useCommentsStore = defineStore('comments', {
     },
     async addCommentToArticle(addCommentData) {
       try {
-        const token = Cookies.get('platform_token')
+        const token = Cookies.get('platform_token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/comment/addToArticle', {
           method: 'POST',
           headers: {

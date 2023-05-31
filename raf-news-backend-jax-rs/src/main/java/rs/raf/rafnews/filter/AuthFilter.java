@@ -7,7 +7,10 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import rs.raf.rafnews.api.*;
+import rs.raf.rafnews.dto.ArticleDto;
 import rs.raf.rafnews.service.implementation.ServiceUserService;
+import rs.raf.rafnews.service.specification.IArticleService;
+import rs.raf.rafnews.service.specification.IServiceUserService;
 import rs.raf.rafnews.util.Util;
 
 import java.io.IOException;
@@ -16,7 +19,9 @@ import java.util.List;
 @Provider
 public class AuthFilter implements ContainerRequestFilter {
     @Inject
-    private ServiceUserService serviceUserService;
+    private IServiceUserService serviceUserService;
+    @Inject
+    private IArticleService articleService;
     @Override
     public void filter(ContainerRequestContext requestContext)  {
         try{
@@ -54,7 +59,10 @@ public class AuthFilter implements ContainerRequestFilter {
                     for (Object matchedResource : matchedResources) {
                         if (matchedResource instanceof ArticleResource) {
                             if(path.contains("update") || path.contains("delete")){
-                                return Integer.parseInt(claims.get("id").toString()) == getIdFromPath(path);
+                                Integer serviceUserId = Integer.parseInt(claims.get("id").toString());
+                                Integer articleId = getIdFromPath(path);
+                                ArticleDto articleDto = articleService.getArticleById(articleId);
+                                return articleDto.getService_user().getId().equals(serviceUserId);
                             }
                             return true;
                         }
@@ -112,6 +120,6 @@ public class AuthFilter implements ContainerRequestFilter {
         }
     }
     private Integer getIdFromPath(String path){
-        return Integer.parseInt(path.substring(path.lastIndexOf("/")));
+        return Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
     }
 }

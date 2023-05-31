@@ -46,7 +46,7 @@ export const useUsersStore = defineStore('users', {
     },
     async registerFromAdmin(registerData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/service_user/registerFromAdmin', {
           method: 'POST',
           headers: {
@@ -93,9 +93,8 @@ export const useUsersStore = defineStore('users', {
     },
     async loginWithToken() {
       try {
-        const token = Cookies.get('token')
-        if (!isEmpty(token) && !isNil(token)) {
-          const res = await fetch('http://95.180.97.206:8000/api/service_user/loginWithToken', {
+        const token = Cookies.get('token') || ''
+        const res = await fetch('http://95.180.97.206:8000/api/service_user/loginWithToken', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -111,7 +110,6 @@ export const useUsersStore = defineStore('users', {
             this.exception = data
             console.log(this.exception)
           }
-        }
       } catch (error) {
         this.exception = error
         console.log(this.exception)
@@ -142,7 +140,7 @@ export const useUsersStore = defineStore('users', {
     },
     async fetchAllUsers() {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/service_user/getAll', {
           method: 'GET',
           headers: {
@@ -166,7 +164,7 @@ export const useUsersStore = defineStore('users', {
     async fetchAllUsersFiltered(usersSearchData) {
       try {
         this.searchData = usersSearchData
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch('http://95.180.97.206:8000/api/service_user/getAllFiltered', {
           method: 'POST',
           headers: {
@@ -190,7 +188,7 @@ export const useUsersStore = defineStore('users', {
     },
     async fetchUserById(userId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(`http://95.180.97.206:8000/api/service_user/getById/${userId}`, {
           method: 'GET',
           headers: {
@@ -213,7 +211,7 @@ export const useUsersStore = defineStore('users', {
     },
     async updateUserById(userId, updateData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(`http://95.180.97.206:8000/api/service_user/updateById/${userId}`, {
           method: 'PUT',
           headers: {
@@ -237,7 +235,7 @@ export const useUsersStore = defineStore('users', {
     },
     async deleteUserById(userId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(`http://95.180.97.206:8000/api/service_user/deleteById/${userId}`, {
           method: 'DELETE',
           headers: {
@@ -259,7 +257,7 @@ export const useUsersStore = defineStore('users', {
     },
     async switchUserEnabled(userId, switchEnabledData) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(
           `http://95.180.97.206:8000/api/service_user/switchEnabledById/${userId}`,
           {

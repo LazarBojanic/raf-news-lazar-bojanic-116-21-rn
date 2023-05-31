@@ -17,7 +17,7 @@ export const useTagsStore = defineStore('tags', {
     },
     async fetchTagsForArticle(articleId) {
       try {
-        const token = Cookies.get('token')
+        const token = Cookies.get('token') || ''
         const res = await fetch(
           `http://95.180.97.206:8000/api/article_with_tag/getAllByArticleId/${articleId}`,
           {

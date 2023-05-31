@@ -90,7 +90,7 @@ export default {
       const token = Cookies.get('token')
       if (!isNil(token) && !isEmpty(token)) {
         const decodedToken = jwtDecode(token)
-        if (decodedToken.user_role === 'admin' || decodedToken.user_role === 'content_creator') {
+        if (decodedToken.user_role === 'admin') {
           this.validToken = true
         } else {
           this.validToken = false

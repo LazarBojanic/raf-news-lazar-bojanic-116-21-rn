@@ -75,15 +75,15 @@
 </template>
 
 <script>
-import router from '../router'
 import { useCategoriesStore } from '../stores/categories'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import CategoryRowComponent from '../components/CategoryRowComponent.vue'
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
 import { isNil, isEmpty } from 'ramda'
 export default {
   name: 'CategoriesTableComponent',
+  components: { CategoryRowComponent },
   setup() {
     const categoriesStore = useCategoriesStore()
     const addCategoryFormVisible = ref(false)
@@ -103,9 +103,9 @@ export default {
       userIsAdmin
     }
   },
-  mounted() {
+  async mounted() {
     this.checkIfAdmin()
-    this.categoriesStore.fetchAllCategories()
+    await this.categoriesStore.fetchAllCategories()
   },
   methods: {
     changeAddCategoryFormVisibility() {
@@ -141,8 +141,7 @@ export default {
       this.categoriesSearchData.page++
       await this.categoriesStore.fetchAllCategoriesFiltered(this.categoriesSearchData)
     }
-  },
-  components: { CategoryRowComponent }
+  }
 }
 </script>
 
