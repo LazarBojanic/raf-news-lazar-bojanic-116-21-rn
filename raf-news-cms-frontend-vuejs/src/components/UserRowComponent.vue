@@ -39,8 +39,8 @@
     <button
       :disabled="!validToken"
       :class="{
-        'btn-primary': service_user.is_enabled === 'true',
-        'btn-secondary': service_user.is_enabled === 'false'
+        'btn btn-primary': service_user.is_enabled === 'true',
+        'btn btn-secondary': service_user.is_enabled === 'false'
       }"
       @click="switchEnabled()"
     >
