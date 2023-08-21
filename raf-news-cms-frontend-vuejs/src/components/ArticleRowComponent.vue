@@ -54,7 +54,7 @@ export default {
   methods: {
     goToFullArticlePage() {
       const articleId = this.article.id
-      const url = `http://95.180.97.206:5174/fullArticle?articleId=${articleId}`
+      const url = `http://94.189.193.50:5174/fullArticle?articleId=${articleId}`
       window.open(url, '_blank')
     },
     pushOut() {

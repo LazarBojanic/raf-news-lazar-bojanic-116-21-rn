@@ -22,7 +22,7 @@ export const useCategoriesStore = defineStore('categories', {
       try {
         const token = Cookies.get('token') || ''
         console.log(token)
-        const res = await fetch('http://95.180.97.206:8000/api/category/getAll', {
+        const res = await fetch('http://94.189.193.50:8000/api/category/getAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export const useCategoriesStore = defineStore('categories', {
     async fetchAllCategoriesFiltered(categoriesSearchData) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/category/getAllFiltered', {
+        const res = await fetch('http://94.189.193.50:8000/api/category/getAllFiltered', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export const useCategoriesStore = defineStore('categories', {
     async addCategory(categoryAddData) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/category/add/', {
+        const res = await fetch('http://94.189.193.50:8000/api/category/add/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ export const useCategoriesStore = defineStore('categories', {
       try {
         const token = Cookies.get('token') || ''
         const res = await fetch(
-          `http://95.180.97.206:8000/api/category/updateById/${updateData.id}`,
+          `http://94.189.193.50:8000/api/category/updateById/${updateData.id}`,
           {
             method: 'PUT',
             headers: {
@@ -119,7 +119,7 @@ export const useCategoriesStore = defineStore('categories', {
     async deleteCategory(categoryId) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/category/deleteById/${categoryId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/category/deleteById/${categoryId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

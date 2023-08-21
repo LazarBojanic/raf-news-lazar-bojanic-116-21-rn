@@ -22,7 +22,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchArticleById(articleId) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/article/getById/${articleId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/article/getById/${articleId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchAllArticles() {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/article/getAll', {
+        const res = await fetch('http://94.189.193.50:8000/api/article/getAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export const useArticlesStore = defineStore('articles', {
       try {
         this.searchData = searchData
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/article/getAllFiltered', {
+        const res = await fetch('http://94.189.193.50:8000/api/article/getAllFiltered', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export const useArticlesStore = defineStore('articles', {
     async addArticle(addData) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/article/add', {
+        const res = await fetch('http://94.189.193.50:8000/api/article/add', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ export const useArticlesStore = defineStore('articles', {
     async updateArticleById(articleId, updateData) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/article/updateById/${articleId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/article/updateById/${articleId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export const useArticlesStore = defineStore('articles', {
     async deleteArticleById(articleId) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/article/deleteById/${articleId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/article/deleteById/${articleId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

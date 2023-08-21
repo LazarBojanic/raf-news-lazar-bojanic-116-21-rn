@@ -25,7 +25,7 @@ export const useUsersStore = defineStore('users', {
     },
     async register(registerData) {
       try {
-        const res = await fetch('http://95.180.97.206:8000/api/service_user/register', {
+        const res = await fetch('http://94.189.193.50:8000/api/service_user/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ export const useUsersStore = defineStore('users', {
     async registerFromAdmin(registerData) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/service_user/registerFromAdmin', {
+        const res = await fetch('http://94.189.193.50:8000/api/service_user/registerFromAdmin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export const useUsersStore = defineStore('users', {
     },
     async login(loginData) {
       try {
-        const res = await fetch('http://95.180.97.206:8000/api/service_user/login', {
+        const res = await fetch('http://94.189.193.50:8000/api/service_user/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ export const useUsersStore = defineStore('users', {
     async loginWithToken() {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/service_user/loginWithToken', {
+        const res = await fetch('http://94.189.193.50:8000/api/service_user/loginWithToken', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ export const useUsersStore = defineStore('users', {
     },
     async logout() {
       try {
-        const res = await fetch('http://95.180.97.206:8000/api/service_user/logout', {
+        const res = await fetch('http://94.189.193.50:8000/api/service_user/logout', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ export const useUsersStore = defineStore('users', {
     async fetchAllUsers() {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/service_user/getAll', {
+        const res = await fetch('http://94.189.193.50:8000/api/service_user/getAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ export const useUsersStore = defineStore('users', {
       try {
         this.searchData = usersSearchData
         const token = Cookies.get('token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/service_user/getAllFiltered', {
+        const res = await fetch('http://94.189.193.50:8000/api/service_user/getAllFiltered', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -189,7 +189,7 @@ export const useUsersStore = defineStore('users', {
     async fetchUserById(userId) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/service_user/getById/${userId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/service_user/getById/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -212,7 +212,7 @@ export const useUsersStore = defineStore('users', {
     async updateUserById(userId, updateData) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/service_user/updateById/${userId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/service_user/updateById/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ export const useUsersStore = defineStore('users', {
     async deleteUserById(userId) {
       try {
         const token = Cookies.get('token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/service_user/deleteById/${userId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/service_user/deleteById/${userId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -259,7 +259,7 @@ export const useUsersStore = defineStore('users', {
       try {
         const token = Cookies.get('token') || ''
         const res = await fetch(
-          `http://95.180.97.206:8000/api/service_user/switchEnabledById/${userId}`,
+          `http://94.189.193.50:8000/api/service_user/switchEnabledById/${userId}`,
           {
             method: 'PUT',
             headers: {

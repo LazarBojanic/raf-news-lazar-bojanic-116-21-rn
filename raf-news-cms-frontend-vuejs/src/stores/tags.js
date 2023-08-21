@@ -19,7 +19,7 @@ export const useTagsStore = defineStore('tags', {
       try {
         const token = Cookies.get('token') || ''
         const res = await fetch(
-          `http://95.180.97.206:8000/api/article_with_tag/getAllByArticleId/${articleId}`,
+          `http://94.189.193.50:8000/api/article_with_tag/getAllByArticleId/${articleId}`,
           {
             method: 'GET',
             headers: {

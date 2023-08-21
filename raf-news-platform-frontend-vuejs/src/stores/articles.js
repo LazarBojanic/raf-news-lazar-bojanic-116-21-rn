@@ -20,7 +20,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchArticle(articleId) {
       try {
         const token = Cookies.get('platform_token') || ''
-        const res = await fetch(`http://95.180.97.206:8000/api/article/getById/${articleId}`, {
+        const res = await fetch(`http://94.189.193.50:8000/api/article/getById/${articleId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchAllArticles() {
       try {
         const token = Cookies.get('platform_token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/article/getAll', {
+        const res = await fetch('http://94.189.193.50:8000/api/article/getAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export const useArticlesStore = defineStore('articles', {
     async fetchAllArticlesFiltered(searchData) {
       try {
         const token = Cookies.get('platform_token') || ''
-        const res = await fetch('http://95.180.97.206:8000/api/article/getAllFiltered', {
+        const res = await fetch('http://94.189.193.50:8000/api/article/getAllFiltered', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export const useArticlesStore = defineStore('articles', {
       try {
         const token = Cookies.get('platform_token') || ''
         const res = await fetch(
-          `http://95.180.97.206:8000/api/article/incrementNumberOfViewsById/${articleId}`,
+          `http://94.189.193.50:8000/api/article/incrementNumberOfViewsById/${articleId}`,
           {
             method: 'PUT',
             headers: {
